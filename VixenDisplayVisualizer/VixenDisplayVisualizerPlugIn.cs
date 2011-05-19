@@ -1,12 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="VixenDisplayVisualizerPlugIn.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   The vixen display visualizer plug in.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
+﻿// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     using System;
@@ -23,8 +18,6 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
     /// </summary>
     public class VixenDisplayVisualizerPlugIn : IEventDrivenOutputPlugIn
     {
-        #region Constants and Fields
-
         /// <summary>
         ///   The _channels.
         /// </summary>
@@ -54,10 +47,6 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         ///   The _start channel.
         /// </summary>
         private int _startChannel;
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///   Gets Author.
@@ -105,12 +94,6 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             }
         }
 
-        #endregion
-
-        #region Implemented Interfaces
-
-        #region IEventDrivenOutputPlugIn
-
         /// <summary>
         /// The event.
         /// </summary>
@@ -147,10 +130,6 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             this._startChannel = Convert.ToInt32(this._setupNode.Attributes["from"].Value) - 1;
             this._setupData.GetBytes(this._setupNode, "BackgroundImage", new byte[0]);
         }
-
-        #endregion
-
-        #region IHardwarePlugin
 
         /// <summary>
         /// The shutdown.
@@ -194,10 +173,6 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             }
         }
 
-        #endregion
-
-        #region ISetup
-
         /// <summary>
         /// The setup.
         /// </summary>
@@ -221,9 +196,5 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                     MessageBoxImage.Hand);
             }
         }
-
-        #endregion
-
-        #endregion
     }
 }
