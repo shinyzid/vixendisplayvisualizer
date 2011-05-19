@@ -1,13 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AssemblyInfo.cs" company="Erik Mathisen">
-//   2011
-// </copyright>
-// <summary>
-//   AssemblyInfo.cs
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-
+﻿// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -17,9 +11,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("VixenDisplayVisualizer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("VixenDisplayVisualizer")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2011")]
+[assembly: AssemblyCopyright("Copyright © Erik Mathisen 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

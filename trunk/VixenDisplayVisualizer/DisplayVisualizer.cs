@@ -1,12 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DisplayVisualizer.cs" company="Erik Mathisen">
-//   2011
-// </copyright>
-// <summary>
-//   The display visualizer.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
+﻿// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     using System.Windows.Forms;
@@ -16,19 +11,13 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
     /// </summary>
     public partial class DisplayVisualizer : Form
     {
-        #region Constructors and Destructors
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="DisplayVisualizer"/> class.
+        ///   Initializes a new instance of the <see cref = "DisplayVisualizer" /> class.
         /// </summary>
         public DisplayVisualizer()
         {
             this.InitializeComponent();
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         /// The update with.
@@ -39,7 +28,5 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         public void UpdateWith(byte[] channelValues)
         {
         }
-
-        #endregion
     }
 }

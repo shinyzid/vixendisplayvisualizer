@@ -1,12 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Setup.cs" company="Erik Mathisen">
-//   2011
-// </copyright>
-// <summary>
-//   The setup.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
+﻿// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     using System.Windows.Forms;
@@ -16,16 +11,12 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
     /// </summary>
     public partial class Setup : Form
     {
-        #region Constructors and Destructors
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="Setup"/> class.
+        ///   Initializes a new instance of the <see cref = "Setup" /> class.
         /// </summary>
         public Setup()
         {
             this.InitializeComponent();
         }
-
-        #endregion
     }
 }

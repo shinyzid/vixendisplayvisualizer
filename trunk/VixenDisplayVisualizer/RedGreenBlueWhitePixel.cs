@@ -1,12 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RedGreenBlueWhitePixel.cs" company="Erik Mathisen">
-//   2011
-// </copyright>
-// <summary>
-//   The red green blue white pixel.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
+﻿// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     /// <summary>
