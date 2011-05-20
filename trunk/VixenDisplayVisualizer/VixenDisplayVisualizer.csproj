@@ -54,14 +54,15 @@
     <Compile Include="DisplayVisualizer.Designer.cs">
       <DependentUpon>DisplayVisualizer.cs</DependentUpon>
     </Compile>
-    <Compile Include="RedGreenBluePixel.cs" />
-    <Compile Include="RedGreenBlueWhitePixel.cs" />
+    <Compile Include="Pixels\RedGreenBluePixel.cs" />
+    <Compile Include="Pixels\RedGreenBlueWhitePixel.cs" />
     <Compile Include="Setup.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Setup.Designer.cs">
       <DependentUpon>Setup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Pixels\SingleChannelPixel.cs" />
     <Compile Include="VixenDisplayVisualizerPlugIn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
