@@ -4,6 +4,8 @@
 // --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
+    using Vixen.PlugIns.VixenDisplayVisualizer.Pixels;
+
     /// <summary>
     /// The red green blue white pixel.
     /// </summary>

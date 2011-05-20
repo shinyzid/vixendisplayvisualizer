@@ -2,7 +2,7 @@
 // Copyright (c) 2011 Erik Mathisen
 // See the file license.txt for copying permission.
 // --------------------------------------------------------------------------------
-namespace Vixen.PlugIns.VixenDisplayVisualizer
+namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
 {
     /// <summary>
     /// The red green blue pixel.
