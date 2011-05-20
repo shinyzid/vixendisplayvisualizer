@@ -1,6 +1,6 @@
-﻿namespace Vixen.PlugIns.VixenDisplayVisualizer
+﻿namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
 {
-    partial class Setup
+    partial class DisplayVisualizer
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Text = "Setup";
+            this.Text = "DisplayVisualizer";
         }
 
         #endregion

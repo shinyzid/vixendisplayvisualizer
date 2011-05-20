@@ -11,6 +11,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
     using System.Windows.Forms;
     using System.Xml;
 
+    using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
+
     using MessageBox = System.Windows.MessageBox;
 
     /// <summary>
