@@ -1,5 +1,5 @@
+#summary How to setup the plugin in Vixen
 #labels Setup
-How to setup the plugin in Vixen
 
 = Details =
 
