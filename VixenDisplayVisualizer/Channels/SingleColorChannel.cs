@@ -2,27 +2,40 @@
 // Copyright (c) 2011 Erik Mathisen
 // See the file license.txt for copying permission.
 // --------------------------------------------------------------------------------
-namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
+namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
+    using System.Drawing;
+
     /// <summary>
     /// The single channel pixel.
     /// </summary>
-    public class SingleChannelPixel
+    public class SingleColorChannel : IChannel
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SingleChannelPixel"/> class.
+        /// Initializes a new instance of the <see cref="SingleColorChannel"/> class.
         /// </summary>
         /// <param name="channel">
         /// The channel.
         /// </param>
-        public SingleChannelPixel(Channel channel)
+        public SingleColorChannel(Channel channel)
         {
             this.Channel = channel;
         }
 
         /// <summary>
-        /// Gets Channel.
+        ///   Gets Channel.
         /// </summary>
         public Channel Channel { get; private set; }
+
+        /// <summary>
+        /// Gets ChannelColor.
+        /// </summary>
+        public Color ChannelColor
+        {
+            get
+            {
+                return Color.Transparent;
+            }
+        }
     }
 }

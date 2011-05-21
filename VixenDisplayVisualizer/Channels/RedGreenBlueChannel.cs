@@ -2,15 +2,17 @@
 // Copyright (c) 2011 Erik Mathisen
 // See the file license.txt for copying permission.
 // --------------------------------------------------------------------------------
-namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
+namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
+    using System.Drawing;
+
     /// <summary>
     /// The red green blue pixel.
     /// </summary>
-    public class RedGreenBluePixel
+    public class RedGreenBlueChannel : IChannel
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RedGreenBluePixel"/> class.
+        /// Initializes a new instance of the <see cref="RedGreenBlueChannel"/> class.
         /// </summary>
         /// <param name="red">
         /// The red.
@@ -21,7 +23,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
         /// <param name="blue">
         /// The blue.
         /// </param>
-        public RedGreenBluePixel(Channel red, Channel green, Channel blue)
+        public RedGreenBlueChannel(Channel red, Channel green, Channel blue)
         {
             this.RedChannel = red;
             this.GreenChannel = green;
@@ -29,17 +31,28 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
         }
 
         /// <summary>
-        /// Gets BlueChannel.
+        ///   Gets BlueChannel.
         /// </summary>
         public Channel BlueChannel { get; private set; }
 
         /// <summary>
-        /// Gets GreenChannel.
+        /// Gets ChannelColor.
+        /// </summary>
+        public virtual Color ChannelColor
+        {
+            get
+            {
+                return Color.Transparent;
+            }
+        }
+
+        /// <summary>
+        ///   Gets GreenChannel.
         /// </summary>
         public Channel GreenChannel { get; private set; }
 
         /// <summary>
-        /// Gets RedChannel.
+        ///   Gets RedChannel.
         /// </summary>
         public Channel RedChannel { get; private set; }
     }

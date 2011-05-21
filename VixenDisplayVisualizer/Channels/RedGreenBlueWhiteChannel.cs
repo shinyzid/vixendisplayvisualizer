@@ -2,15 +2,17 @@
 // Copyright (c) 2011 Erik Mathisen
 // See the file license.txt for copying permission.
 // --------------------------------------------------------------------------------
-namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
+namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
+    using System.Drawing;
+
     /// <summary>
-    /// The red green blue white pixel.
+    /// The red green blue white channel.
     /// </summary>
-    internal class RedGreenBlueWhitePixel : RedGreenBluePixel
+    internal class RedGreenBlueWhiteChannel : RedGreenBlueChannel
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RedGreenBlueWhitePixel"/> class.
+        /// Initializes a new instance of the <see cref="RedGreenBlueWhiteChannel"/> class.
         /// </summary>
         /// <param name="red">
         /// The red.
@@ -24,10 +26,21 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
         /// <param name="white">
         /// The white.
         /// </param>
-        public RedGreenBlueWhitePixel(Channel red, Channel green, Channel blue, Channel white)
+        public RedGreenBlueWhiteChannel(Channel red, Channel green, Channel blue, Channel white)
             : base(red, green, blue)
         {
             this.WhiteChannel = white;
+        }
+
+        /// <summary>
+        /// Gets ChannelColor.
+        /// </summary>
+        public override Color ChannelColor
+        {
+            get
+            {
+                return Color.Transparent;
+            }
         }
 
         /// <summary>
