@@ -67,6 +67,8 @@
       <DependentUpon>Setup.cs</DependentUpon>
     </Compile>
     <Compile Include="Channels\SingleColorChannel.cs" />
+    <Compile Include="DisplayElement.cs" />
+    <Compile Include="DraggableExtender .cs" />
     <Compile Include="ViewModels\SetupViewModel.cs" />
     <Compile Include="Views\SetupView.xaml.cs">
       <DependentUpon>SetupView.xaml</DependentUpon>

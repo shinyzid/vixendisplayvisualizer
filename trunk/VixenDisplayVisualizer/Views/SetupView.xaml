@@ -3,8 +3,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vdv="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <DataTemplate DataType="{x:Type vdv:DisplayElement}">
+                <Border Canvas.Top="{Binding TopOffset}"
+                        Canvas.Left="{Binding LeftOffset}"
+                        vdv:DraggableExtender.CanDrag="true"
+                        BorderBrush="Black"
+                        BorderThickness="5"
+                        Height="{Binding Height}"
+                        Width="{Binding Width}">   
+                    <ItemsControl ItemsSource="{Binding MappedChannels}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="{Binding Columns}"
+                                             Rows="{Binding Rows}" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                                  
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -25,16 +49,9 @@
             <ItemsControl>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="10" Rows="10" />
+                        <Canvas IsItemsHost="True" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="Black" BorderThickness="1" >
-                            <ContentPresenter />
-                        </Border>
-                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Grid>
     </Grid>
