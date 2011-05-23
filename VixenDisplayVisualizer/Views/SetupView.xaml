@@ -35,24 +35,32 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         
-        <GroupBox Header="Mapped Channels">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+        <GroupBox Header="Available Elements">
             <ListView ></ListView>
         </GroupBox>
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <GroupBox Header="Controls" >
-                <TextBlock Text="TO DO, controls go here." />
-            </GroupBox>
-            <ItemsControl>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas IsItemsHost="True" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+            <StackPanel Grid.Row="1">
+                <Button>Add Element</Button>
+                <Button>Edit Element</Button>
+                <Button>Delete Element</Button>
+                <Button>Set background image</Button>
+            </StackPanel>
         </Grid>
+    	<GroupBox Header="Display Canvas"
+    	          Grid.Column="1">
+    		<ItemsControl Background="Aqua">
+    			<ItemsControl.ItemsPanel>
+    				<ItemsPanelTemplate>
+    					<Canvas IsItemsHost="True" />
+    				</ItemsPanelTemplate>
+    			</ItemsControl.ItemsPanel>
+    		</ItemsControl>
+    	</GroupBox>
+
+
     </Grid>
 </UserControl>
