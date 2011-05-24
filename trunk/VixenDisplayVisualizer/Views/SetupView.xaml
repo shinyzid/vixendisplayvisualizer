@@ -44,7 +44,7 @@
             <ListView ></ListView>
         </GroupBox>
             <StackPanel Grid.Row="1">
-                <Button>Add Element</Button>
+                <Button Click="AddButtonClick">Add Element</Button>
                 <Button>Edit Element</Button>
                 <Button>Delete Element</Button>
                 <Button>Set background image</Button>

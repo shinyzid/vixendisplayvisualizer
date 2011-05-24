@@ -4,7 +4,9 @@
 // --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Views
 {
-    using System.Windows.Controls;
+    using System.Windows;
+
+    using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
 
     /// <summary>
     /// Interaction logic for SetupView.xaml
@@ -12,11 +14,28 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Views
     public partial class SetupView
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SetupView"/> class.
+        ///   Initializes a new instance of the <see cref = "SetupView" /> class.
         /// </summary>
         public SetupView()
         {
             this.InitializeComponent();
+        }
+
+        /// <summary>
+        /// The add button click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void AddButtonClick(object sender, RoutedEventArgs e)
+        {
+            using (var editor = new ElementEditor())
+            {
+                editor.ShowDialog();
+            }
         }
     }
 }

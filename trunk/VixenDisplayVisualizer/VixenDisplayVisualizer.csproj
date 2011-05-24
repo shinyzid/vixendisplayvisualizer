@@ -60,6 +60,12 @@
     </Compile>
     <Compile Include="Channels\RedGreenBlueChannel.cs" />
     <Compile Include="Channels\RedGreenBlueWhiteChannel.cs" />
+    <Compile Include="Dialogs\ElementEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ElementEditor.Designer.cs">
+      <DependentUpon>ElementEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\Setup.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +76,9 @@
     <Compile Include="DisplayElement.cs" />
     <Compile Include="DraggableExtender .cs" />
     <Compile Include="ViewModels\SetupViewModel.cs" />
+    <Compile Include="Views\ElementEditorView.xaml.cs">
+      <DependentUpon>ElementEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SetupView.xaml.cs">
       <DependentUpon>SetupView.xaml</DependentUpon>
     </Compile>
@@ -77,12 +86,19 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Dialogs\ElementEditor.resx">
+      <DependentUpon>ElementEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\Setup.resx">
       <DependentUpon>Setup.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Page Include="Views\ElementEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SetupView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
