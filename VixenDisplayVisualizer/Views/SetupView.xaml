@@ -3,11 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:vdv="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer" 
+             xmlns:vdv="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer"
+             xmlns:ViewModels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ViewModels:SetupViewModel x:Key="SetupViewModel" />
             <DataTemplate DataType="{x:Type vdv:DisplayElement}">
                 <Border Canvas.Top="{Binding TopOffset}"
                         Canvas.Left="{Binding LeftOffset}"
@@ -29,7 +31,7 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    <Grid DataContext="{StaticResource SetupViewModel}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -41,10 +43,13 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
         <GroupBox Header="Available Elements">
-            <ListView ></ListView>
+            <ListView ItemsSource="{Binding DisplayElements}"
+                      SelectedItem="{Binding CurrentDisplayElement}">
+                
+            </ListView>
         </GroupBox>
             <StackPanel Grid.Row="1">
-                <Button Click="AddButtonClick">Add Element</Button>
+                <Button Command="{Binding AddElementCommand}">Add Element</Button>
                 <Button>Edit Element</Button>
                 <Button>Delete Element</Button>
                 <Button>Set background image</Button>
