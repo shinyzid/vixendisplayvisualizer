@@ -3,35 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:ViewModels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="600" HorizontalAlignment="Center">
-	<Grid>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ViewModels:ElementEditorViewModel x:Key="ElementEditorViewModel" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid DataContext="{StaticResource ElementEditorViewModel}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<GroupBox Header="Mapped Channels">
-			<ListView>
-                <ListView.Items>
-                    <System:String>RGB 1</System:String>
-                    <System:String>RGB 2</System:String>
-                    <System:String>RGB 3</System:String>
-                    <System:String>RGB 4</System:String>
-                    <System:String>RGB 5</System:String>
-                    <System:String>RGB+W 6</System:String>
-                    <System:String>RGB+W 7</System:String>
-                    <System:String>RGB+W 8</System:String>
-                    <System:String>RGB+W 9</System:String>
-                    <System:String>RGB+W 10</System:String>
-                    <System:String>Standard 11</System:String>
-                    <System:String>Standard 12</System:String>
-                    <System:String>Standard 13</System:String>
-                    <System:String>Standard 14</System:String>
-                    <System:String>Standard 15</System:String>
-                    <System:String>etc...</System:String>
-                </ListView.Items>
+			<ListView ItemsSource="{Binding MappedChannels}">
 			</ListView>
 		</GroupBox>
 		<Grid Grid.Column="1">

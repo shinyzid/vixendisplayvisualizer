@@ -6,6 +6,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
 {
     using System.Windows.Forms;
 
+    using Vixen.PlugIns.VixenDisplayVisualizer.ViewModels;
+
     /// <summary>
     /// The setup.
     /// </summary>
@@ -14,9 +16,11 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
         /// <summary>
         ///   Initializes a new instance of the <see cref = "Setup" /> class.
         /// </summary>
-        public Setup()
+        /// <param name="viewModel"></param>
+        public Setup(SetupViewModel viewModel)
         {
             this.InitializeComponent();
+            this.setupView1.DataContext = viewModel;
         }
     }
 }

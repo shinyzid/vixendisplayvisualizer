@@ -1,19 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-
+﻿// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
 {
+    using System.Windows.Forms;
+
+    using Vixen.PlugIns.VixenDisplayVisualizer.ViewModels;
+
+    /// <summary>
+    /// The element editor.
+    /// </summary>
     public partial class ElementEditor : Form
     {
-        public ElementEditor()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ElementEditor"/> class.
+        /// </summary>
+        public ElementEditor(ElementEditorViewModel elementEditorViewModel)
         {
-            InitializeComponent();
+            this.InitializeComponent();
+            this.elementEditor1.DataContext = elementEditorViewModel;
         }
     }
 }

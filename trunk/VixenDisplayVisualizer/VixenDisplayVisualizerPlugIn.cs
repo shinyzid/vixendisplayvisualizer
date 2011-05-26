@@ -12,6 +12,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
     using System.Xml;
 
     using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
+    using Vixen.PlugIns.VixenDisplayVisualizer.ViewModels;
 
     using MessageBox = System.Windows.MessageBox;
 
@@ -104,10 +105,9 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         /// </param>
         public void Event(byte[] channelValues)
         {
-            if (((this._displayVisualizer != null) && !this._displayVisualizer.Disposing)
-                && !this._displayVisualizer.IsDisposed)
+            if (((_displayVisualizer != null) && !_displayVisualizer.Disposing) && !_displayVisualizer.IsDisposed)
             {
-                this._displayVisualizer.UpdateWith(channelValues);
+                _displayVisualizer.UpdateWith(channelValues);
             }
         }
 
@@ -125,12 +125,12 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         /// </param>
         public void Initialize(IExecutable executableObject, SetupData setupData, XmlNode setupNode)
         {
-            this._channels.Clear();
-            this._channels.AddRange(executableObject.Channels);
-            this._setupData = setupData;
-            this._setupNode = setupNode;
-            this._startChannel = Convert.ToInt32(this._setupNode.Attributes["from"].Value) - 1;
-            this._setupData.GetBytes(this._setupNode, "BackgroundImage", new byte[0]);
+            _channels.Clear();
+            _channels.AddRange(executableObject.Channels);
+            _setupData = setupData;
+            _setupNode = setupNode;
+            _startChannel = Convert.ToInt32(_setupNode.Attributes["from"].Value) - 1;
+            _setupData.GetBytes(_setupNode, "BackgroundImage", new byte[0]);
         }
 
         /// <summary>
@@ -138,23 +138,23 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         /// </summary>
         public void Shutdown()
         {
-            if (this._displayVisualizer != null)
+            if (_displayVisualizer != null)
             {
-                if (this._displayVisualizer.InvokeRequired)
+                if (_displayVisualizer.InvokeRequired)
                 {
-                    this._displayVisualizer.BeginInvoke(new MethodInvoker(this._displayVisualizer.Dispose));
+                    _displayVisualizer.BeginInvoke(new MethodInvoker(_displayVisualizer.Dispose));
                 }
                 else
                 {
-                    this._displayVisualizer.Dispose();
+                    _displayVisualizer.Dispose();
                 }
 
-                this._displayVisualizer = null;
+                _displayVisualizer = null;
             }
 
-            this._channels.Clear();
-            this._setupData = null;
-            this._setupNode = null;
+            _channels.Clear();
+            _setupData = null;
+            _setupNode = null;
         }
 
         /// <summary>
@@ -162,16 +162,15 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         /// </summary>
         public void Startup()
         {
-            if (this._channels.Any())
+            if (_channels.Any())
             {
                 var system = (ISystem)Interfaces.Available["ISystem"];
                 var constructor =
                     typeof(DisplayVisualizer).GetConstructor(
                         new[] { typeof(XmlNode), typeof(List<Channel>), typeof(int) });
-                this._displayVisualizer =
+                _displayVisualizer =
                     (DisplayVisualizer)
-                    system.InstantiateForm(
-                        constructor, new object[] { this._setupNode, this._channels, this._startChannel });
+                    system.InstantiateForm(constructor, new object[] { _setupNode, _channels, _startChannel });
             }
         }
 
@@ -180,22 +179,21 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         /// </summary>
         public void Setup()
         {
-            if (this._channels.Any())
+            if (_channels.Any())
             {
-                using (this._setupDialog = new Setup())
+                var viewModel = new SetupViewModel();
+                _channels.ForEach(x => viewModel.Channels.Add(x));
+                using (_setupDialog = new Setup(viewModel))
                 {
-                    this._setupDialog.ShowDialog();
+                    _setupDialog.ShowDialog();
                 }
 
-                this._setupDialog = null;
+                _setupDialog = null;
             }
             else
             {
                 MessageBox.Show(
-                    "There are not channels assigned to this plugin.", 
-                    this.Name, 
-                    MessageBoxButton.OK, 
-                    MessageBoxImage.Hand);
+                    "There are not channels assigned to this plugin.", Name, MessageBoxButton.OK, MessageBoxImage.Hand);
             }
         }
     }
