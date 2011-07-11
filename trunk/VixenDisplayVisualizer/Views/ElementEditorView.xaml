@@ -4,23 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ViewModels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.ViewModels"
+             xmlns:Views="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Views"
              mc:Ignorable="d"
              d:DesignHeight="600"
-             d:DesignWidth="600" HorizontalAlignment="Center">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ViewModels:ElementEditorViewModel x:Key="ElementEditorViewModel" />
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <Grid DataContext="{StaticResource ElementEditorViewModel}">
+             d:DesignWidth="600"
+             HorizontalAlignment="Center">
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ViewModels:ElementEditorViewModel x:Key="ElementEditorViewModel" />
+		</ResourceDictionary>
+	</UserControl.Resources>
+	<Grid DataContext="{StaticResource ElementEditorViewModel}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<GroupBox Header="Mapped Channels">
-			<ListView ItemsSource="{Binding MappedChannels}">
-			</ListView>
-		</GroupBox>
+            <Views:MappedChannelView />
+        </GroupBox>
 		<Grid Grid.Column="1">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
@@ -32,14 +33,14 @@
 						Rows:
 						<TextBox x:Name="Rows"
 						         MinWidth="30">
-                            10
+							10
 						</TextBox>
 					</TextBlock>
 					<TextBlock Margin="2">
 						Columns:
 						<TextBox x:Name="Columns"
 						         MinWidth="30">
-                            20
+							20
 						</TextBox>
 					</TextBlock>
 					<TextBlock Margin="2">
@@ -52,71 +53,15 @@
 					</TextBlock>
 				</StackPanel>
 			</GroupBox>
-            <Grid ShowGridLines="True" Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Grid.Row="9" Text="1" Background="Red" TextAlignment="Center" />
-                <TextBlock Grid.Column="1" Grid.Row="8" Text="2" Background="Red" TextAlignment="Center" />
-                <TextBlock Grid.Column="2" Grid.Row="7" Text="3" Background="Red" TextAlignment="Center" />
-                <TextBlock Grid.Column="3" Grid.Row="6" Text="4" Background="Blue" TextAlignment="Center" />
-                <TextBlock Grid.Column="4" Grid.Row="5" Text="5" Background="Blue" TextAlignment="Center" />
-                <TextBlock Grid.Column="5" Grid.Row="4" Text="6" Background="Blue" TextAlignment="Center" />
-                <TextBlock Grid.Column="6" Grid.Row="3" Text="7" Background="Green" TextAlignment="Center" />
-                <TextBlock Grid.Column="7" Grid.Row="2" Text="8" Background="Green" TextAlignment="Center" />
-                <TextBlock Grid.Column="8" Grid.Row="1" Text="9" Background="Green" TextAlignment="Center" />
-                <TextBlock Grid.Column="9" Grid.Row="0" Text="10" Background="Orange" TextAlignment="Center" />
-                <TextBlock Grid.Column="10" Grid.Row="0" Text="11" Background="Orange" TextAlignment="Center" />
-                <TextBlock Grid.Column="11" Grid.Row="1" Text="12" Background="Orange" TextAlignment="Center" />
-                <TextBlock Grid.Column="12" Grid.Row="2" Text="13" Background="Yellow" TextAlignment="Center" />
-                <TextBlock Grid.Column="13" Grid.Row="3" Text="14" Background="Yellow" TextAlignment="Center" />
-                <TextBlock Grid.Column="14" Grid.Row="4" Text="15" Background="Yellow" TextAlignment="Center" />
-                <TextBlock Grid.Column="15" Grid.Row="5" Text="16" Background="Orchid" TextAlignment="Center" />
-                <TextBlock Grid.Column="16" Grid.Row="6" Text="17" Background="Orchid" TextAlignment="Center" />
-                <TextBlock Grid.Column="17" Grid.Row="7" Text="18" Background="Orchid" TextAlignment="Center" />
-                <TextBlock Grid.Column="18" Grid.Row="8" Text="19" Background="Beige" TextAlignment="Center" />
-                <TextBlock Grid.Column="19" Grid.Row="9" Text="20" Background="Beige" TextAlignment="Center" />
-            </Grid>
-<!--            <ListView Grid.Row="1">-->
-<!--				<ListView.ItemsPanel>-->
-<!--					<ItemsPanelTemplate>                        -->
-<!--						<UniformGrid Rows="{Binding ElementName=Rows, Path=Text}"-->
-<!--						             Columns="{Binding ElementName=Columns, Path=Text}"-->
-<!--						             IsItemsHost="True" />-->
-<!--					</ItemsPanelTemplate>-->
-<!--				</ListView.ItemsPanel>-->
-<!--			</ListView>-->
+			<ListView Grid.Row="1">
+				<ListView.ItemsPanel>
+					<ItemsPanelTemplate>
+						<UniformGrid Rows="{Binding ElementName=Rows, Path=Text}"
+						             Columns="{Binding ElementName=Columns, Path=Text}"
+						             IsItemsHost="True" />
+					</ItemsPanelTemplate>
+				</ListView.ItemsPanel>
+			</ListView>
 		</Grid>
 	</Grid>
 </UserControl>

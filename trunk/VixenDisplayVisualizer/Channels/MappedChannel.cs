@@ -37,5 +37,11 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
                 return this._channel.ChannelColor;
             }
         }
+
+        public string Name { get; set; }
+
+        public int Row { get; set; }
+
+        public int Column { get; set; }
     }
 }
