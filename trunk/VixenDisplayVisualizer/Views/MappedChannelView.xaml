@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:Channels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Channels"
              mc:Ignorable="d" 
+             x:Name="Instance"
              d:DesignHeight="300" d:DesignWidth="300">
-	<Grid>
+	<Grid DataContext="{Binding ElementName=Instance}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
@@ -25,7 +26,7 @@
             </ListView.ItemTemplate>
         </ListView>
 		<StackPanel Grid.Row="1">
-			<Button Content="Add Mapped Channel" />			
+			<Button Content="Add Mapped Channel" Command="{Binding AddMappedChannelCommand}" />			
 		</StackPanel>
 	</Grid>
 </UserControl>

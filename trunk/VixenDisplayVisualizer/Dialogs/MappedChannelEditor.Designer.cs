@@ -56,7 +56,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
 
         #endregion
 
-        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        public System.Windows.Forms.Integration.ElementHost elementHost1;
         private Views.MappedChannelEditorView mappedChannelEditorView1;
     }
 }

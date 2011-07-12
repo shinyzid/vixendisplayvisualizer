@@ -9,11 +9,14 @@ using System.Windows.Forms;
 
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
 {
+    using Vixen.PlugIns.VixenDisplayVisualizer.Channels;
+
     public partial class MappedChannelEditor : Form
     {
-        public MappedChannelEditor()
+        public MappedChannelEditor(MappedChannel mappedChannel)
         {
             InitializeComponent();
+            this.mappedChannelEditorView1.MappedChannel = mappedChannel;
         }
     }
 }
