@@ -1,6 +1,7 @@
 ﻿namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     using System.Collections.Generic;
+    using System.Drawing;
     using System.Linq;
     using System.Windows;
     using System.Windows.Forms;
@@ -100,7 +101,8 @@
                 LoadDataFromSetupNode();
                 var system = (ISystem)Interfaces.Available["ISystem"];
                 var constructor = typeof(DisplayVisualizer).GetConstructor(new[] { typeof(List<Channel>), typeof(List<MappedChannel>) });
-                _displayVisualizer = (DisplayVisualizer)system.InstantiateForm(constructor, new object[] { _channels, _elements });
+                var viewModel = new VisualizerViewModel(_channels, _elements);
+                _displayVisualizer = (DisplayVisualizer)system.InstantiateForm(constructor, new object[] { viewModel });
             }
         }
 
@@ -125,7 +127,8 @@
                     }
                 }
 
-                if (saveData) {
+                if (saveData) 
+                {
                 while (_setupNode.ChildNodes.Count > 0)
                         {
                             _setupNode.RemoveChild(_setupNode.ChildNodes[0]);
@@ -155,7 +158,9 @@
                                     if (channel is SingleColorChannel)
                                     {                                        
                                         channelNode.AppendAttribute("Type", "Single");
-                                        channelNode.AppendAttribute("ChannelId", ((SingleColorChannel)channel).Channel.ID.ToString());                                        
+                                        var singleColorChannel = (SingleColorChannel)channel;
+                                        channelNode.AppendAttribute("ChannelId", singleColorChannel.Channel.ID.ToString());    
+                                        channelNode.AppendAttribute("Color",  singleColorChannel.DisplayColor.ToArgb().ToString());
                                     }
                                     else
                                     {
@@ -245,7 +250,8 @@
                         {
                             case "Single":
                                 var channelId = ulong.Parse(channelNode.Attributes.GetNamedItem("ChannelId").Value);
-                                channel = new SingleColorChannel(_channels.First(x => x.ID == channelId));
+                                var color = Color.FromArgb(channelNode.Attributes.GetNamedItem("Color").Value.TryParseInt32(0));
+                                channel = new SingleColorChannel(_channels.First(x => x.ID == channelId), color);
                                 break;
                             case "RGB":
                                 var redChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("RedChannel").Value));

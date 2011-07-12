@@ -1,59 +1,34 @@
-// --------------------------------------------------------------------------------
-// Copyright (c) 2011 Erik Mathisen
-// See the file license.txt for copying permission.
-// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
+    using System;
     using System.Drawing;
 
-    /// <summary>
-    /// The red green blue pixel.
-    /// </summary>
     public class RedGreenBlueChannel : IChannel
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RedGreenBlueChannel"/> class.
-        /// </summary>
-        /// <param name="red">
-        /// The red.
-        /// </param>
-        /// <param name="green">
-        /// The green.
-        /// </param>
-        /// <param name="blue">
-        /// The blue.
-        /// </param>
         public RedGreenBlueChannel(Channel red, Channel green, Channel blue)
         {
-            this.RedChannel = red;
-            this.GreenChannel = green;
-            this.BlueChannel = blue;
+            RedChannel = red;
+            GreenChannel = green;
+            BlueChannel = blue;
         }
 
-        /// <summary>
-        ///   Gets BlueChannel.
-        /// </summary>
-        public Channel BlueChannel { get; private set; }
+        public Channel BlueChannel { get; protected set; }
 
-        /// <summary>
-        /// Gets ChannelColor.
-        /// </summary>
-        public virtual Color ChannelColor
+        public virtual Color ChannelColor { get; protected set; }
+
+        public Channel GreenChannel { get; protected set; }
+
+        public Channel RedChannel { get; protected set; }
+
+        public virtual bool Contains(Channel channel)
         {
-            get
-            {
-                return Color.Transparent;
-            }
+            var id = channel.ID;
+            return RedChannel.ID == id || GreenChannel.ID == id || BlueChannel.ID == id;
         }
 
-        /// <summary>
-        ///   Gets GreenChannel.
-        /// </summary>
-        public Channel GreenChannel { get; private set; }
-
-        /// <summary>
-        ///   Gets RedChannel.
-        /// </summary>
-        public Channel RedChannel { get; private set; }
+        public virtual void SetColor(Channel channel, byte intensity)
+        {            
+            throw new NotImplementedException();
+        }
     }
 }
