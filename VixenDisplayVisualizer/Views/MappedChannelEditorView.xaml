@@ -3,11 +3,105 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:Channels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Channels"
+             xmlns:ViewModels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.ViewModels"
              mc:Ignorable="d"
              x:Name="Instance"
              d:DesignHeight="300"
              d:DesignWidth="300">
-	<Grid DataContext="{Binding ElementName=Instance}">
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ViewModels:MappedChannelEditorViewModel x:Key="MappedChannelEditorViewModel" />
+			<DataTemplate DataType="{x:Type Channels:SingleColorChannel}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<TextBlock>Channel</TextBlock>
+					<ComboBox Grid.Column="1"
+					          ItemsSource="{Binding ElementName=Instance, Path=Channels}" />
+				</Grid>
+			</DataTemplate>
+			<DataTemplate DataType="{x:Type Channels:RedGreenBlueChannel}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+					<TextBlock Grid.Column="0"
+					           Grid.Row="0">
+						Red Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="0"
+					          ItemsSource="{Binding ElementName=Instance, Path=Channels}" />
+					<TextBlock Grid.Column="0"
+					           Grid.Row="1">
+						Green Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="1"
+					          ItemsSource="{Binding ElementName=Instance, Path=Channels}" />
+					<TextBlock Grid.Column="0"
+					           Grid.Row="2">
+						Blue Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="2"
+					          ItemsSource="{Binding ElementName=Instance, Path=Channels}" />
+				</Grid>
+			</DataTemplate>
+			<DataTemplate DataType="{x:Type Channels:RedGreenBlueWhiteChannel}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+					<TextBlock Grid.Column="0"
+					           Grid.Row="0">
+						Red Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="0"
+					          ItemsSource="{Binding ElementName=Instance, Path=Channels}" />
+					<TextBlock Grid.Column="0"
+					           Grid.Row="1">
+						Green Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="1"
+					          ItemsSource="{Binding ElementName=Instance, Path=Channels}" />
+					<TextBlock Grid.Column="0"
+					           Grid.Row="2">
+						Blue Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="2"
+					          ItemsSource="{Binding ElementName=Instance, Path=Channels}" />
+					<TextBlock Grid.Column="0"
+					           Grid.Row="3">
+						White Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="3"
+					          ItemsSource="{Binding ElementName=Instance, Path=Channels}" />
+				</Grid>
+			</DataTemplate>
+		</ResourceDictionary>
+	</UserControl.Resources>
+	<Grid DataContext="{StaticResource MappedChannelEditorViewModel}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
@@ -33,7 +127,14 @@
 		         Grid.Column="1"
 		         Text="{Binding MappedChannel.Column}" />
 		<TextBlock Grid.Row="3"
-		           Text="Channel(s)" />
+		           Text="Channel Type" />
+		<ComboBox Grid.Row="3"
+		          SelectedItem=""
+		          Grid.Column="1">
+			<ComboBoxItem>Single</ComboBoxItem>
+			<ComboBoxItem>RGB</ComboBoxItem>
+			<ComboBoxItem>RGBW</ComboBoxItem>
+		</ComboBox>
 		<ContentControl Grid.ColumnSpan="2"
 		                Grid.Row="4"
 		                Content="{Binding MappedChannel.Channel}" />

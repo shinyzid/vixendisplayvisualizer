@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ViewModels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.ViewModels"
-             xmlns:Views="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Views"
+             xmlns:Channels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Channels"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="600"
@@ -20,7 +20,28 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<GroupBox Header="Mapped Channels">
-            <Views:MappedChannelView />
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <ListView ItemsSource="{Binding MappedChannels}" SelectedItem="{Binding CurrentMappedChannel, Mode=TwoWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type Channels:MappedChannel}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name, StringFormat='Name: {0}'}" />
+                                <TextBlock Text="{Binding Row, StringFormat='Row: {0}'}" />
+                                <TextBlock Text="{Binding Column, StringFormat='Column: {0}'}" />
+                                <Button Content="Edit" />
+                                <Button Content="Remove" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <StackPanel Grid.Row="1">
+                    <Button Content="Add Mapped Channel" Command="{Binding AddMappedChannelCommand}" />
+                </StackPanel>
+            </Grid>
         </GroupBox>
 		<Grid Grid.Column="1">
 			<Grid.RowDefinitions>

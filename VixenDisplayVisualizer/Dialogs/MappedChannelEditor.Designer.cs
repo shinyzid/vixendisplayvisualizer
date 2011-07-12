@@ -29,7 +29,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
         private void InitializeComponent()
         {
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.mappedChannelEditorView1 = new Vixen.PlugIns.VixenDisplayVisualizer.Views.MappedChannelEditorView();
+            this.mappedChannelEditorView = new Vixen.PlugIns.VixenDisplayVisualizer.Views.MappedChannelEditorView();
             this.SuspendLayout();
             // 
             // elementHost1
@@ -40,7 +40,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
             this.elementHost1.Size = new System.Drawing.Size(284, 262);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.mappedChannelEditorView1;
+            this.elementHost1.Child = this.mappedChannelEditorView;
             // 
             // MappedChannelEditor
             // 
@@ -57,6 +57,6 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
         #endregion
 
         public System.Windows.Forms.Integration.ElementHost elementHost1;
-        private Views.MappedChannelEditorView mappedChannelEditorView1;
+        private Views.MappedChannelEditorView mappedChannelEditorView;
     }
 }

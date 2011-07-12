@@ -1,59 +1,26 @@
-﻿// --------------------------------------------------------------------------------
-// Copyright (c) 2011 Erik Mathisen
-// See the file license.txt for copying permission.
-// --------------------------------------------------------------------------------
-namespace Vixen.PlugIns.VixenDisplayVisualizer
+﻿namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
     using System.Windows.Forms;
     using System.Xml;
-
+    using Vixen.PlugIns.VixenDisplayVisualizer.Channels;
     using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
     using Vixen.PlugIns.VixenDisplayVisualizer.ViewModels;
-
     using MessageBox = System.Windows.MessageBox;
 
-    /// <summary>
-    /// The vixen display visualizer plug in.
-    /// </summary>
     public class VixenDisplayVisualizerPlugIn : IEventDrivenOutputPlugIn
     {
-        /// <summary>
-        ///   The _channels.
-        /// </summary>
         private readonly List<Channel> _channels = new List<Channel>();
-
-        /// <summary>
-        ///   The _display visualizer.
-        /// </summary>
+        private readonly List<DisplayElement> _elements = new List<DisplayElement>();
         private DisplayVisualizer _displayVisualizer;
-
-        /// <summary>
-        ///   The _setup data.
-        /// </summary>
+        private int _pluginChannelsFrom;
+        private int _pluginChannelsTo;
         private SetupData _setupData;
-
-        /// <summary>
-        ///   The _setup dialog.
-        /// </summary>
         private Setup _setupDialog;
-
-        /// <summary>
-        ///   The _setup node.
-        /// </summary>
         private XmlNode _setupNode;
 
-        /// <summary>
-        ///   The _start channel.
-        /// </summary>
-        private int _startChannel;
-
-        /// <summary>
-        ///   Gets Author.
-        /// </summary>
         public string Author
         {
             get
@@ -62,22 +29,14 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             }
         }
 
-        /// <summary>
-        ///   Gets Description.
-        /// </summary>
-        /// <exception cref = "NotImplementedException">
-        /// </exception>
         public string Description
         {
             get
             {
-                throw new NotImplementedException();
+                return "Vixen Display Visualizer Plugin - Allows for the virtual creation of a display, and playing a sequence on it.";
             }
         }
 
-        /// <summary>
-        ///   Gets HardwareMap.
-        /// </summary>
         public HardwareMap[] HardwareMap
         {
             get
@@ -86,9 +45,6 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             }
         }
 
-        /// <summary>
-        ///   Gets Name.
-        /// </summary>
         public string Name
         {
             get
@@ -97,45 +53,25 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             }
         }
 
-        /// <summary>
-        /// The event.
-        /// </summary>
-        /// <param name="channelValues">
-        /// The channel values.
-        /// </param>
         public void Event(byte[] channelValues)
         {
-            if (((_displayVisualizer != null) && !_displayVisualizer.Disposing) && !_displayVisualizer.IsDisposed)
+            if (((_displayVisualizer != null) && !_displayVisualizer.Disposing)
+                && !_displayVisualizer.IsDisposed)
             {
                 _displayVisualizer.UpdateWith(channelValues);
             }
         }
 
-        /// <summary>
-        /// The initialize.
-        /// </summary>
-        /// <param name="executableObject">
-        /// The executable object.
-        /// </param>
-        /// <param name="setupData">
-        /// The setup data.
-        /// </param>
-        /// <param name="setupNode">
-        /// The setup node.
-        /// </param>
         public void Initialize(IExecutable executableObject, SetupData setupData, XmlNode setupNode)
         {
             _channels.Clear();
             _channels.AddRange(executableObject.Channels);
             _setupData = setupData;
             _setupNode = setupNode;
-            _startChannel = Convert.ToInt32(_setupNode.Attributes["from"].Value) - 1;
+            LoadDataFromSetupNode();
             _setupData.GetBytes(_setupNode, "BackgroundImage", new byte[0]);
         }
 
-        /// <summary>
-        /// The shutdown.
-        /// </summary>
         public void Shutdown()
         {
             if (_displayVisualizer != null)
@@ -157,43 +93,189 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             _setupNode = null;
         }
 
-        /// <summary>
-        /// The startup.
-        /// </summary>
         public void Startup()
         {
             if (_channels.Any())
             {
+                LoadDataFromSetupNode();
                 var system = (ISystem)Interfaces.Available["ISystem"];
-                var constructor =
-                    typeof(DisplayVisualizer).GetConstructor(
-                        new[] { typeof(XmlNode), typeof(List<Channel>), typeof(int) });
-                _displayVisualizer =
-                    (DisplayVisualizer)
-                    system.InstantiateForm(constructor, new object[] { _setupNode, _channels, _startChannel });
+                var constructor = typeof(DisplayVisualizer).GetConstructor(new[] { typeof(List<Channel>), typeof(List<MappedChannel>) });
+                _displayVisualizer = (DisplayVisualizer)system.InstantiateForm(constructor, new object[] { _channels, _elements });
             }
         }
 
-        /// <summary>
-        /// The setup.
-        /// </summary>
         public void Setup()
         {
             if (_channels.Any())
             {
+                LoadDataFromSetupNode();
+
                 var viewModel = new SetupViewModel();
                 _channels.ForEach(x => viewModel.Channels.Add(x));
+                _elements.ForEach(x => viewModel.DisplayElements.Add(x));
+                var saveData = false;
                 using (_setupDialog = new Setup(viewModel))
                 {
-                    _setupDialog.ShowDialog();
+                    if (_setupDialog.ShowDialog()
+                        == DialogResult.OK)
+                    {
+                        _elements.Clear();
+                        _elements.AddRange(viewModel.DisplayElements);
+                        saveData = true;
+                    }
                 }
+
+                if (saveData) {
+                while (_setupNode.ChildNodes.Count > 0)
+                        {
+                            _setupNode.RemoveChild(_setupNode.ChildNodes[0]);
+                        }
+
+                        foreach (var element in _elements)
+                        {
+                            var node = _setupNode.OwnerDocument.CreateElement("DisplayElement");
+                            node.AppendAttribute("Rows", element.Rows.ToString());
+                            node.AppendAttribute("Columns", element.Columns.ToString());
+                            node.AppendAttribute("Height", element.Height.ToString());
+                            node.AppendAttribute("Width", element.Width.ToString());
+                            node.AppendAttribute("LeftOffset", element.LeftOffset.ToString());
+                            node.AppendAttribute("TopOffset", element.TopOffset.ToString());
+                            foreach (var mappedChannel in element.MappedChannels)
+                            {
+                                var mappedNode = node.OwnerDocument.CreateElement("MappedChannel");
+                                mappedNode.AppendAttribute("Column", mappedChannel.Column.ToString());
+                                mappedNode.AppendAttribute("Row", mappedChannel.Row.ToString());
+                                mappedNode.AppendAttribute("Name", mappedChannel.Name);
+
+                                var channel = mappedChannel.Channel;
+                                if (channel != null)
+                                {
+                                    var channelNode = mappedNode.OwnerDocument.CreateElement("Channel");
+                                    mappedNode.AppendChild(channelNode);
+                                    if (channel is SingleColorChannel)
+                                    {                                        
+                                        channelNode.AppendAttribute("Type", "Single");
+                                        channelNode.AppendAttribute("ChannelId", ((SingleColorChannel)channel).Channel.ID.ToString());                                        
+                                    }
+                                    else
+                                    {
+                                        var rgb = channel as RedGreenBlueChannel;
+
+                                        channelNode.AppendAttribute("RedChannel", rgb.RedChannel.ID.ToString());
+                                        channelNode.AppendAttribute("GreenChannel", rgb.GreenChannel.ID.ToString());
+                                        channelNode.AppendAttribute("BlueChannel", rgb.BlueChannel.ID.ToString());
+
+                                        var rgbw = channel as RedGreenBlueWhiteChannel;
+                                        var type = "RGB";
+                                        if (rgbw != null)
+                                        {
+                                            channelNode.AppendAttribute("WhiteChannel", rgbw.WhiteChannel.ID.ToString());
+                                            type += "W";
+                                        }
+
+                                        channelNode.AppendAttribute("Type", type);
+                                    }
+                                }
+
+                                node.AppendChild(mappedNode);
+                            }
+
+                            _setupNode.AppendChild(node);
+                        }
+
+                        LoadDataFromSetupNode();
+                    }
 
                 _setupDialog = null;
             }
             else
             {
-                MessageBox.Show(
-                    "There are not channels assigned to this plugin.", Name, MessageBoxButton.OK, MessageBoxImage.Hand);
+                MessageBox.Show("There are no channels assigned to this plugin.", Name, MessageBoxButton.OK, MessageBoxImage.Hand);
+            }
+        }
+
+        private void LoadDataFromSetupNode()
+        {
+            // get the attribute collection and the from/to attributes if available
+            var setupNodeAttributes = _setupNode.Attributes;
+            var fromAttribute = setupNodeAttributes.GetNamedItem("from");
+            var toAttribute = setupNodeAttributes.GetNamedItem("to");
+
+            // if we got both attributes, try and parse them
+            if (fromAttribute != null
+                && toAttribute != null)
+            {
+                // try to parse both attributes
+                _pluginChannelsFrom = fromAttribute.Value.TryParseInt32(0);
+                _pluginChannelsTo = toAttribute.Value.TryParseInt32(0);
+
+                // if either is zero, make both zero to indicate not setup
+                if (_pluginChannelsFrom == 0
+                    || _pluginChannelsTo == 0)
+                {
+                    _pluginChannelsFrom = 0;
+                    _pluginChannelsTo = 0;
+                }
+            }
+
+            _elements.Clear();
+            foreach (XmlNode node in _setupNode.ChildNodes)
+            {
+                var attributes = node.Attributes;
+                var columns = attributes.GetNamedItem("Columns").Value.TryParseInt32(0);
+                var rows = attributes.GetNamedItem("Rows").Value.TryParseInt32(0);
+                var height = attributes.GetNamedItem("Height").Value.TryParseInt32(0);
+                var width = attributes.GetNamedItem("Width").Value.TryParseInt32(0);
+                var topOffset = attributes.GetNamedItem("TopOffset").Value.TryParseInt32(0);
+                var leftOffset = attributes.GetNamedItem("LeftOffset").Value.TryParseInt32(0);
+
+                var mappedChannels = new List<MappedChannel>();
+                foreach (XmlNode mappedNode in node.ChildNodes)
+                {
+                    IChannel channel;
+                    var channelNode = mappedNode.FirstChild;
+                    if (channelNode == null)
+                    {
+                        channel = null;
+                    }
+                    else
+                    {
+                        var type = channelNode.Attributes.GetNamedItem("Type").Value;
+                        switch (type)
+                        {
+                            case "Single":
+                                var channelId = ulong.Parse(channelNode.Attributes.GetNamedItem("ChannelId").Value);
+                                channel = new SingleColorChannel(_channels.First(x => x.ID == channelId));
+                                break;
+                            case "RGB":
+                                var redChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("RedChannel").Value));
+                                var greenChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("GreenChannel").Value));
+                                var blueChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("BlueChannel").Value));
+                                channel = new RedGreenBlueChannel(redChannel, greenChannel, blueChannel);
+                                break;
+                            case "RGBW":
+                                redChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("RedChannel").Value));
+                                greenChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("GreenChannel").Value));
+                                blueChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("BlueChannel").Value));
+                                var whiteChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("WhiteChannel").Value));                                
+                                channel = new RedGreenBlueWhiteChannel(redChannel, greenChannel, blueChannel, whiteChannel);
+                                break;
+                            default:
+                                channel = null;
+                                break;
+                        }
+                    }
+
+                    var mappedChannel = new MappedChannel(channel);
+                    var mappedAttributes = mappedNode.Attributes;
+                    mappedChannel.Column = mappedAttributes.GetNamedItem("Column").Value.TryParseInt32(0);
+                    mappedChannel.Name = mappedAttributes.GetNamedItem("Name").Value;
+                    mappedChannel.Row = mappedAttributes.GetNamedItem("Row").Value.TryParseInt32(0);
+                    mappedChannels.Add(mappedChannel);
+                }
+
+                var displayElement = new DisplayElement(columns, rows, height, leftOffset, topOffset, width, mappedChannels);
+                _elements.Add(displayElement);
             }
         }
     }

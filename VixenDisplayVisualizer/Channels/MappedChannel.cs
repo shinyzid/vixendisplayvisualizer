@@ -39,6 +39,6 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 
         public int Row { get; set; }
 
-        private IChannel Channel { get; set; }
+        public IChannel Channel { get; set; }
     }
 }
