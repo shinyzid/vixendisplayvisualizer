@@ -4,27 +4,17 @@
 // --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
 {
+    using System.Collections.Generic;
     using System.Windows.Forms;
+    using Vixen.PlugIns.VixenDisplayVisualizer.Channels;
 
-    /// <summary>
-    /// The display visualizer.
-    /// </summary>
     public partial class DisplayVisualizer : Form
     {
-        /// <summary>
-        ///   Initializes a new instance of the <see cref = "DisplayVisualizer" /> class.
-        /// </summary>
-        public DisplayVisualizer()
+        public DisplayVisualizer(List<Channel> channels, List<MappedChannel> mappedChannels)
         {
             this.InitializeComponent();
         }
 
-        /// <summary>
-        /// The update with.
-        /// </summary>
-        /// <param name="channelValues">
-        /// The channel values.
-        /// </param>
         public void UpdateWith(byte[] channelValues)
         {
         }

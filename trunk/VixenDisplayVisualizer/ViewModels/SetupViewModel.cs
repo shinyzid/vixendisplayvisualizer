@@ -1,18 +1,14 @@
-// --------------------------------------------------------------------------------
-// Copyright (c) 2011 Erik Mathisen
-// See the file license.txt for copying permission.
-// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Windows.Forms;
     using System.Windows.Input;
-
     using Vixen.PlugIns.VixenDisplayVisualizer.Channels;
     using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
 
     /// <summary>
-    /// The setup view model.
+    ///   The setup view model.
     /// </summary>
     public class SetupViewModel : ViewModelBase
     {
@@ -27,6 +23,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         public SetupViewModel()
         {
             AddElementCommand = new RelayCommand(x => AddElement());
+            EditElementCommand = new RelayCommand(x => EditDisplayElement(), x => CanEditDisplayElement());
+            DeleteElementCommand = new RelayCommand(x => DeleteDisplayElement(), x => CanDeleteDisplayElement());
             DisplayElements = new ObservableCollection<DisplayElement>();
             Channels = new ObservableCollection<Channel>();
         }
@@ -58,17 +56,74 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             }
         }
 
+        public ICommand DeleteElementCommand { get; private set; }
+
         /// <summary>
         ///   Gets or sets DisplayElements.
         /// </summary>
         public ObservableCollection<DisplayElement> DisplayElements { get; set; }
 
+        public ICommand EditElementCommand { get; private set; }
+
         /// <summary>
-        /// The add element.
+        ///   The add element.
         /// </summary>
         private void AddElement()
         {
-            using (var editor = new ElementEditor(new ElementEditorViewModel(Channels, new List<MappedChannel>())))
+            var displayElement = new DisplayElement(10, 10, 100, 0, 0, 100, new List<MappedChannel>());
+            var viewModel = new ElementEditorViewModel(Channels, displayElement);
+            using (var editor = new ElementEditor(viewModel))
+            {
+                if (editor.ShowDialog()
+                    == DialogResult.OK)
+                {
+                    DisplayElements.Add(displayElement);
+                    CurrentDisplayElement = displayElement;
+                }
+            }
+        }
+
+        private bool CanDeleteDisplayElement()
+        {
+            return CurrentDisplayElement != null;
+        }
+
+        private bool CanEditDisplayElement()
+        {
+            return CurrentDisplayElement != null;
+        }
+
+        private void DeleteDisplayElement()
+        {
+            var displayElement = CurrentDisplayElement;
+            if (displayElement == null)
+            {
+                return;
+            }
+
+            if (MessageBox.Show(
+                                "Are you sure you want to delete the selected display element?", 
+                                "Confirm delete", 
+                                MessageBoxButtons.YesNo, 
+                                MessageBoxIcon.Question, 
+                                MessageBoxDefaultButton.Button2)
+                == DialogResult.Yes)
+            {
+                DisplayElements.Remove(displayElement);
+                CurrentDisplayElement = null;
+            }
+        }
+
+        private void EditDisplayElement()
+        {
+            var displayElement = CurrentDisplayElement;
+            if (displayElement == null)
+            {
+                return;
+            }
+
+            var viewModel = new ElementEditorViewModel(Channels, displayElement);
+            using (var editor = new ElementEditor(viewModel))
             {
                 editor.ShowDialog();
             }
