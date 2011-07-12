@@ -6,36 +6,29 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
     using System.Drawing;
 
-    /// <summary>
-    /// The single channel pixel.
-    /// </summary>
     public class SingleColorChannel : IChannel
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SingleColorChannel"/> class.
-        /// </summary>
-        /// <param name="channel">
-        /// The channel.
-        /// </param>
-        public SingleColorChannel(Channel channel)
+        public SingleColorChannel(Channel channel, Color color)
         {
-            this.Channel = channel;
+            Channel = channel;
+            ChannelColor = Color.Transparent;
+            DisplayColor = color;
         }
 
-        /// <summary>
-        ///   Gets Channel.
-        /// </summary>
         public Channel Channel { get; private set; }
 
-        /// <summary>
-        /// Gets ChannelColor.
-        /// </summary>
-        public Color ChannelColor
+        public Color ChannelColor { get; private set; }
+
+        public Color DisplayColor { get; private set; }
+
+        public bool Contains(Channel channel)
         {
-            get
-            {
-                return Color.Transparent;
-            }
+            return Channel.ID == channel.ID;
+        }
+
+        public void SetColor(Channel channel, byte intensity)
+        {
+            ChannelColor = Color.FromArgb(intensity, DisplayColor);
         }
     }
 }

@@ -86,6 +86,7 @@
     <Compile Include="ViewModels\MappedChannelEditorViewModel.cs" />
     <Compile Include="ViewModels\SetupViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="ViewModels\VisualizerViewModel.cs" />
     <Compile Include="Views\ElementEditorView.xaml.cs">
       <DependentUpon>ElementEditorView.xaml</DependentUpon>
     </Compile>
@@ -95,10 +96,16 @@
     <Compile Include="Views\SetupView.xaml.cs">
       <DependentUpon>SetupView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\VisualizerView.xaml.cs">
+      <DependentUpon>VisualizerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VixenDisplayVisualizerPlugIn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Dialogs\DisplayVisualizer.resx">
+      <DependentUpon>DisplayVisualizer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ElementEditor.resx">
       <DependentUpon>ElementEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -120,6 +127,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SetupView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\VisualizerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -6,14 +6,12 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
     using System.Drawing;
 
-    /// <summary>
-    /// The channel interface.
-    /// </summary>
     public interface IChannel
     {
-        /// <summary>
-        /// Gets ChannelColor.
-        /// </summary>
         Color ChannelColor { get; }
+
+        bool Contains(Channel channel);
+
+        void SetColor(Channel channel, byte intensity);
     }
 }
