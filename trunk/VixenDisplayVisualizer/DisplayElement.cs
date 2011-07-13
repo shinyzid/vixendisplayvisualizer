@@ -1,46 +1,41 @@
-// --------------------------------------------------------------------------------
-// Copyright (c) 2011 Erik Mathisen
-// See the file license.txt for copying permission.
-// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
-
     using Vixen.PlugIns.VixenDisplayVisualizer.Channels;
 
     public class DisplayElement : INotifyPropertyChanged
     {
-        private int columns;
+        private int _columns;
 
-        private int height;
+        private int _height;
 
-        private int leftOffset;
+        private int _leftOffset;
 
-        private string name;
+        private string _name;
 
-        private int rows;
+        private int _rows;
 
-        private int topOffset;
+        private int _topOffset;
 
-        private int width;
+        private int _width;
 
         public DisplayElement(
-            int columns, 
-            int rows, 
-            int height, 
-            int leftOffset, 
-            int topOffset, 
-            int width, 
-            IList<MappedChannel> mappedChannels)
+            int columns, int rows, int height, int leftOffset, int topOffset, int width, IList<MappedChannel> mappedChannels)
         {
-            this.Columns = columns;
-            this.Rows = rows;
-            this.Height = height;
-            this.LeftOffset = leftOffset;
-            this.TopOffset = topOffset;
-            this.Width = width;
-            this.MappedChannels = mappedChannels;
+            MappedChannels = new ObservableCollection<MappedChannel>(mappedChannels);
+            _columns = columns;
+            _rows = rows;
+            Height = height;
+            LeftOffset = leftOffset;
+            TopOffset = topOffset;
+            Width = width;
+            var numberOfCells = rows * columns;           
+            for (var index = mappedChannels.Count; index < numberOfCells; index++)
+            {
+                MappedChannels.Add(new MappedChannel(null));
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -49,13 +44,14 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         {
             get
             {
-                return this.columns;
+                return _columns;
             }
 
             set
             {
-                this.columns = value;
-                this.PropertyChanged.NotifyPropertyChanged("Columns", this);
+                _columns = value;
+                PropertyChanged.NotifyPropertyChanged("Columns", this);
+                AdjustMappedChannels();
             }
         }
 
@@ -63,13 +59,13 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         {
             get
             {
-                return this.height;
+                return _height;
             }
 
             set
             {
-                this.height = value;
-                this.PropertyChanged.NotifyPropertyChanged("Height", this);
+                _height = value;
+                PropertyChanged.NotifyPropertyChanged("Height", this);
             }
         }
 
@@ -77,29 +73,29 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         {
             get
             {
-                return this.leftOffset;
+                return _leftOffset;
             }
 
             set
             {
-                this.leftOffset = value;
-                this.PropertyChanged.NotifyPropertyChanged("LeftOffset", this);
+                _leftOffset = value;
+                PropertyChanged.NotifyPropertyChanged("LeftOffset", this);
             }
         }
 
-        public IList<MappedChannel> MappedChannels { get; private set; }
+        public ObservableCollection<MappedChannel> MappedChannels { get; private set; }
 
         public string Name
         {
             get
             {
-                return this.name;
+                return _name;
             }
 
             set
             {
-                this.name = value;
-                this.PropertyChanged.NotifyPropertyChanged("Name", this);
+                _name = value;
+                PropertyChanged.NotifyPropertyChanged("Name", this);
             }
         }
 
@@ -107,13 +103,14 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         {
             get
             {
-                return this.rows;
+                return _rows;
             }
 
             set
             {
-                this.rows = value;
-                this.PropertyChanged.NotifyPropertyChanged("Rows", this);
+                _rows = value;
+                PropertyChanged.NotifyPropertyChanged("Rows", this);
+                AdjustMappedChannels();
             }
         }
 
@@ -121,13 +118,13 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         {
             get
             {
-                return this.topOffset;
+                return _topOffset;
             }
 
             set
             {
-                this.topOffset = value;
-                this.PropertyChanged.NotifyPropertyChanged("TopOffset", this);
+                _topOffset = value;
+                PropertyChanged.NotifyPropertyChanged("TopOffset", this);
             }
         }
 
@@ -135,13 +132,27 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         {
             get
             {
-                return this.width;
+                return _width;
             }
 
             set
             {
-                this.width = value;
-                this.PropertyChanged.NotifyPropertyChanged("Width", this);
+                _width = value;
+                PropertyChanged.NotifyPropertyChanged("Width", this);
+            }
+        }
+
+        private void AdjustMappedChannels()
+        {
+            var numberOfCells = _rows * _columns;
+            while (MappedChannels.Count > numberOfCells)
+            {
+                MappedChannels.RemoveAt(MappedChannels.Count - 1);
+            }
+
+            while (MappedChannels.Count < numberOfCells)
+            {
+                MappedChannels.Add(new MappedChannel(null));
             }
         }
     }

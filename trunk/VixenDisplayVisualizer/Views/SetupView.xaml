@@ -10,13 +10,21 @@
              d:DesignWidth="300">
 	<UserControl.Resources>
 		<ResourceDictionary>
-			<DataTemplate DataType="{x:Type vdv:DisplayElement}">
-				<Border Canvas.Top="{Binding TopOffset}"
-				        Canvas.Left="{Binding LeftOffset}"
-				        BorderBrush="Black"
+
+            <DataTemplate DataType="{x:Type Channels:SingleColorChannel}">
+                <Border>
+                    <Border.Background>
+                        <SolidColorBrush Color="{Binding DisplayColor}" />
+                    </Border.Background>
+                </Border>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vdv:DisplayElement}">
+				<Border BorderBrush="Orange"
+				        Background="Black"
 				        BorderThickness="3"
-				        Height="{Binding Height}"
-				        Width="{Binding Width}">
+				        Height="{Binding Height, Mode=TwoWay}"
+				        Width="{Binding Width, Mode=TwoWay}">
 					<ItemsControl ItemsSource="{Binding MappedChannels}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
@@ -24,21 +32,24 @@
 								             Rows="{Binding Rows}" />
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type Channels:MappedChannel}">
-                                <Border BorderBrush="Red"
-                                        BorderThickness="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                                        Background="{Binding ChannelColor}">
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="{x:Type Channels:MappedChannel}">
+								<Border BorderBrush="LightGray"
+								        BorderThickness="1"
+								        VerticalAlignment="Stretch"
+								        HorizontalAlignment="Stretch"
+								        Background="Black">
+                                    <ContentControl Content="{Binding Channel}" />
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 				</Border>
 			</DataTemplate>
 		</ResourceDictionary>
 	</UserControl.Resources>
-    <Grid>
-        <Grid.ColumnDefinitions>
+	<Grid>
+		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
@@ -51,11 +62,11 @@
 			<GroupBox Header="Available Elements">
 				<ListView ItemsSource="{Binding DisplayElements}"
 				          SelectedItem="{Binding CurrentDisplayElement}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate DataType="{x:Type vdv:DisplayElement}">
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
+					<ListView.ItemTemplate>
+						<DataTemplate DataType="{x:Type vdv:DisplayElement}">
+							<TextBlock Text="{Binding Name}" />
+						</DataTemplate>
+					</ListView.ItemTemplate>
 				</ListView>
 			</GroupBox>
 			<StackPanel Grid.Row="1">
@@ -70,9 +81,17 @@
 			              ItemsSource="{Binding DisplayElements}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<vdv:DragCanvas IsItemsHost="True" />
+						<vdv:DragCanvas />
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemContainerStyle>
+					<Style TargetType="ContentPresenter">
+						<Setter Property="Canvas.Left"
+						        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
+						<Setter Property="Canvas.Top"
+						        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
+					</Style>
+				</ItemsControl.ItemContainerStyle>
 			</ItemsControl>
 		</GroupBox>
 
