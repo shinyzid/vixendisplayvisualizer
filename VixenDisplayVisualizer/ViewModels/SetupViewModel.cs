@@ -74,12 +74,9 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             var viewModel = new ElementEditorViewModel(Channels, displayElement);
             using (var editor = new ElementEditor(viewModel))
             {
-                if (editor.ShowDialog()
-                    == DialogResult.OK)
-                {
-                    DisplayElements.Add(displayElement);
-                    CurrentDisplayElement = displayElement;
-                }
+                editor.ShowDialog();
+                DisplayElements.Add(displayElement);
+                CurrentDisplayElement = displayElement;
             }
         }
 
@@ -102,7 +99,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             }
 
             if (MessageBox.Show(
-                                "Are you sure you want to delete the selected display element?", 
+                                string.Format("Are you sure you want to delete the selected display element named '{0}' ?", displayElement.Name), 
                                 "Confirm delete", 
                                 MessageBoxButtons.YesNo, 
                                 MessageBoxIcon.Question, 

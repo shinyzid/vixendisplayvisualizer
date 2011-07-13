@@ -70,7 +70,7 @@
             _setupData = setupData;
             _setupNode = setupNode;
             LoadDataFromSetupNode();
-            _setupData.GetBytes(_setupNode, "BackgroundImage", new byte[0]);
+            ////_setupData.GetBytes(_setupNode, "BackgroundImage", new byte[0]);
         }
 
         public void Shutdown()
@@ -118,13 +118,10 @@
                 var saveData = false;
                 using (_setupDialog = new Setup(viewModel))
                 {
-                    if (_setupDialog.ShowDialog()
-                        == DialogResult.OK)
-                    {
-                        _elements.Clear();
-                        _elements.AddRange(viewModel.DisplayElements);
-                        saveData = true;
-                    }
+                    _setupDialog.ShowDialog();
+                    _elements.Clear();
+                    _elements.AddRange(viewModel.DisplayElements);
+                    saveData = true;
                 }
 
                 if (saveData) 
@@ -143,12 +140,12 @@
                             node.AppendAttribute("Width", element.Width.ToString());
                             node.AppendAttribute("LeftOffset", element.LeftOffset.ToString());
                             node.AppendAttribute("TopOffset", element.TopOffset.ToString());
+                            node.AppendAttribute("Name", element.Name);
                             foreach (var mappedChannel in element.MappedChannels)
                             {
                                 var mappedNode = node.OwnerDocument.CreateElement("MappedChannel");
                                 mappedNode.AppendAttribute("Column", mappedChannel.Column.ToString());
                                 mappedNode.AppendAttribute("Row", mappedChannel.Row.ToString());
-                                mappedNode.AppendAttribute("Name", mappedChannel.Name);
 
                                 var channel = mappedChannel.Channel;
                                 if (channel != null)
@@ -274,13 +271,13 @@
 
                     var mappedChannel = new MappedChannel(channel);
                     var mappedAttributes = mappedNode.Attributes;
-                    mappedChannel.Column = mappedAttributes.GetNamedItem("Column").Value.TryParseInt32(0);
-                    mappedChannel.Name = mappedAttributes.GetNamedItem("Name").Value;
+                    mappedChannel.Column = mappedAttributes.GetNamedItem("Column").Value.TryParseInt32(0);           
                     mappedChannel.Row = mappedAttributes.GetNamedItem("Row").Value.TryParseInt32(0);
                     mappedChannels.Add(mappedChannel);
                 }
 
                 var displayElement = new DisplayElement(columns, rows, height, leftOffset, topOffset, width, mappedChannels);
+                displayElement.Name = attributes.GetNamedItem("Name").Value;
                 _elements.Add(displayElement);
             }
         }

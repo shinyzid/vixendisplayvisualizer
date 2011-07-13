@@ -1,13 +1,24 @@
+// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
+    using System.ComponentModel;
     using System.Drawing;
 
-    public class MappedChannel
+    public class MappedChannel : INotifyPropertyChanged
     {
+        private int column;
+
+        private int row;
+
         public MappedChannel(IChannel channel)
         {
-            Channel = channel;
+            this.Channel = channel;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public IChannel Channel { get; set; }
 
@@ -15,24 +26,47 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
         {
             get
             {
-                return Channel.ChannelColor;
+                var channel = this.Channel;
+                return channel == null ? Color.Black : channel.ChannelColor;
             }
         }
 
-        public int Column { get; set; }
+        public int Column
+        {
+            get
+            {
+                return this.column;
+            }
 
-        public string Name { get; set; }
+            set
+            {
+                this.column = value;
+                this.PropertyChanged.NotifyPropertyChanged("Column", this);
+            }
+        }
 
-        public int Row { get; set; }
+        public int Row
+        {
+            get
+            {
+                return this.row;
+            }
+
+            set
+            {
+                this.row = value;
+                this.PropertyChanged.NotifyPropertyChanged("Row", this);
+            }
+        }
 
         public bool Contains(Channel channel)
         {
-            return Channel == null ? false : Channel.Contains(channel);
+            return this.Channel == null ? false : this.Channel.Contains(channel);
         }
 
         public void SetColor(Channel channel, byte intensity)
         {
-            Channel.SetColor(channel, intensity);
+            this.Channel.SetColor(channel, intensity);
         }
     }
 }

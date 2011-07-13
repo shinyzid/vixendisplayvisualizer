@@ -3,87 +3,102 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:ViewModels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.ViewModels"
              xmlns:Channels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Channels"
+             xmlns:vdv="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="600"
              HorizontalAlignment="Center">
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<ViewModels:ElementEditorViewModel x:Key="ElementEditorViewModel" />
-		</ResourceDictionary>
-	</UserControl.Resources>
-	<Grid DataContext="{StaticResource ElementEditorViewModel}">
+	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<GroupBox Header="Mapped Channels">
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-				<ListView ItemsSource="{Binding MappedChannels}"
-				          SelectedItem="{Binding CurrentMappedChannel, Mode=TwoWay}">
-					<ListView.ItemTemplate>
-						<DataTemplate DataType="{x:Type Channels:MappedChannel}">
-							<StackPanel Orientation="Horizontal">
-								<TextBlock Text="{Binding Name, StringFormat='Name: {0}'}" />
-								<TextBlock Text="{Binding Row, StringFormat='Row: {0}'}" />
-								<TextBlock Text="{Binding Column, StringFormat='Column: {0}'}" />
-								<Button Content="Edit" />
-								<Button Content="Remove" />
-							</StackPanel>
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
-				<StackPanel Grid.Row="1">
-					<Button Content="Add Mapped Channel"
-					        Command="{Binding AddMappedChannelCommand}" />
-				</StackPanel>
-			</Grid>
-		</GroupBox>
+<!--		<GroupBox Header="Mapped Channels">-->
+<!--			<Grid>-->
+<!--				<Grid.RowDefinitions>-->
+<!--					<RowDefinition Height="*" />-->
+<!--					<RowDefinition Height="Auto" />-->
+<!--				</Grid.RowDefinitions>-->
+<!--				<ListView ItemsSource="{Binding MappedChannels}"-->
+<!--				          SelectedItem="{Binding CurrentMappedChannel, Mode=TwoWay}">-->
+<!--					<ListView.ItemTemplate>-->
+<!--						<DataTemplate DataType="{x:Type Channels:MappedChannel}">-->
+<!--							<StackPanel Orientation="Horizontal">-->
+<!--								<TextBlock Text="{Binding Row, StringFormat='Row: {0}'}" />-->
+<!--								<TextBlock Text="{Binding Column, StringFormat='Column: {0}'}" />-->
+<!--								<Button Content="Edit" />-->
+<!--								<Button Content="Remove" />-->
+<!--							</StackPanel>-->
+<!--						</DataTemplate>-->
+<!--					</ListView.ItemTemplate>-->
+<!--				</ListView>-->
+<!--				<StackPanel Grid.Row="1">-->
+<!--					<Button Content="Add Mapped Channel"-->
+<!--					        Command="{Binding AddMappedChannelCommand}" />-->
+<!--				</StackPanel>-->
+<!--			</Grid>-->
+<!--		</GroupBox>-->
 		<Grid Grid.Column="1">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 			<GroupBox Header="Settings">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Margin="2">
-						Rows:
-						<TextBox x:Name="Rows"
-						         MinWidth="30">
-							10
-						</TextBox>
-					</TextBlock>
-					<TextBlock Margin="2">
-						Columns:
-						<TextBox x:Name="Columns"
-						         MinWidth="30">
-							20
-						</TextBox>
-					</TextBlock>
-					<TextBlock Margin="2">
-						Height:
-						<TextBox MinWidth="30">X</TextBox>
-					</TextBlock>
-					<TextBlock Margin="2">
-						Width:
-						<TextBox MinWidth="30">Y</TextBox>
-					</TextBlock>
-				</StackPanel>
+				<ContentControl Content="{Binding DisplayElement}">
+					<ContentControl.ContentTemplate>
+						<DataTemplate DataType="{x:Type vdv:DisplayElement}">
+							<StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="2">
+                                    Name:
+                                    <TextBox Text="{Binding Name}"
+                                             MinWidth="60" />
+                                </TextBlock>
+								<TextBlock Margin="2">
+									Rows:
+									<TextBox Text="{Binding Rows}"
+									         MinWidth="30" />
+								</TextBlock>
+								<TextBlock Margin="2">
+									Columns:
+									<TextBox MinWidth="30"
+                                             Text="{Binding Columns}" />
+								</TextBlock>
+								<TextBlock Margin="2">
+									Height:
+									<TextBox MinWidth="30" 
+                                             Text="{Binding Height}" />
+								</TextBlock>
+								<TextBlock Margin="2">
+									Width:
+									<TextBox MinWidth="30" 
+                                             Text="{Binding Width}" />
+								</TextBlock>
+							</StackPanel>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+
 			</GroupBox>
-			<ListView Grid.Row="1">
+			<ListView Grid.Row="1"
+                      ItemsSource="{Binding MappedChannels}">
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
-						<UniformGrid Rows="{Binding ElementName=Rows, Path=Text}"
-						             Columns="{Binding ElementName=Columns, Path=Text}"
-						             IsItemsHost="True" />
+                        <UniformGrid Rows="{Binding ElementName=CurrentMappedChannel, Path=Rows}"
+						             Columns="{Binding ElementName=CurrentMappedChannel, Path=Columns}" />
 					</ItemsPanelTemplate>
 				</ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type Channels:MappedChannel}" >
+                        <Border BorderBrush="Black"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Padding="1"
+                                BorderThickness="1" >
+                            <TextBlock>Mapped Channel</TextBlock>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
 			</ListView>
 		</Grid>
 	</Grid>
