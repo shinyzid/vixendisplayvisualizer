@@ -2,8 +2,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
     using System;
     using System.ComponentModel;
-    using System.Drawing;
     using System.Windows.Input;
+    using System.Windows.Media;
 
     public class MappedChannel : INotifyPropertyChanged
     {
@@ -46,7 +46,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
             get
             {
                 var channel = Channel;
-                return channel == null ? Color.Black : channel.ChannelColor;
+                return channel == null ? Colors.Black : channel.ChannelColor;
             }
         }
 
@@ -133,7 +133,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 
         private void ConvertToSingle()
         {
-            Channel = new SingleColorChannel(null, Color.White);
+            Channel = new SingleColorChannel(null, Colors.HotPink);
         }
     }
 }

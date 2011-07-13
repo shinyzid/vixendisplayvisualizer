@@ -1,6 +1,6 @@
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
-    using System.Drawing;
+    using System.Windows.Media;
 
     public class EmptyChannel : IChannel
     {
@@ -8,7 +8,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
         {
             get
             {
-                return Color.Black;
+                return Colors.Black;
             }
         }
 

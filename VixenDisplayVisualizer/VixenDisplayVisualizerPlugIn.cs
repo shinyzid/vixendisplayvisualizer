@@ -1,10 +1,10 @@
 ﻿namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Linq;
     using System.Windows;
     using System.Windows.Forms;
+    using System.Windows.Media;
     using System.Xml;
     using Vixen.PlugIns.VixenDisplayVisualizer.Channels;
     using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
@@ -25,7 +25,7 @@
         public string Author
         {
             get
-            {
+            {                
                 return "Erik Mathisen - erik@mathisen.us";
             }
         }
@@ -161,7 +161,7 @@
                                         channelNode.AppendAttribute("Type", "Single");
                                         var singleColorChannel = (SingleColorChannel)channel;
                                         channelNode.AppendAttribute("ChannelId", singleColorChannel.Channel.ID.ToString());    
-                                        channelNode.AppendAttribute("Color",  singleColorChannel.DisplayColor.ToArgb().ToString());
+                                        channelNode.AppendAttribute("Color",  singleColorChannel.DisplayColor.ToString());
                                     }
                                     else
                                     {
@@ -256,8 +256,8 @@
                         {
                             case "Single":
                                 var channelId = ulong.Parse(channelNode.Attributes.GetNamedItem("ChannelId").Value);
-                                var color = Color.FromArgb(channelNode.Attributes.GetNamedItem("Color").Value.TryParseInt32(0));
-                                channel = new SingleColorChannel(_channels.First(x => x.ID == channelId), color);
+                                //var color = Color...FromArgb(channelNode.Attributes.GetNamedItem("Color").Value.TryParseInt32(0));
+                                channel = new SingleColorChannel(_channels.First(x => x.ID == channelId), Colors.MediumVioletRed);
                                 break;
                             case "RGB":
                                 var redChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("RedChannel").Value));
