@@ -70,7 +70,7 @@
 			              ItemsSource="{Binding DisplayElements}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<Canvas IsItemsHost="True" />
+						<vdv:DragCanvas IsItemsHost="True" />
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 			</ItemsControl>
