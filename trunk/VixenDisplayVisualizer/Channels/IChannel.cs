@@ -4,7 +4,7 @@
 // --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
-    using System.Drawing;
+    using Color = System.Windows.Media.Color;
 
     public interface IChannel
     {

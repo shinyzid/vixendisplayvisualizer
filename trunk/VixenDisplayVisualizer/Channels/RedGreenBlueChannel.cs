@@ -1,7 +1,7 @@
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
     using System;
-    using System.Drawing;
+    using System.Windows.Media;
 
     public class RedGreenBlueChannel : IChannel
     {

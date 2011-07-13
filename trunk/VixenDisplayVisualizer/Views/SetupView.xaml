@@ -16,6 +16,16 @@
                     <Border.Background>
                         <SolidColorBrush Color="{Binding DisplayColor}" />
                     </Border.Background>
+                    <TextBlock Foreground="LightBlue">Single</TextBlock>
+                </Border>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type Channels:EmptyChannel}">
+                <Border>
+                    <Border.Background>
+                        <SolidColorBrush Color="LimeGreen" />
+                    </Border.Background>
+                    <TextBlock>Empty</TextBlock>
                 </Border>
             </DataTemplate>
 
@@ -25,7 +35,9 @@
 				        BorderThickness="3"
 				        Height="{Binding Height, Mode=TwoWay}"
 				        Width="{Binding Width, Mode=TwoWay}">
-					<ItemsControl ItemsSource="{Binding MappedChannels}">
+					<ItemsControl ItemsSource="{Binding MappedChannels}"
+                                  HorizontalContentAlignment="Stretch"
+                                  VerticalContentAlignment="Stretch">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<UniformGrid Columns="{Binding Columns}"

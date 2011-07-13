@@ -4,14 +4,14 @@
 // --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
-    using System.Drawing;
+    using System.Windows.Media;
 
     public class SingleColorChannel : IChannel
     {
         public SingleColorChannel(Channel channel, Color color)
         {
             Channel = channel;
-            ChannelColor = Color.Transparent;
+            ChannelColor = Colors.Transparent;
             DisplayColor = color;
         }
 
@@ -28,7 +28,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 
         public void SetColor(Channel channel, byte intensity)
         {
-            ChannelColor = Color.FromArgb(intensity, DisplayColor);
+            ChannelColor = Color.FromArgb(intensity, DisplayColor.R, DisplayColor.G, DisplayColor.B);
         }
     }
 }
