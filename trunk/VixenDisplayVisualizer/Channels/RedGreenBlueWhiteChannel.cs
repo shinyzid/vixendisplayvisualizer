@@ -13,7 +13,7 @@
 
         public override Color ChannelColor { get; protected set; }
 
-        public Channel WhiteChannel { get; private set; }
+        public Channel WhiteChannel { get; set; }
 
         public override bool Contains(Channel channel)
         {

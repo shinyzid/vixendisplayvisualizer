@@ -15,7 +15,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
             DisplayColor = color;
         }
 
-        public Channel Channel { get; private set; }
+        public Channel Channel { get; set; }
 
         public Color ChannelColor { get; private set; }
 

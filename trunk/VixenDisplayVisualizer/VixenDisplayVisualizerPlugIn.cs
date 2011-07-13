@@ -152,7 +152,11 @@
                                 {
                                     var channelNode = mappedNode.OwnerDocument.CreateElement("Channel");
                                     mappedNode.AppendChild(channelNode);
-                                    if (channel is SingleColorChannel)
+                                    if (channel is EmptyChannel)
+                                    {
+                                        channelNode.AppendAttribute("Type", "Empty");
+                                    }
+                                    else if (channel is SingleColorChannel)
                                     {                                        
                                         channelNode.AppendAttribute("Type", "Single");
                                         var singleColorChannel = (SingleColorChannel)channel;
@@ -243,7 +247,7 @@
                     var channelNode = mappedNode.FirstChild;
                     if (channelNode == null)
                     {
-                        channel = null;
+                        channel = new EmptyChannel();
                     }
                     else
                     {
@@ -269,7 +273,7 @@
                                 channel = new RedGreenBlueWhiteChannel(redChannel, greenChannel, blueChannel, whiteChannel);
                                 break;
                             default:
-                                channel = null;
+                                channel = new EmptyChannel();
                                 break;
                         }
                     }

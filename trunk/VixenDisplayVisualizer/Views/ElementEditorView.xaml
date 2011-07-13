@@ -9,97 +9,226 @@
              d:DesignHeight="600"
              d:DesignWidth="600"
              HorizontalAlignment="Center">
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+			<vdv:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
+			<DataTemplate DataType="{x:Type Channels:EmptyChannel}">
+				<Border HorizontalAlignment="Stretch"
+				        VerticalAlignment="Stretch"
+				        BorderThickness="2"
+				        Background="Black"
+				        CornerRadius="5"
+				        Margin="3"
+				        Padding="3"
+				        BorderBrush="AntiqueWhite">
+					<TextBlock VerticalAlignment="Center"
+					           HorizontalAlignment="Center"
+					           Foreground="AntiqueWhite">
+						Empty Channel
+					</TextBlock>
+				</Border>
+			</DataTemplate>
+			<DataTemplate DataType="{x:Type Channels:SingleColorChannel}">
+				<Grid>
+					<Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<TextBlock>Channel</TextBlock>
+						<ComboBox Grid.Column="1"
+						          SelectedItem="{Binding Channel, Mode=TwoWay}"
+						          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+					</Grid>
+					<Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollapsedConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+						<StackPanel VerticalAlignment="Center">
+							<TextBlock Foreground="White"
+							           HorizontalAlignment="Center">
+								Single Color Channel
+							</TextBlock>
+							<TextBlock Foreground="White"
+							           HorizontalAlignment="Center"
+							           Text="{Binding Channel.Name}" />
+						</StackPanel>
+					</Grid>
+				</Grid>
+			</DataTemplate>
+			<DataTemplate DataType="{x:Type Channels:RedGreenBlueChannel}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+					<TextBlock Grid.Column="0"
+					           Grid.Row="0">
+						Red Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="0"
+					          SelectedItem="{Binding RedChannel, Mode=TwoWay}"
+					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+					<TextBlock Grid.Column="0"
+					           Grid.Row="1">
+						Green Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="1"
+					          SelectedItem="{Binding GreenChannel, Mode=TwoWay}"
+					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+					<TextBlock Grid.Column="0"
+					           Grid.Row="2">
+						Blue Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="2"
+					          SelectedItem="{Binding BlueChannel, Mode=TwoWay}"
+					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+				</Grid>
+			</DataTemplate>
+			<DataTemplate DataType="{x:Type Channels:RedGreenBlueWhiteChannel}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+					<TextBlock Grid.Column="0"
+					           Grid.Row="0">
+						Red Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="0"
+					          SelectedItem="{Binding RedChannel, Mode=TwoWay}"
+					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+					<TextBlock Grid.Column="0"
+					           Grid.Row="1">
+						Green Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="1"
+					          SelectedItem="{Binding GreenChannel, Mode=TwoWay}"
+					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+					<TextBlock Grid.Column="0"
+					           Grid.Row="2">
+						Blue Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="2"
+					          SelectedItem="{Binding BlueChannel, Mode=TwoWay}"
+					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+					<TextBlock Grid.Column="0"
+					           Grid.Row="3">
+						White Channel
+					</TextBlock>
+					<ComboBox Grid.Column="1"
+					          Grid.Row="3"
+					          SelectedItem="{Binding WhiteChannel, Mode=TwoWay}"
+					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+				</Grid>
+			</DataTemplate>
+		</ResourceDictionary>
+	</UserControl.Resources>
 	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-<!--		<GroupBox Header="Mapped Channels">-->
-<!--			<Grid>-->
-<!--				<Grid.RowDefinitions>-->
-<!--					<RowDefinition Height="*" />-->
-<!--					<RowDefinition Height="Auto" />-->
-<!--				</Grid.RowDefinitions>-->
-<!--				<ListView ItemsSource="{Binding MappedChannels}"-->
-<!--				          SelectedItem="{Binding CurrentMappedChannel, Mode=TwoWay}">-->
-<!--					<ListView.ItemTemplate>-->
-<!--						<DataTemplate DataType="{x:Type Channels:MappedChannel}">-->
-<!--							<StackPanel Orientation="Horizontal">-->
-<!--								<TextBlock Text="{Binding Row, StringFormat='Row: {0}'}" />-->
-<!--								<TextBlock Text="{Binding Column, StringFormat='Column: {0}'}" />-->
-<!--								<Button Content="Edit" />-->
-<!--								<Button Content="Remove" />-->
-<!--							</StackPanel>-->
-<!--						</DataTemplate>-->
-<!--					</ListView.ItemTemplate>-->
-<!--				</ListView>-->
-<!--				<StackPanel Grid.Row="1">-->
-<!--					<Button Content="Add Mapped Channel"-->
-<!--					        Command="{Binding AddMappedChannelCommand}" />-->
-<!--				</StackPanel>-->
-<!--			</Grid>-->
-<!--		</GroupBox>-->
-		<Grid Grid.Column="1">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
-			<GroupBox Header="Settings">
-				<ContentControl Content="{Binding DisplayElement}">
-					<ContentControl.ContentTemplate>
-						<DataTemplate DataType="{x:Type vdv:DisplayElement}">
-							<StackPanel Orientation="Horizontal">
-                                <TextBlock Margin="2">
-                                    Name:
-                                    <TextBox Text="{Binding Name}"
-                                             MinWidth="60" />
-                                </TextBlock>
-								<TextBlock Margin="2">
-									Rows:
-									<TextBox Text="{Binding Rows}"
-									         MinWidth="30" />
-								</TextBlock>
-								<TextBlock Margin="2">
-									Columns:
-									<TextBox MinWidth="30"
-                                             Text="{Binding Columns}" />
-								</TextBlock>
-								<TextBlock Margin="2">
-									Height:
-									<TextBox MinWidth="30" 
-                                             Text="{Binding Height}" />
-								</TextBlock>
-								<TextBlock Margin="2">
-									Width:
-									<TextBox MinWidth="30" 
-                                             Text="{Binding Width}" />
-								</TextBlock>
-							</StackPanel>
-						</DataTemplate>
-					</ContentControl.ContentTemplate>
-				</ContentControl>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<GroupBox Header="Settings">
+			<ContentControl Content="{Binding DisplayElement}">
+				<ContentControl.ContentTemplate>
+					<DataTemplate DataType="{x:Type vdv:DisplayElement}">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Margin="2">
+								Name:
+								<TextBox Text="{Binding Name}"
+								         MinWidth="60" />
+							</TextBlock>
+							<TextBlock Margin="2">
+								Rows:
+								<TextBox Text="{Binding Rows}"
+								         MinWidth="30" />
+							</TextBlock>
+							<TextBlock Margin="2">
+								Columns:
+								<TextBox MinWidth="30"
+								         Text="{Binding Columns}" />
+							</TextBlock>
+							<TextBlock Margin="2">
+								Height:
+								<TextBox MinWidth="30"
+								         Text="{Binding Height}" />
+							</TextBlock>
+							<TextBlock Margin="2">
+								Width:
+								<TextBox MinWidth="30"
+								         Text="{Binding Width}" />
+							</TextBlock>
+						</StackPanel>
+					</DataTemplate>
+				</ContentControl.ContentTemplate>
+			</ContentControl>
 
-			</GroupBox>
-			<ListView Grid.Row="1"
-                      ItemsSource="{Binding MappedChannels}">
+		</GroupBox>
+		<Border Grid.Row="1"
+		        Background="Transparent"
+		        VerticalAlignment="Stretch"
+		        Margin="0"
+		        Padding="0"
+		        x:Name="ListBorder">
+			<ListView ItemsSource="{Binding MappedChannels}"
+                      HorizontalContentAlignment="Stretch"
+                      VerticalContentAlignment="Stretch"
+			          Height="{Binding ElementName=ListBorder, Path=Height}"
+			          SelectedItem="{Binding CurrentMappedChannel}">
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
-                        <UniformGrid Rows="{Binding DisplayElement.Rows}"
+						<UniformGrid Rows="{Binding DisplayElement.Rows}"
 						             Columns="{Binding DisplayElement.Columns}" />
 					</ItemsPanelTemplate>
 				</ListView.ItemsPanel>
-                <ListView.ItemTemplate>
-                    <DataTemplate DataType="{x:Type Channels:MappedChannel}" >
-                        <Border BorderBrush="White"
-                                Background="Black"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                Padding="1"
-                                BorderThickness="1" >
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+				<ListView.ItemTemplate>
+					<DataTemplate DataType="{x:Type Channels:MappedChannel}">
+						<Border BorderBrush="White"
+						        Background="Black"
+						        HorizontalAlignment="Stretch"
+						        VerticalAlignment="Stretch"
+						        Margin="2"
+						        Padding="2"
+						        BorderThickness="2">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="*" />
+								</Grid.RowDefinitions>
+								<GroupBox Header="Change Channel Type"
+								          Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+									<StackPanel Orientation="Horizontal">
+										<Button Command="{Binding ConvertToEmptyCommand}">Empty</Button>
+										<Button Command="{Binding ConvertToSingleCommand}">Single</Button>
+										<Button Command="{Binding ConvertToRgbCommand}">RGB</Button>
+										<Button Command="{Binding ConvertToRgbwCommand}">RGB+W</Button>
+									</StackPanel>
+								</GroupBox>
+								<ContentControl Content="{Binding Channel}"
+								                Grid.Row="1" />
+							</Grid>
+						</Border>
+
+					</DataTemplate>
+				</ListView.ItemTemplate>
 			</ListView>
-		</Grid>
+		</Border>
 	</Grid>
+
 </UserControl>

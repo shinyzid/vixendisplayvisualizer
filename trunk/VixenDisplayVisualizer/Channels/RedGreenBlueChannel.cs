@@ -12,13 +12,13 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
             BlueChannel = blue;
         }
 
-        public Channel BlueChannel { get; protected set; }
+        public Channel BlueChannel { get; set; }
 
         public virtual Color ChannelColor { get; protected set; }
 
-        public Channel GreenChannel { get; protected set; }
+        public Channel GreenChannel { get; set; }
 
-        public Channel RedChannel { get; protected set; }
+        public Channel RedChannel { get; set; }
 
         public virtual bool Contains(Channel channel)
         {
