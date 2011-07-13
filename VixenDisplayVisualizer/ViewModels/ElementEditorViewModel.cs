@@ -15,7 +15,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
     {
         private DisplayElement _displayElement;
 
-        private MappedChannel currentMappedChannel;
+        private MappedChannel _currentMappedChannel;
 
         public ElementEditorViewModel(IEnumerable<Channel> channels, DisplayElement displayElement)
             : this()
@@ -38,12 +38,12 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         {
             get
             {
-                return this.currentMappedChannel;
+                return this._currentMappedChannel;
             }
 
             set
             {
-                this.currentMappedChannel = value;
+                this._currentMappedChannel = value;
                 this.OnPropertyChanged("CurrentMappedChannel");
             }
         }

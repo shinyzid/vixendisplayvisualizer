@@ -84,18 +84,18 @@
                       ItemsSource="{Binding MappedChannels}">
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
-                        <UniformGrid Rows="{Binding ElementName=CurrentMappedChannel, Path=Rows}"
-						             Columns="{Binding ElementName=CurrentMappedChannel, Path=Columns}" />
+                        <UniformGrid Rows="{Binding DisplayElement.Rows}"
+						             Columns="{Binding DisplayElement.Columns}" />
 					</ItemsPanelTemplate>
 				</ListView.ItemsPanel>
                 <ListView.ItemTemplate>
                     <DataTemplate DataType="{x:Type Channels:MappedChannel}" >
-                        <Border BorderBrush="Black"
+                        <Border BorderBrush="White"
+                                Background="Black"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
                                 Padding="1"
                                 BorderThickness="1" >
-                            <TextBlock>Mapped Channel</TextBlock>
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>

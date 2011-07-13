@@ -224,6 +224,11 @@
             foreach (XmlNode node in _setupNode.ChildNodes)
             {
                 var attributes = node.Attributes;
+                if (attributes == null)
+                {
+                    continue;
+                }
+
                 var columns = attributes.GetNamedItem("Columns").Value.TryParseInt32(0);
                 var rows = attributes.GetNamedItem("Rows").Value.TryParseInt32(0);
                 var height = attributes.GetNamedItem("Height").Value.TryParseInt32(0);
