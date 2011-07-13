@@ -4,18 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vdv="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer"
-             xmlns:ViewModels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.ViewModels"
+             xmlns:Channels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Channels"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
 	<UserControl.Resources>
 		<ResourceDictionary>
-			<ViewModels:SetupViewModel x:Key="SetupViewModel" />
 			<DataTemplate DataType="{x:Type vdv:DisplayElement}">
 				<Border Canvas.Top="{Binding TopOffset}"
 				        Canvas.Left="{Binding LeftOffset}"
 				        BorderBrush="Black"
-				        BorderThickness="5"
+				        BorderThickness="3"
 				        Height="{Binding Height}"
 				        Width="{Binding Width}">
 					<ItemsControl ItemsSource="{Binding MappedChannels}">
@@ -25,13 +24,21 @@
 								             Rows="{Binding Rows}" />
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type Channels:MappedChannel}">
+                                <Border BorderBrush="Red"
+                                        BorderThickness="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                        Background="{Binding ChannelColor}">
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
 					</ItemsControl>
 				</Border>
 			</DataTemplate>
 		</ResourceDictionary>
 	</UserControl.Resources>
-	<Grid DataContext="{StaticResource SetupViewModel}">
-		<Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
@@ -44,6 +51,11 @@
 			<GroupBox Header="Available Elements">
 				<ListView ItemsSource="{Binding DisplayElements}"
 				          SelectedItem="{Binding CurrentDisplayElement}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vdv:DisplayElement}">
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
 				</ListView>
 			</GroupBox>
 			<StackPanel Grid.Row="1">
