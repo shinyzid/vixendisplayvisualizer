@@ -4,33 +4,28 @@
 // --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Windows.Input;
-
     using Vixen.PlugIns.VixenDisplayVisualizer.Channels;
-    using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
 
     public class ElementEditorViewModel : ViewModelBase
     {
         private DisplayElement _displayElement;
 
         private MappedChannel _currentMappedChannel;
+        private string _mappedChannelType;
 
         public ElementEditorViewModel(IEnumerable<Channel> channels, DisplayElement displayElement)
             : this()
         {
-            this.Channels = channels;
-            this._displayElement = displayElement;
-            this.MappedChannels = new ObservableCollection<MappedChannel>(displayElement.MappedChannels);
+            Channels = channels;
+            _displayElement = displayElement;
+            MappedChannels = new ObservableCollection<MappedChannel>(displayElement.MappedChannels);
         }
 
-        public ElementEditorViewModel()
-        {
-            this.AddMappedChannelCommand = new RelayCommand(x => this.AddMappedChannel());
-        }
-
-        public ICommand AddMappedChannelCommand { get; private set; }
+        public ElementEditorViewModel() {}
 
         public IEnumerable<Channel> Channels { get; private set; }
 
@@ -45,6 +40,28 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             {
                 this._currentMappedChannel = value;
                 this.OnPropertyChanged("CurrentMappedChannel");
+                UpdateMappedChannelType();
+            }
+        }
+
+        private void UpdateMappedChannelType()
+        {
+            var channel = _currentMappedChannel.Channel;
+            if (channel is RedGreenBlueWhiteChannel)
+            {
+                MappedChannelType = "RGB+W";
+            }
+            else if (channel is RedGreenBlueChannel)
+            {
+                MappedChannelType = "RGB";
+            }
+            else if (channel is SingleColorChannel)
+            {
+                MappedChannelType = "Single";
+            }
+            else
+            {
+                MappedChannelType = "None";
             }
         }
 
@@ -62,18 +79,20 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             }
         }
 
-        public ObservableCollection<MappedChannel> MappedChannels { get; private set; }
-
-        private void AddMappedChannel()
+        public string MappedChannelType
         {
-            var mappedChannel = new MappedChannel(null);
-            var viewModel = new MappedChannelEditorViewModel(this.Channels, mappedChannel);
-            using (var mapped = new MappedChannelEditor(viewModel))
+            get
             {
-                mapped.ShowDialog();
-                this._displayElement.MappedChannels.Add(mappedChannel);
-                this.MappedChannels.Add(mappedChannel);
+                return _mappedChannelType;
+            }
+
+            set
+            {
+                _mappedChannelType = value;
+                OnPropertyChanged("MappedChannelType");
             }
         }
+
+        public ObservableCollection<MappedChannel> MappedChannels { get; private set; }
     }
 }

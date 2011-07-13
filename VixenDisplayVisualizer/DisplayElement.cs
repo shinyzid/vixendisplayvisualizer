@@ -34,7 +34,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             var numberOfCells = rows * columns;           
             for (var index = mappedChannels.Count; index < numberOfCells; index++)
             {
-                MappedChannels.Add(new MappedChannel(null));
+                MappedChannels.Add(new MappedChannel(new EmptyChannel()));
             }
         }
 
@@ -152,7 +152,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
 
             while (MappedChannels.Count < numberOfCells)
             {
-                MappedChannels.Add(new MappedChannel(null));
+                MappedChannels.Add(new MappedChannel(new EmptyChannel()));
             }
         }
     }
