@@ -11,7 +11,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
         public SingleColorChannel(Channel channel, Color color)
         {
             Channel = channel;
-            ChannelColor = Colors.Transparent;
+            ChannelColor = Colors.Black;
             DisplayColor = color;
         }
 
