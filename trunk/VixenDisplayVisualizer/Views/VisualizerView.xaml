@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:ViewModels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.ViewModels"
              xmlns:VixenDisplayVisualizer="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer"
              xmlns:Channels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Channels"
              mc:Ignorable="d"
@@ -16,6 +15,7 @@
 				        Canvas.Left="{Binding LeftOffset}"
 				        BorderBrush="Black"
 				        BorderThickness="5"
+                        Background="White"
 				        Height="{Binding Height}"
 				        Width="{Binding Width}">
 					<ItemsControl ItemsSource="{Binding MappedChannels}">
@@ -29,8 +29,12 @@
 				</Border>
 			</DataTemplate>
 			<DataTemplate DataType="{x:Type Channels:MappedChannel}">
-				<Border Background="{Binding ChannelColor}" />
-			</DataTemplate>
+                <Border>
+                    <Border.Background>
+                        <SolidColorBrush Color="{Binding ChannelColor}" />
+                    </Border.Background>
+                </Border>
+            </DataTemplate>
 		</ResourceDictionary>
 	</UserControl.Resources>
     <Grid>

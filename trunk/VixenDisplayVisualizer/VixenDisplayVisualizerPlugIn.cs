@@ -99,10 +99,13 @@
             if (_channels.Any())
             {
                 LoadDataFromSetupNode();
-                var system = (ISystem)Interfaces.Available["ISystem"];
-                var constructor = typeof(DisplayVisualizer).GetConstructor(new[] { typeof(List<Channel>), typeof(List<MappedChannel>) });
+                ////var system = (ISystem)Interfaces.Available["ISystem"];
+                ////var constructor = typeof(DisplayVisualizer).GetConstructor(new[] { typeof(VisualizerViewModel) });
                 var viewModel = new VisualizerViewModel(_channels, _elements);
-                _displayVisualizer = (DisplayVisualizer)system.InstantiateForm(constructor, new object[] { viewModel });
+
+                ////var form = system..InstantiateForm(constructor, new object[] { viewModel });
+                _displayVisualizer = new DisplayVisualizer(viewModel);
+                _displayVisualizer.Show();
             }
         }
 

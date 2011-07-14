@@ -1,5 +1,8 @@
 ﻿namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
 {
+    using System;
+    using System.Windows.Forms;
+
     partial class DisplayVisualizer
     {
         /// <summary>
@@ -17,7 +20,13 @@
             {
                 components.Dispose();
             }
-            base.Dispose(disposing);
+            try
+            {
+                base.Dispose(disposing);
+            }
+            catch
+            {
+            }
         }
 
         #region Windows Form Designer generated code
