@@ -13,6 +13,12 @@
 		<ResourceDictionary>
 			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 			<vdv:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
+
+			<ObjectDataProvider MethodName="GetColors"
+			                    ObjectType="{x:Type vdv:LightColors}"
+			                    x:Key="LightColors">
+			</ObjectDataProvider>
+
 			<DataTemplate DataType="{x:Type Channels:EmptyChannel}">
 				<Border HorizontalAlignment="Stretch"
 				        VerticalAlignment="Stretch"
@@ -36,10 +42,20 @@
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="*" />
 						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
 						<TextBlock>Channel</TextBlock>
 						<ComboBox Grid.Column="1"
 						          SelectedItem="{Binding Channel, Mode=TwoWay}"
 						          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+						<TextBlock Grid.Row="1">Display COlor</TextBlock>
+						<ComboBox Grid.Column="1"
+						          Grid.Row="1"
+						          ItemsSource="{Binding Source={StaticResource LightColors}}"
+						          SelectedItem="{Binding DisplayColor, Mode=TwoWay}" />
+
 					</Grid>
 					<Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollapsedConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
 						<StackPanel VerticalAlignment="Center">
@@ -50,6 +66,9 @@
 							<TextBlock Foreground="White"
 							           HorizontalAlignment="Center"
 							           Text="{Binding Channel.Name}" />
+							<TextBlock Foreground="White"
+							           HorizontalAlignment="Center"
+							           Text="{Binding DisplayColor}" />
 						</StackPanel>
 					</Grid>
 				</Grid>
@@ -187,8 +206,8 @@
 		        Padding="0"
 		        x:Name="ListBorder">
 			<ListView ItemsSource="{Binding MappedChannels}"
-                      HorizontalContentAlignment="Stretch"
-                      VerticalContentAlignment="Stretch"
+			          HorizontalContentAlignment="Stretch"
+			          VerticalContentAlignment="Stretch"
 			          Height="{Binding ElementName=ListBorder, Path=Height}"
 			          SelectedItem="{Binding CurrentMappedChannel}">
 				<ListView.ItemsPanel>

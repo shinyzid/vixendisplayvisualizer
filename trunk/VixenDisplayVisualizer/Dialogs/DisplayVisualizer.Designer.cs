@@ -46,7 +46,7 @@
             this.elementHost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.elementHost.Location = new System.Drawing.Point(0, 0);
             this.elementHost.Name = "elementHost";
-            this.elementHost.Size = new System.Drawing.Size(284, 262);
+            this.elementHost.Size = new System.Drawing.Size(889, 517);
             this.elementHost.TabIndex = 0;
             this.elementHost.Text = "elementHost";
             this.elementHost.Child = this.visualizerView;
@@ -55,7 +55,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.ClientSize = new System.Drawing.Size(889, 517);
             this.Controls.Add(this.elementHost);
             this.Name = "DisplayVisualizer";
             this.Text = "DisplayVisualizer";

@@ -8,8 +8,6 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
     public class MappedChannel : INotifyPropertyChanged
     {
         private IChannel _channel;
-        private int _column;
-        private int _row;
 
         public MappedChannel(IChannel channel)
         {
@@ -50,40 +48,12 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
             }
         }
 
-        public int Column
-        {
-            get
-            {
-                return _column;
-            }
-
-            set
-            {
-                _column = value;
-                PropertyChanged.NotifyPropertyChanged("Column", this);
-            }
-        }
-
         public ICommand ConvertToEmptyCommand { get; private set; }
 
         public ICommand ConvertToRgbCommand { get; private set; }
 
         public ICommand ConvertToRgbwCommand { get; private set; }
         public ICommand ConvertToSingleCommand { get; private set; }
-
-        public int Row
-        {
-            get
-            {
-                return _row;
-            }
-
-            set
-            {
-                _row = value;
-                PropertyChanged.NotifyPropertyChanged("Row", this);
-            }
-        }
 
         public bool Contains(Channel channel)
         {
@@ -93,6 +63,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
         public void SetColor(Channel channel, byte intensity)
         {
             Channel.SetColor(channel, intensity);
+            PropertyChanged.NotifyPropertyChanged("ChannelColor", this);
         }
 
         private bool CanConvertToEmpty()
