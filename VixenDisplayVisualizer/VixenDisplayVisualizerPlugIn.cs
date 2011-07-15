@@ -25,7 +25,7 @@
         public string Author
         {
             get
-            {                
+            {
                 return "Erik Mathisen - erik@mathisen.us";
             }
         }
@@ -70,6 +70,7 @@
             _setupData = setupData;
             _setupNode = setupNode;
             LoadDataFromSetupNode();
+
             ////_setupData.GetBytes(_setupNode, "BackgroundImage", new byte[0]);
         }
 
@@ -99,6 +100,7 @@
             if (_channels.Any())
             {
                 LoadDataFromSetupNode();
+
                 ////var system = (ISystem)Interfaces.Available["ISystem"];
                 ////var constructor = typeof(DisplayVisualizer).GetConstructor(new[] { typeof(VisualizerViewModel) });
                 var viewModel = new VisualizerViewModel(_channels, _elements);
@@ -118,7 +120,7 @@
                 var viewModel = new SetupViewModel();
                 _channels.ForEach(x => viewModel.Channels.Add(x));
                 _elements.ForEach(x => viewModel.DisplayElements.Add(x));
-                var saveData = false;
+                bool saveData;
                 using (_setupDialog = new Setup(viewModel))
                 {
                     _setupDialog.ShowDialog();
@@ -127,73 +129,71 @@
                     saveData = true;
                 }
 
-                if (saveData) 
+                if (saveData)
                 {
-                while (_setupNode.ChildNodes.Count > 0)
-                        {
-                            _setupNode.RemoveChild(_setupNode.ChildNodes[0]);
-                        }
+                    while (_setupNode.ChildNodes.Count > 0)
+                    {
+                        _setupNode.RemoveChild(_setupNode.ChildNodes[0]);
+                    }
 
-                        foreach (var element in _elements)
+                    foreach (var element in _elements)
+                    {
+                        var node = _setupNode.OwnerDocument.CreateElement("DisplayElement");
+                        node.AppendAttribute("Rows", element.Rows.ToString());
+                        node.AppendAttribute("Columns", element.Columns.ToString());
+                        node.AppendAttribute("Height", element.Height.ToString());
+                        node.AppendAttribute("Width", element.Width.ToString());
+                        node.AppendAttribute("LeftOffset", element.LeftOffset.ToString());
+                        node.AppendAttribute("TopOffset", element.TopOffset.ToString());
+                        node.AppendAttribute("Name", element.Name);
+                        foreach (var mappedChannel in element.MappedChannels)
                         {
-                            var node = _setupNode.OwnerDocument.CreateElement("DisplayElement");
-                            node.AppendAttribute("Rows", element.Rows.ToString());
-                            node.AppendAttribute("Columns", element.Columns.ToString());
-                            node.AppendAttribute("Height", element.Height.ToString());
-                            node.AppendAttribute("Width", element.Width.ToString());
-                            node.AppendAttribute("LeftOffset", element.LeftOffset.ToString());
-                            node.AppendAttribute("TopOffset", element.TopOffset.ToString());
-                            node.AppendAttribute("Name", element.Name);
-                            foreach (var mappedChannel in element.MappedChannels)
+                            var mappedNode = node.OwnerDocument.CreateElement("MappedChannel");
+
+                            var channel = mappedChannel.Channel;
+                            if (channel != null)
                             {
-                                var mappedNode = node.OwnerDocument.CreateElement("MappedChannel");
-                                mappedNode.AppendAttribute("Column", mappedChannel.Column.ToString());
-                                mappedNode.AppendAttribute("Row", mappedChannel.Row.ToString());
-
-                                var channel = mappedChannel.Channel;
-                                if (channel != null)
+                                var channelNode = mappedNode.OwnerDocument.CreateElement("Channel");
+                                mappedNode.AppendChild(channelNode);
+                                if (channel is EmptyChannel)
                                 {
-                                    var channelNode = mappedNode.OwnerDocument.CreateElement("Channel");
-                                    mappedNode.AppendChild(channelNode);
-                                    if (channel is EmptyChannel)
-                                    {
-                                        channelNode.AppendAttribute("Type", "Empty");
-                                    }
-                                    else if (channel is SingleColorChannel)
-                                    {                                        
-                                        channelNode.AppendAttribute("Type", "Single");
-                                        var singleColorChannel = (SingleColorChannel)channel;
-                                        channelNode.AppendAttribute("ChannelId", singleColorChannel.Channel.ID.ToString());    
-                                        channelNode.AppendAttribute("Color",  singleColorChannel.DisplayColor.ToString());
-                                    }
-                                    else
-                                    {
-                                        var rgb = channel as RedGreenBlueChannel;
-
-                                        channelNode.AppendAttribute("RedChannel", rgb.RedChannel.ID.ToString());
-                                        channelNode.AppendAttribute("GreenChannel", rgb.GreenChannel.ID.ToString());
-                                        channelNode.AppendAttribute("BlueChannel", rgb.BlueChannel.ID.ToString());
-
-                                        var rgbw = channel as RedGreenBlueWhiteChannel;
-                                        var type = "RGB";
-                                        if (rgbw != null)
-                                        {
-                                            channelNode.AppendAttribute("WhiteChannel", rgbw.WhiteChannel.ID.ToString());
-                                            type += "W";
-                                        }
-
-                                        channelNode.AppendAttribute("Type", type);
-                                    }
+                                    channelNode.AppendAttribute("Type", "Empty");
                                 }
+                                else if (channel is SingleColorChannel)
+                                {
+                                    channelNode.AppendAttribute("Type", "Single");
+                                    var singleColorChannel = (SingleColorChannel)channel;
+                                    channelNode.AppendAttribute("ChannelId", singleColorChannel.Channel.ID.ToString());
+                                    channelNode.AppendAttribute("Color", singleColorChannel.DisplayColor.ToString());
+                                }
+                                else
+                                {
+                                    var rgb = channel as RedGreenBlueChannel;
 
-                                node.AppendChild(mappedNode);
+                                    channelNode.AppendAttribute("RedChannel", rgb.RedChannel.ID.ToString());
+                                    channelNode.AppendAttribute("GreenChannel", rgb.GreenChannel.ID.ToString());
+                                    channelNode.AppendAttribute("BlueChannel", rgb.BlueChannel.ID.ToString());
+
+                                    var rgbw = channel as RedGreenBlueWhiteChannel;
+                                    var type = "RGB";
+                                    if (rgbw != null)
+                                    {
+                                        channelNode.AppendAttribute("WhiteChannel", rgbw.WhiteChannel.ID.ToString());
+                                        type += "W";
+                                    }
+
+                                    channelNode.AppendAttribute("Type", type);
+                                }
                             }
 
-                            _setupNode.AppendChild(node);
+                            node.AppendChild(mappedNode);
                         }
 
-                        LoadDataFromSetupNode();
+                        _setupNode.AppendChild(node);
                     }
+
+                    LoadDataFromSetupNode();
+                }
 
                 _setupDialog = null;
             }
@@ -259,20 +259,30 @@
                         {
                             case "Single":
                                 var channelId = ulong.Parse(channelNode.Attributes.GetNamedItem("ChannelId").Value);
-                                //var color = Color...FromArgb(channelNode.Attributes.GetNamedItem("Color").Value.TryParseInt32(0));
-                                channel = new SingleColorChannel(_channels.First(x => x.ID == channelId), Colors.MediumVioletRed);
+                                var color = (Color)ColorConverter.ConvertFromString(channelNode.Attributes.GetNamedItem("Color").Value);
+                                channel = new SingleColorChannel(_channels.First(x => x.ID == channelId), color);
                                 break;
                             case "RGB":
-                                var redChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("RedChannel").Value));
-                                var greenChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("GreenChannel").Value));
-                                var blueChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("BlueChannel").Value));
+                                var redChannel =
+                                    _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("RedChannel").Value));
+                                var greenChannel =
+                                    _channels.First(
+                                                    x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("GreenChannel").Value));
+                                var blueChannel =
+                                    _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("BlueChannel").Value));
                                 channel = new RedGreenBlueChannel(redChannel, greenChannel, blueChannel);
                                 break;
                             case "RGBW":
-                                redChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("RedChannel").Value));
-                                greenChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("GreenChannel").Value));
-                                blueChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("BlueChannel").Value));
-                                var whiteChannel = _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("WhiteChannel").Value));                                
+                                redChannel =
+                                    _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("RedChannel").Value));
+                                greenChannel =
+                                    _channels.First(
+                                                    x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("GreenChannel").Value));
+                                blueChannel =
+                                    _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("BlueChannel").Value));
+                                var whiteChannel =
+                                    _channels.First(
+                                                    x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("WhiteChannel").Value));
                                 channel = new RedGreenBlueWhiteChannel(redChannel, greenChannel, blueChannel, whiteChannel);
                                 break;
                             default:
@@ -282,9 +292,6 @@
                     }
 
                     var mappedChannel = new MappedChannel(channel);
-                    var mappedAttributes = mappedNode.Attributes;
-                    mappedChannel.Column = mappedAttributes.GetNamedItem("Column").Value.TryParseInt32(0);           
-                    mappedChannel.Row = mappedAttributes.GetNamedItem("Row").Value.TryParseInt32(0);
                     mappedChannels.Add(mappedChannel);
                 }
 

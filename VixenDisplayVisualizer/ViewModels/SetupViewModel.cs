@@ -27,6 +27,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             DeleteElementCommand = new RelayCommand(x => DeleteDisplayElement(), x => CanDeleteDisplayElement());
             DisplayElements = new ObservableCollection<DisplayElement>();
             Channels = new ObservableCollection<Channel>();
+            DisplayWidth = 800;
+            DisplayHeight = 600;
         }
 
         /// <summary>
@@ -53,6 +55,34 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             {
                 _currentDisplayElement = value;
                 OnPropertyChanged("CurrentDisplayElement");
+            }
+        }
+
+        private int _displayWidth;
+        public int DisplayWidth
+        {
+            get
+            {
+                return _displayWidth;
+            }
+            set
+            {
+                _displayWidth = value;
+                OnPropertyChanged("DisplayWidth");
+            }
+        }
+
+        private int _displayHeight;
+        public int DisplayHeight
+        {
+            get
+            {
+                return _displayHeight;
+            }
+            set
+            {
+                _displayHeight = value;
+                OnPropertyChanged("DisplayHeight");
             }
         }
 

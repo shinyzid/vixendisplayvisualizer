@@ -6,16 +6,16 @@
              xmlns:VixenDisplayVisualizer="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer"
              xmlns:Channels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Channels"
              mc:Ignorable="d"
-             d:DesignHeight="300"
-             d:DesignWidth="300">
+             d:DesignHeight="600"
+             d:DesignWidth="800">
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<DataTemplate DataType="{x:Type VixenDisplayVisualizer:DisplayElement}">
 				<Border Canvas.Top="{Binding TopOffset}"
 				        Canvas.Left="{Binding LeftOffset}"
-				        BorderBrush="Black"
+				        BorderBrush="Gray"
 				        BorderThickness="5"
-                        Background="White"
+				        Background="Black"
 				        Height="{Binding Height}"
 				        Width="{Binding Width}">
 					<ItemsControl ItemsSource="{Binding MappedChannels}">
@@ -29,25 +29,45 @@
 				</Border>
 			</DataTemplate>
 			<DataTemplate DataType="{x:Type Channels:MappedChannel}">
-                <Border>
-                    <Border.Background>
-                        <SolidColorBrush Color="{Binding ChannelColor}" />
-                    </Border.Background>
-                </Border>
-            </DataTemplate>
+				<Border BorderBrush="Gray" BorderThickness="1">
+					<Border.Background>
+						<SolidColorBrush Color="{Binding ChannelColor}" />
+					</Border.Background>
+				</Border>
+			</DataTemplate>
 		</ResourceDictionary>
 	</UserControl.Resources>
-    <Grid>
-        <GroupBox Header="Display Canvas"
+	<Grid>
+		<GroupBox Header="Display Canvas"
 		          Grid.Column="1">
-			<ItemsControl Background="LightCyan"
+            <Border Grid.Row="1"
+		        Background="Transparent"
+		        VerticalAlignment="Stretch"
+		        Margin="0"
+		        Padding="0"
+		        x:Name="ListBorder">
+                <ItemsControl Background="LightCyan"
+                              MinWidth="{Binding DisplayWidth}"
+                                                MaxWidth="{Binding DisplayWidth}"
+								                MinHeight="{Binding DisplayHeight}"
+								                MaxHeight="{Binding DisplayHeight}"
 			              ItemsSource="{Binding DisplayElements}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<Canvas IsItemsHost="True" />
+						<Canvas IsItemsHost="True" ScrollViewer.CanContentScroll="True" />
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
-			</ItemsControl>
+				<ItemsControl.ItemContainerStyle>
+					<Style TargetType="ContentPresenter">
+						<Setter Property="Canvas.Left"
+						        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
+						<Setter Property="Canvas.Top"
+						        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
+					</Style>
+				</ItemsControl.ItemContainerStyle>
+			</ItemsControl>			
+                </Border>
 		</GroupBox>
+
 	</Grid>
 </UserControl>

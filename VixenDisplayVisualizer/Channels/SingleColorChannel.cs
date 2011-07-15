@@ -1,13 +1,12 @@
-// --------------------------------------------------------------------------------
-// Copyright (c) 2011 Erik Mathisen
-// See the file license.txt for copying permission.
-// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
+    using System.ComponentModel;
     using System.Windows.Media;
 
-    public class SingleColorChannel : IChannel
+    public class SingleColorChannel : IChannel, INotifyPropertyChanged
     {
+        private Color _displayColor;
+
         public SingleColorChannel(Channel channel, Color color)
         {
             Channel = channel;
@@ -15,11 +14,25 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
             DisplayColor = color;
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public Channel Channel { get; set; }
 
         public Color ChannelColor { get; private set; }
 
-        public Color DisplayColor { get; private set; }
+        public Color DisplayColor
+        {
+            get
+            {
+                return _displayColor;
+            }
+
+            set
+            {
+                _displayColor = value;
+                PropertyChanged.NotifyPropertyChanged("DisplayColor", this);
+            }
+        }
 
         public bool Contains(Channel channel)
         {

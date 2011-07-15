@@ -54,6 +54,7 @@
     <Compile Include="Channels\EmptyChannel.cs" />
     <Compile Include="Channels\IChannel.cs" />
     <Compile Include="Channels\MappedChannel.cs" />
+    <Compile Include="LightColors.cs" />
     <Compile Include="Dialogs\DisplayVisualizer.cs">
       <SubType>Form</SubType>
     </Compile>
