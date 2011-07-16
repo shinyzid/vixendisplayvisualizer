@@ -48,21 +48,26 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 
         public virtual void SetColor(Channel channel, byte intensity)
         {
+            if (channel == null)
+            {
+                return;
+            }
+
             var channelId = channel.ID;
             if (RedChannel != null
                 && channelId == RedChannel.ID)
             {
-                _red = Color.FromArgb(intensity, 0xFF, 0, 0);
+                _red = Color.FromRgb(intensity, 0, 0);
             }
             else if (GreenChannel != null
                      && channelId == GreenChannel.ID)
             {
-                _green = Color.FromArgb(intensity, 0, 0xFF, 0);
+                _green = Color.FromRgb(0, intensity, 0);
             }
             else if (BlueChannel != null
                      && channelId == BlueChannel.ID)
             {
-                _blue = Color.FromArgb(intensity, 0, 0, 0xFF);
+                _blue = Color.FromRgb(0, 0, intensity);
             }
 
             ChannelColor = _red + _green + _blue;
