@@ -1,22 +1,27 @@
-﻿namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
+﻿// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
+namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
     using System.Windows.Media;
 
     internal class RedGreenBlueWhiteChannel : RedGreenBlueChannel
     {
-        private byte _white = 0x00;
+        private byte _white;
 
         public RedGreenBlueWhiteChannel(Channel red, Channel green, Channel blue, Channel white)
             : base(red, green, blue)
         {
-            WhiteChannel = white;
+            this.WhiteChannel = white;
         }
 
         public Channel WhiteChannel { get; set; }
 
         public override bool Contains(Channel channel)
         {
-            return base.Contains(channel) || WhiteChannel.ID == channel.ID;
+            return this.WhiteChannel != null && channel != null
+                   && (base.Contains(channel) || this.WhiteChannel.ID == channel.ID);
         }
 
         public override void SetColor(Channel channel, byte intensity)
@@ -27,27 +32,28 @@
             }
 
             var channelId = channel.ID;
-            if (RedChannel != null && channelId == RedChannel.ID)
+            var halfIntensity = (byte)(intensity / 2);
+            if (this.RedChannel != null && channelId == this.RedChannel.ID)
             {
-                _red = Color.FromRgb(intensity, 0, 0);
+                this._red = halfIntensity;
             }
-            else if (GreenChannel != null && channelId == GreenChannel.ID)
+            else if (this.GreenChannel != null && channelId == this.GreenChannel.ID)
             {
-                _green = Color.FromRgb(0, intensity, 0);
+                this._green = halfIntensity;
             }
-            else if (BlueChannel != null && channelId == BlueChannel.ID)
+            else if (this.BlueChannel != null && channelId == this.BlueChannel.ID)
             {
-                _blue = Color.FromRgb(0, 0, intensity);
+                this._blue = halfIntensity;
             }
-            else if (WhiteChannel != null && channelId == WhiteChannel.ID)
+            else if (this.WhiteChannel != null && channelId == this.WhiteChannel.ID)
             {
-                _white = (byte)(intensity / 2);
+                this._white = halfIntensity;
             }
 
-            var red = (byte)((byte)(this._red.R / 2) + _white);
-            var green = (byte)((byte)(this._green.G / 2) + _white);
-            var blue = (byte)((byte)(this._blue.B / 2) + _white);
-            ChannelColor = Color.FromRgb(red, green, blue);
+            var red = (byte)(this._red + this._white);
+            var green = (byte)(this._green + this._white);
+            var blue = (byte)(this._blue + this._white);
+            this.ChannelColor = Color.FromRgb(red, green, blue);
         }
     }
 }
