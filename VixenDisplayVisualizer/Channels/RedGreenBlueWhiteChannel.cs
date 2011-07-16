@@ -4,7 +4,7 @@
 
     internal class RedGreenBlueWhiteChannel : RedGreenBlueChannel
     {
-        private Color _white = Color.FromArgb(0, 0xFF, 0xFF, 0xFF);
+        private byte _white = 0x00;
 
         public RedGreenBlueWhiteChannel(Channel red, Channel green, Channel blue, Channel white)
             : base(red, green, blue)
@@ -21,25 +21,33 @@
 
         public override void SetColor(Channel channel, byte intensity)
         {
+            if (channel == null)
+            {
+                return;
+            }
+
             var channelId = channel.ID;
             if (RedChannel != null && channelId == RedChannel.ID)
             {
-                _red = Color.FromArgb(intensity, 0xFF, 0, 0);
+                _red = Color.FromRgb(intensity, 0, 0);
             }
             else if (GreenChannel != null && channelId == GreenChannel.ID)
             {
-                _green = Color.FromArgb(intensity, 0, 0xFF, 0);
+                _green = Color.FromRgb(0, intensity, 0);
             }
             else if (BlueChannel != null && channelId == BlueChannel.ID)
             {
-                _blue = Color.FromArgb(intensity, 0, 0, 0xFF);
+                _blue = Color.FromRgb(0, 0, intensity);
             }
             else if (WhiteChannel != null && channelId == WhiteChannel.ID)
             {
-                _white = Color.FromArgb(intensity, 0xFF, 0xFF, 0xFF);
+                _white = (byte)(intensity / 2);
             }
 
-            ChannelColor = _red + _green + _blue + _white;
+            var red = (byte)((byte)(this._red.R / 2) + _white);
+            var green = (byte)((byte)(this._green.G / 2) + _white);
+            var blue = (byte)((byte)(this._blue.B / 2) + _white);
+            ChannelColor = Color.FromRgb(red, green, blue);
         }
     }
 }
