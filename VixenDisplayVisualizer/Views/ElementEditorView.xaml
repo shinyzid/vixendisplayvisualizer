@@ -13,7 +13,7 @@
 		<ResourceDictionary>
 			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 			<vdv:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
-
+			<vdv:ColorToColorNameConverter x:Key="ColorNameToColorconverter" />
 			<ObjectDataProvider MethodName="GetColors"
 			                    ObjectType="{x:Type vdv:LightColors}"
 			                    x:Key="LightColors">
@@ -22,11 +22,11 @@
 			<DataTemplate DataType="{x:Type Channels:EmptyChannel}">
 				<Border HorizontalAlignment="Stretch"
 				        VerticalAlignment="Stretch"
-				        BorderThickness="2"
 				        Background="Black"
 				        CornerRadius="5"
-				        Margin="3"
-				        Padding="3"
+				        Margin="2"
+				        Padding="2"
+				        BorderThickness="2"
 				        BorderBrush="AntiqueWhite">
 					<TextBlock VerticalAlignment="Center"
 					           HorizontalAlignment="Center"
@@ -36,125 +36,149 @@
 				</Border>
 			</DataTemplate>
 			<DataTemplate DataType="{x:Type Channels:SingleColorChannel}">
-				<Grid>
-					<Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition Height="*" />
-							<RowDefinition Height="*" />
-						</Grid.RowDefinitions>
-						<TextBlock>Channel</TextBlock>
-						<ComboBox Grid.Column="1"
-						          SelectedItem="{Binding Channel, Mode=TwoWay}"
-						          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
-						<TextBlock Grid.Row="1">Display COlor</TextBlock>
-						<ComboBox Grid.Column="1"
-						          Grid.Row="1"
-						          ItemsSource="{Binding Source={StaticResource LightColors}}"
-						          SelectedItem="{Binding DisplayColor, Mode=TwoWay}" />
+				<Border BorderBrush="White"
+				        Background="Black"
+				        HorizontalAlignment="Stretch"
+				        VerticalAlignment="Stretch"
+				        Margin="2"
+				        Padding="2"
+				        BorderThickness="2">
+					<Grid>
+						<Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<GroupBox Header="Channel">
+								<ComboBox SelectedItem="{Binding Channel, Mode=TwoWay}"
+								          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+							</GroupBox>
 
+							<GroupBox Header="Display Color"
+							          Grid.Row="1">
+								<ComboBox ItemsSource="{Binding Source={StaticResource LightColors}}"
+								          SelectedItem="{Binding DisplayColor, Mode=TwoWay, Converter={StaticResource ColorNameToColorconverter}}" />
+							</GroupBox>
+						</Grid>
+						<Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollapsedConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+							<StackPanel VerticalAlignment="Center">
+								<TextBlock Foreground="White"
+								           HorizontalAlignment="Center">
+									Single Color Channel
+								</TextBlock>
+								<TextBlock Foreground="White"
+								           HorizontalAlignment="Center"
+								           Text="{Binding Channel.Name}" />
+								<TextBlock Foreground="White"
+								           HorizontalAlignment="Center"
+								           Text="{Binding DisplayColor, Converter={StaticResource ColorNameToColorconverter}}" />
+							</StackPanel>
+						</Grid>
 					</Grid>
-					<Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollapsedConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
-						<StackPanel VerticalAlignment="Center">
+				</Border>
+			</DataTemplate>
+			<DataTemplate DataType="{x:Type Channels:RedGreenBlueChannel}">
+				<Border BorderBrush="White"
+				        Background="Black"
+				        HorizontalAlignment="Stretch"
+				        VerticalAlignment="Stretch"
+				        Margin="2"
+				        Padding="2"
+				        BorderThickness="2">
+					<Grid>
+						<StackPanel Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+							<GroupBox Header="Red Channel"
+							          Foreground="White">
+								<ComboBox Grid.Column="1"
+								          Grid.Row="0"
+								          SelectedItem="{Binding RedChannel, Mode=TwoWay}"
+								          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+							</GroupBox>
+							<GroupBox Header="Green Channel"
+							          Foreground="White">
+								<ComboBox Grid.Column="1"
+								          Grid.Row="1"
+								          SelectedItem="{Binding GreenChannel, Mode=TwoWay}"
+								          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+							</GroupBox>
+							<GroupBox Header="Blue Channel"
+							          Foreground="White">
+								<ComboBox Grid.Column="1"
+								          Grid.Row="2"
+								          SelectedItem="{Binding BlueChannel, Mode=TwoWay}"
+								          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+							</GroupBox>
+						</StackPanel>
+						<StackPanel Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollapsedConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
 							<TextBlock Foreground="White"
 							           HorizontalAlignment="Center">
-								Single Color Channel
+								RGB Channel
 							</TextBlock>
 							<TextBlock Foreground="White"
 							           HorizontalAlignment="Center"
-							           Text="{Binding Channel.Name}" />
+							           Text="{Binding RedChannel, StringFormat='Red Channel: {0}'}" />
 							<TextBlock Foreground="White"
 							           HorizontalAlignment="Center"
-							           Text="{Binding DisplayColor}" />
+							           Text="{Binding GreenChannel, StringFormat='Green Channel: {0}'}" />
+							<TextBlock Foreground="White"
+							           HorizontalAlignment="Center"
+							           Text="{Binding BlueChannel, StringFormat='Blue Channel: {0}'}" />
 						</StackPanel>
 					</Grid>
-				</Grid>
-			</DataTemplate>
-			<DataTemplate DataType="{x:Type Channels:RedGreenBlueChannel}">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition />
-						<RowDefinition />
-						<RowDefinition />
-					</Grid.RowDefinitions>
-					<TextBlock Grid.Column="0"
-					           Grid.Row="0">
-						Red Channel
-					</TextBlock>
-					<ComboBox Grid.Column="1"
-					          Grid.Row="0"
-					          SelectedItem="{Binding RedChannel, Mode=TwoWay}"
-					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
-					<TextBlock Grid.Column="0"
-					           Grid.Row="1">
-						Green Channel
-					</TextBlock>
-					<ComboBox Grid.Column="1"
-					          Grid.Row="1"
-					          SelectedItem="{Binding GreenChannel, Mode=TwoWay}"
-					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
-					<TextBlock Grid.Column="0"
-					           Grid.Row="2">
-						Blue Channel
-					</TextBlock>
-					<ComboBox Grid.Column="1"
-					          Grid.Row="2"
-					          SelectedItem="{Binding BlueChannel, Mode=TwoWay}"
-					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
-				</Grid>
+				</Border>
 			</DataTemplate>
 			<DataTemplate DataType="{x:Type Channels:RedGreenBlueWhiteChannel}">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-					<Grid.RowDefinitions>
-						<RowDefinition />
-						<RowDefinition />
-						<RowDefinition />
-						<RowDefinition />
-					</Grid.RowDefinitions>
-					<TextBlock Grid.Column="0"
-					           Grid.Row="0">
-						Red Channel
-					</TextBlock>
-					<ComboBox Grid.Column="1"
-					          Grid.Row="0"
-					          SelectedItem="{Binding RedChannel, Mode=TwoWay}"
-					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
-					<TextBlock Grid.Column="0"
-					           Grid.Row="1">
-						Green Channel
-					</TextBlock>
-					<ComboBox Grid.Column="1"
-					          Grid.Row="1"
-					          SelectedItem="{Binding GreenChannel, Mode=TwoWay}"
-					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
-					<TextBlock Grid.Column="0"
-					           Grid.Row="2">
-						Blue Channel
-					</TextBlock>
-					<ComboBox Grid.Column="1"
-					          Grid.Row="2"
-					          SelectedItem="{Binding BlueChannel, Mode=TwoWay}"
-					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
-					<TextBlock Grid.Column="0"
-					           Grid.Row="3">
-						White Channel
-					</TextBlock>
-					<ComboBox Grid.Column="1"
-					          Grid.Row="3"
-					          SelectedItem="{Binding WhiteChannel, Mode=TwoWay}"
-					          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
-				</Grid>
+				<Border BorderBrush="White"
+				        Background="Black"
+				        HorizontalAlignment="Stretch"
+				        VerticalAlignment="Stretch"
+				        Margin="2"
+				        Padding="2"
+				        BorderThickness="2">
+					<Grid>
+						<StackPanel Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+							<GroupBox Header="Red Channel"
+							          Foreground="White">
+								<ComboBox SelectedItem="{Binding RedChannel, Mode=TwoWay}"
+								          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+							</GroupBox>
+							<GroupBox Header="Green Channel"
+							          Foreground="White">
+								<ComboBox Grid.Row="1"
+								          SelectedItem="{Binding GreenChannel, Mode=TwoWay}"
+								          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+							</GroupBox>
+							<GroupBox Header="Blue Channel"
+							          Foreground="White">
+								<ComboBox SelectedItem="{Binding BlueChannel, Mode=TwoWay}"
+								          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+							</GroupBox>
+							<GroupBox Header="White Channel"
+							          Foreground="White">
+								<ComboBox SelectedItem="{Binding WhiteChannel, Mode=TwoWay}"
+								          ItemsSource="{Binding DataContext.Channels, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" />
+							</GroupBox>
+						</StackPanel>
+						<StackPanel Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollapsedConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+							<TextBlock Foreground="White"
+							           HorizontalAlignment="Center">
+								RGB+W Channel
+							</TextBlock>
+							<TextBlock Foreground="White"
+							           HorizontalAlignment="Center"
+							           Text="{Binding RedChannel, StringFormat='Red Channel: {0}'}" />
+							<TextBlock Foreground="White"
+							           HorizontalAlignment="Center"
+							           Text="{Binding GreenChannel, StringFormat='Green Channel: {0}'}" />
+							<TextBlock Foreground="White"
+							           HorizontalAlignment="Center"
+							           Text="{Binding BlueChannel, StringFormat='Blue Channel: {0}'}" />
+							<TextBlock Foreground="White"
+							           HorizontalAlignment="Center"
+							           Text="{Binding WhiteChannel, StringFormat='White Channel: {0}'}" />
+						</StackPanel>
+					</Grid>
+				</Border>
 			</DataTemplate>
 		</ResourceDictionary>
 	</UserControl.Resources>
@@ -163,42 +187,37 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<GroupBox Header="Settings">
+		<Border CornerRadius="5" Margin="2" Padding="2">
 			<ContentControl Content="{Binding DisplayElement}">
 				<ContentControl.ContentTemplate>
 					<DataTemplate DataType="{x:Type vdv:DisplayElement}">
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Margin="2">
-								Name:
+							<GroupBox Margin="2" Padding="2" Header="Name">
 								<TextBox Text="{Binding Name}"
-								         MinWidth="60" />
-							</TextBlock>
-							<TextBlock Margin="2">
-								Rows:
+								         MinWidth="100" />
+							</GroupBox>
+                            <GroupBox Margin="2" Padding="2" Header="Rows">								
 								<TextBox Text="{Binding Rows}"
 								         MinWidth="30" />
-							</TextBlock>
-							<TextBlock Margin="2">
-								Columns:
+							</GroupBox>
+                            <GroupBox Margin="2" Padding="2" Header="Columns">
 								<TextBox MinWidth="30"
 								         Text="{Binding Columns}" />
-							</TextBlock>
-							<TextBlock Margin="2">
-								Height:
+							</GroupBox>
+                            <GroupBox Margin="2" Padding="2" Header="Height">								
 								<TextBox MinWidth="30"
 								         Text="{Binding Height}" />
-							</TextBlock>
-							<TextBlock Margin="2">
-								Width:
+							</GroupBox>
+                            <GroupBox Margin="2" Padding="2" Header="Width">
 								<TextBox MinWidth="30"
 								         Text="{Binding Width}" />
-							</TextBlock>
+							</GroupBox>
 						</StackPanel>
 					</DataTemplate>
 				</ContentControl.ContentTemplate>
 			</ContentControl>
 
-		</GroupBox>
+		</Border>
 		<Border Grid.Row="1"
 		        Background="Transparent"
 		        VerticalAlignment="Stretch"

@@ -1,27 +1,39 @@
-﻿// --------------------------------------------------------------------------------
-// Copyright (c) 2011 Erik Mathisen
-// See the file license.txt for copying permission.
-// --------------------------------------------------------------------------------
-namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
+﻿namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
+    using System.ComponentModel;
     using System.Windows.Media;
 
     internal class RedGreenBlueWhiteChannel : RedGreenBlueChannel
     {
         private byte _white;
+        private Channel _whiteChannel;
 
         public RedGreenBlueWhiteChannel(Channel red, Channel green, Channel blue, Channel white)
             : base(red, green, blue)
         {
-            this.WhiteChannel = white;
+            WhiteChannel = white;
         }
 
-        public Channel WhiteChannel { get; set; }
+        public new event PropertyChangedEventHandler PropertyChanged;
+
+        public Channel WhiteChannel
+        {
+            get
+            {
+                return _whiteChannel;
+            }
+
+            set
+            {
+                _whiteChannel = value;
+                PropertyChanged.NotifyPropertyChanged("WhiteChannel", this);
+            }
+        }
 
         public override bool Contains(Channel channel)
         {
-            return this.WhiteChannel != null && channel != null
-                   && (base.Contains(channel) || this.WhiteChannel.ID == channel.ID);
+            var whiteChannel = WhiteChannel;
+            return channel != null && (base.Contains(channel) || (whiteChannel != null && whiteChannel.ID == channel.ID));
         }
 
         public override void SetColor(Channel channel, byte intensity)
@@ -33,27 +45,44 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 
             var channelId = channel.ID;
             var halfIntensity = (byte)(intensity / 2);
-            if (this.RedChannel != null && channelId == this.RedChannel.ID)
+            var redChannel = RedChannel;
+            if (redChannel != null
+                && channelId == redChannel.ID)
             {
-                this._red = halfIntensity;
+                _red = halfIntensity;
             }
-            else if (this.GreenChannel != null && channelId == this.GreenChannel.ID)
+            else
             {
-                this._green = halfIntensity;
-            }
-            else if (this.BlueChannel != null && channelId == this.BlueChannel.ID)
-            {
-                this._blue = halfIntensity;
-            }
-            else if (this.WhiteChannel != null && channelId == this.WhiteChannel.ID)
-            {
-                this._white = halfIntensity;
+                var greenChannel = GreenChannel;
+                if (greenChannel != null
+                    && channelId == greenChannel.ID)
+                {
+                    _green = halfIntensity;
+                }
+                else
+                {
+                    var blueChannel = BlueChannel;
+                    if (blueChannel != null
+                        && channelId == blueChannel.ID)
+                    {
+                        _blue = halfIntensity;
+                    }
+                    else
+                    {
+                        var whiteChannel = WhiteChannel;
+                        if (whiteChannel != null
+                            && channelId == whiteChannel.ID)
+                        {
+                            _white = halfIntensity;
+                        }
+                    }
+                }
             }
 
-            var red = (byte)(this._red + this._white);
-            var green = (byte)(this._green + this._white);
-            var blue = (byte)(this._blue + this._white);
-            this.ChannelColor = Color.FromRgb(red, green, blue);
+            var red = (byte)(_red + _white);
+            var green = (byte)(_green + _white);
+            var blue = (byte)(_blue + _white);
+            ChannelColor = Color.FromRgb(red, green, blue);
         }
     }
 }

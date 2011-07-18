@@ -101,6 +101,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         private void AddElement()
         {
             var displayElement = new DisplayElement(10, 10, 100, 0, 0, 100, new List<MappedChannel>());
+            displayElement.Name = "My New Element";
             var viewModel = new ElementEditorViewModel(Channels, displayElement);
             using (var editor = new ElementEditor(viewModel))
             {

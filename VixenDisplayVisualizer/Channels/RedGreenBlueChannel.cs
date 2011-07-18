@@ -1,7 +1,3 @@
-// --------------------------------------------------------------------------------
-// Copyright (c) 2011 Erik Mathisen
-// See the file license.txt for copying permission.
-// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 {
     using System.ComponentModel;
@@ -14,38 +10,77 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
         protected byte _green;
 
         protected byte _red;
+        private Channel _blueChannel;
 
         private Color _channelColor;
+        private Channel _greenChannel;
+        private Channel _redChannel;
 
         public RedGreenBlueChannel(Channel red, Channel green, Channel blue)
         {
-            this._channelColor = Colors.Black;
-            this.RedChannel = red;
-            this.GreenChannel = green;
-            this.BlueChannel = blue;
+            _channelColor = Colors.Black;
+            RedChannel = red;
+            GreenChannel = green;
+            BlueChannel = blue;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Channel BlueChannel { get; set; }
+        public Channel BlueChannel
+        {
+            get
+            {
+                return _blueChannel;
+            }
+
+            set
+            {
+                _blueChannel = value;
+                PropertyChanged.NotifyPropertyChanged("BlueChannel", this);
+            }
+        }
 
         public virtual Color ChannelColor
         {
             get
             {
-                return this._channelColor;
+                return _channelColor;
             }
 
             protected set
             {
-                this._channelColor = value;
-                this.PropertyChanged.NotifyPropertyChanged("ChannelColor", this);
+                _channelColor = value;
+                PropertyChanged.NotifyPropertyChanged("ChannelColor", this);
             }
         }
 
-        public Channel GreenChannel { get; set; }
+        public Channel GreenChannel
+        {
+            get
+            {
+                return _greenChannel;
+            }
 
-        public Channel RedChannel { get; set; }
+            set
+            {
+                _greenChannel = value;
+                PropertyChanged.NotifyPropertyChanged("GreenChannel", this);
+            }
+        }
+
+        public Channel RedChannel
+        {
+            get
+            {
+                return _redChannel;
+            }
+
+            set
+            {
+                _redChannel = value;
+                PropertyChanged.NotifyPropertyChanged("RedChannel", this);
+            }
+        }
 
         public virtual bool Contains(Channel channel)
         {
@@ -55,12 +90,11 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
             }
 
             var id = channel.ID;
-            var redChannel = this.RedChannel;
-            var greenChannel = this.GreenChannel;
-            var blueChannel = this.BlueChannel;
-            return (redChannel != null && redChannel.ID == id) 
-                || (greenChannel != null && greenChannel.ID == id)
-                || (blueChannel != null && blueChannel.ID == id);
+            var redChannel = RedChannel;
+            var greenChannel = GreenChannel;
+            var blueChannel = BlueChannel;
+            return (redChannel != null && redChannel.ID == id) || (greenChannel != null && greenChannel.ID == id)
+                   || (blueChannel != null && blueChannel.ID == id);
         }
 
         public virtual void SetColor(Channel channel, byte intensity)
@@ -71,20 +105,32 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
             }
 
             var channelId = channel.ID;
-            if (this.RedChannel != null && channelId == this.RedChannel.ID)
+            var redChannel = RedChannel;
+            if (redChannel != null
+                && channelId == redChannel.ID)
             {
-                this._red = intensity;
+                _red = intensity;
             }
-            else if (this.GreenChannel != null && channelId == this.GreenChannel.ID)
+            else
             {
-                this._green = intensity;
-            }
-            else if (this.BlueChannel != null && channelId == this.BlueChannel.ID)
-            {
-                this._blue = intensity;
+                var greenChannel = GreenChannel;
+                if (greenChannel != null
+                    && channelId == greenChannel.ID)
+                {
+                    _green = intensity;
+                }
+                else
+                {
+                    var blueChannel = BlueChannel;
+                    if (blueChannel != null
+                        && channelId == blueChannel.ID)
+                    {
+                        _blue = intensity;
+                    }
+                }
             }
 
-            this.ChannelColor = Color.FromRgb(this._red, this._green, this._blue);
+            ChannelColor = Color.FromRgb(_red, _green, _blue);
         }
     }
 }

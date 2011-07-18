@@ -104,7 +104,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 
         private void ConvertToSingle()
         {
-            Channel = new SingleColorChannel(null, Colors.HotPink);
+            Channel = new SingleColorChannel(null, Colors.White);
         }
     }
 }
