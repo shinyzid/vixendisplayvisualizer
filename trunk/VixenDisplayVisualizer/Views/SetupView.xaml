@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vdv="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer"
-             xmlns:Channels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Channels"
+             xmlns:Pixels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Pixels"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
@@ -20,7 +20,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <vdv:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
             
-			<DataTemplate DataType="{x:Type Channels:SingleColorChannel}">
+			<DataTemplate DataType="{x:Type Pixels:SingleColorPixel}">
 				<Border>
 					<Border.Background>
 						<SolidColorBrush Color="{Binding DisplayColor}" />
@@ -28,7 +28,7 @@
 				</Border>
 			</DataTemplate>
 
-			<DataTemplate DataType="{x:Type Channels:EmptyChannel}">
+			<DataTemplate DataType="{x:Type Pixels:EmptyPixel}">
 				<Border>
 					<Border.Background>
 						<SolidColorBrush Color="DarkGray" />
@@ -36,7 +36,7 @@
 				</Border>
 			</DataTemplate>
 
-			<DataTemplate DataType="{x:Type Channels:RedGreenBlueWhiteChannel}">
+			<DataTemplate DataType="{x:Type Pixels:RedGreenBlueWhitePixel}">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="*" />
@@ -108,7 +108,7 @@
 				</Grid>
 			</DataTemplate>
 
-			<DataTemplate DataType="{x:Type Channels:RedGreenBlueChannel}">
+			<DataTemplate DataType="{x:Type Pixels:RedGreenBluePixel}">
 				<Border>
 					<Border.Background>
 						<LinearGradientBrush StartPoint="0,0"
@@ -134,7 +134,7 @@
 				        BorderThickness="3"
 				        Height="{Binding Height, Mode=TwoWay}"
 				        Width="{Binding Width, Mode=TwoWay}">
-					<ItemsControl ItemsSource="{Binding MappedChannels}"
+					<ItemsControl ItemsSource="{Binding PixelMappings}"
 					              HorizontalContentAlignment="Stretch"
 					              VerticalContentAlignment="Stretch">
 						<ItemsControl.ItemsPanel>
@@ -144,13 +144,13 @@
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="{x:Type Channels:MappedChannel}">
+							<DataTemplate DataType="{x:Type Pixels:PixelMapping}">
 								<Border BorderBrush="LightGray"
 								        BorderThickness="1"
 								        VerticalAlignment="Stretch"
 								        HorizontalAlignment="Stretch"
 								        Background="Black">
-									<ContentControl Content="{Binding Channel}" />
+									<ContentControl Content="{Binding Pixel}" />
 								</Border>
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>

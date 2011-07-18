@@ -1,6 +1,5 @@
 namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -29,7 +28,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
                 var channel = Channels[index];
                 var color = channelValues[index];
                 var mappedChannels = (from displayElement in DisplayElements
-                                      from mappedChannel in displayElement.MappedChannels
+                                      from mappedChannel in displayElement.PixelMappings
                                       where mappedChannel.Contains(channel)
                                       select mappedChannel).ToList();
                 foreach (var mappedChannel in mappedChannels)

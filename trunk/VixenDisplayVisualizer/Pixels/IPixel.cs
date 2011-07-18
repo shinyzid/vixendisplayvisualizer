@@ -2,11 +2,11 @@
 // Copyright (c) 2011 Erik Mathisen
 // See the file license.txt for copying permission.
 // --------------------------------------------------------------------------------
-namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
+namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
 {
-    using Color = System.Windows.Media.Color;
+    using System.Windows.Media;
 
-    public interface IChannel
+    public interface IPixel
     {
         Color ChannelColor { get; }
 

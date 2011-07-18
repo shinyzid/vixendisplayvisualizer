@@ -6,8 +6,8 @@
     using System.Windows.Forms;
     using System.Windows.Media;
     using System.Xml;
-    using Vixen.PlugIns.VixenDisplayVisualizer.Channels;
     using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
+    using Vixen.PlugIns.VixenDisplayVisualizer.Pixels;
     using Vixen.PlugIns.VixenDisplayVisualizer.ViewModels;
     using MessageBox = System.Windows.MessageBox;
 
@@ -146,30 +146,30 @@
                         node.AppendAttribute("LeftOffset", element.LeftOffset.ToString());
                         node.AppendAttribute("TopOffset", element.TopOffset.ToString());
                         node.AppendAttribute("Name", element.Name);
-                        foreach (var mappedChannel in element.MappedChannels)
+                        foreach (var mappedChannel in element.PixelMappings)
                         {
-                            var mappedNode = node.OwnerDocument.CreateElement("MappedChannel");
+                            var mappedNode = node.OwnerDocument.CreateElement("PixelMapping");
 
-                            var channel = mappedChannel.Channel;
+                            var channel = mappedChannel.Pixel;
                             if (channel != null)
                             {
                                 var channelNode = mappedNode.OwnerDocument.CreateElement("Channel");
                                 mappedNode.AppendChild(channelNode);
-                                if (channel is EmptyChannel)
+                                if (channel is EmptyPixel)
                                 {
                                     channelNode.AppendAttribute("Type", "Empty");
                                 }
-                                else if (channel is SingleColorChannel)
+                                else if (channel is SingleColorPixel)
                                 {
                                     channelNode.AppendAttribute("Type", "Single");
-                                    var singleColorChannel = (SingleColorChannel)channel;
+                                    var singleColorChannel = (SingleColorPixel)channel;
                                     var vixenChannel = singleColorChannel.Channel;
                                     channelNode.AppendAttribute("ChannelId", vixenChannel == null ? string.Empty : vixenChannel.ID.ToString());
                                     channelNode.AppendAttribute("Color", singleColorChannel.DisplayColor.ToString());
                                 }
                                 else
                                 {
-                                    var rgb = channel as RedGreenBlueChannel;
+                                    var rgb = channel as RedGreenBluePixel;
 
                                     var redChannel = rgb.RedChannel;
                                     channelNode.AppendAttribute("RedChannel", redChannel == null ? string.Empty : redChannel.ID.ToString());
@@ -178,7 +178,7 @@
                                     var blueChannel = rgb.BlueChannel;
                                     channelNode.AppendAttribute("BlueChannel", blueChannel == null ? string.Empty : blueChannel.ID.ToString());
 
-                                    var rgbw = channel as RedGreenBlueWhiteChannel;
+                                    var rgbw = channel as RedGreenBlueWhitePixel;
                                     var type = "RGB";
                                     if (rgbw != null)
                                     {
@@ -248,14 +248,14 @@
                 var topOffset = attributes.GetNamedItem("TopOffset").Value.TryParseInt32(0);
                 var leftOffset = attributes.GetNamedItem("LeftOffset").Value.TryParseInt32(0);
 
-                var mappedChannels = new List<MappedChannel>();
+                var mappedChannels = new List<PixelMapping>();
                 foreach (XmlNode mappedNode in node.ChildNodes)
                 {
-                    IChannel channel;
+                    IPixel pixel;
                     var channelNode = mappedNode.FirstChild;
                     if (channelNode == null)
                     {
-                        channel = new EmptyChannel();
+                        pixel = new EmptyPixel();
                     }
                     else
                     {
@@ -266,7 +266,7 @@
                                 var channelIdValue = channelNode.GetAttributeValue("ChannelId");
                                 var channelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
                                 var color = (Color)ColorConverter.ConvertFromString(channelNode.Attributes.GetNamedItem("Color").Value);
-                                channel = new SingleColorChannel(_channels.FirstOrDefault(x => x.ID == channelId), color);
+                                pixel = new SingleColorPixel(_channels.FirstOrDefault(x => x.ID == channelId), color);
                                 break;
                             case "RGB":
                                 channelIdValue = channelNode.GetAttributeValue("RedChannel");
@@ -278,7 +278,7 @@
                                 channelIdValue = channelNode.GetAttributeValue("BlueChannel");
                                 var greenChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
                                 var blueChannel = _channels.FirstOrDefault(x => x.ID == greenChannelId);
-                                channel = new RedGreenBlueChannel(redChannel, greenChannel, blueChannel);
+                                pixel = new RedGreenBluePixel(redChannel, greenChannel, blueChannel);
                                 break;
                             case "RGBW":
                                 channelIdValue = channelNode.GetAttributeValue("RedChannel");
@@ -293,15 +293,15 @@
                                 channelIdValue = channelNode.GetAttributeValue("WhiteChannel");
                                 var whiteChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
                                 var whiteChannel = _channels.FirstOrDefault(x => x.ID == whiteChannelId);
-                                channel = new RedGreenBlueWhiteChannel(redChannel, greenChannel, blueChannel, whiteChannel);
+                                pixel = new RedGreenBlueWhitePixel(redChannel, greenChannel, blueChannel, whiteChannel);
                                 break;
                             default:
-                                channel = new EmptyChannel();
+                                pixel = new EmptyPixel();
                                 break;
                         }
                     }
 
-                    var mappedChannel = new MappedChannel(channel);
+                    var mappedChannel = new PixelMapping(pixel);
                     mappedChannels.Add(mappedChannel);
                 }
 
