@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
 {
     using System;
@@ -5,10 +9,24 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
     using System.Windows.Input;
     using System.Windows.Media;
 
+    /// <summary>
+    ///   The pixel mapping.
+    /// </summary>
     public class PixelMapping : INotifyPropertyChanged
     {
+        /// <summary>
+        ///   The _pixel.
+        /// </summary>
         private IPixel _pixel;
 
+        /// <summary>
+        ///   Initializes a new instance of the <see cref = "PixelMapping" /> class.
+        /// </summary>
+        /// <param name = "pixel">
+        ///   The pixel.
+        /// </param>
+        /// <exception cref = "ArgumentNullException">
+        /// </exception>
         public PixelMapping(IPixel pixel)
         {
             if (pixel == null)
@@ -16,96 +34,171 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
                 throw new ArgumentNullException("pixel");
             }
 
-            Pixel = pixel;
-            ConvertToEmptyCommand = new RelayCommand(x => ConvertToEmpty(), x => CanConvertToEmpty());
-            ConvertToSingleCommand = new RelayCommand(x => ConvertToSingle(), x => CanConvertToSingle());
-            ConvertToRgbCommand = new RelayCommand(x => ConvertToRgb(), x => CanConvertToRgb());
-            ConvertToRgbwCommand = new RelayCommand(x => ConvertToRgbw(), x => CanConvertToRgbw());
+            this.Pixel = pixel;
+            this.ConvertToEmptyCommand = new RelayCommand(x => this.ConvertToEmpty(), x => this.CanConvertToEmpty());
+            this.ConvertToSingleCommand = new RelayCommand(x => this.ConvertToSingle(), x => this.CanConvertToSingle());
+            this.ConvertToRgbCommand = new RelayCommand(x => this.ConvertToRgb(), x => this.CanConvertToRgb());
+            this.ConvertToRgbwCommand = new RelayCommand(x => this.ConvertToRgbw(), x => this.CanConvertToRgbw());
         }
 
+        /// <summary>
+        ///   The property changed.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public IPixel Pixel
-        {
-            get
-            {
-                return _pixel;
-            }
-
-            set
-            {
-                _pixel = value;
-                PropertyChanged.NotifyPropertyChanged("Pixel", this);
-            }
-        }
-
+        /// <summary>
+        ///   Gets ChannelColor.
+        /// </summary>
         public Color ChannelColor
         {
             get
             {
-                var channel = Pixel;
+                var channel = this.Pixel;
                 return channel == null ? Colors.Black : channel.ChannelColor;
             }
         }
 
+        /// <summary>
+        ///   Gets ConvertToEmptyCommand.
+        /// </summary>
         public ICommand ConvertToEmptyCommand { get; private set; }
 
+        /// <summary>
+        ///   Gets ConvertToRgbCommand.
+        /// </summary>
         public ICommand ConvertToRgbCommand { get; private set; }
 
+        /// <summary>
+        ///   Gets ConvertToRgbwCommand.
+        /// </summary>
         public ICommand ConvertToRgbwCommand { get; private set; }
 
+        /// <summary>
+        ///   Gets ConvertToSingleCommand.
+        /// </summary>
         public ICommand ConvertToSingleCommand { get; private set; }
 
+        /// <summary>
+        ///   Gets or sets Pixel.
+        /// </summary>
+        public IPixel Pixel
+        {
+            get
+            {
+                return this._pixel;
+            }
+
+            set
+            {
+                this._pixel = value;
+                this.PropertyChanged.NotifyPropertyChanged("Pixel", this);
+            }
+        }
+
+        /// <summary>
+        ///   The contains.
+        /// </summary>
+        /// <param name = "channel">
+        ///   The channel.
+        /// </param>
+        /// <returns>
+        ///   The contains.
+        /// </returns>
         public bool Contains(Channel channel)
         {
-            return Pixel == null ? false : Pixel.Contains(channel);
+            return this.Pixel == null ? false : this.Pixel.Contains(channel);
         }
 
+        /// <summary>
+        ///   The set color.
+        /// </summary>
+        /// <param name = "channel">
+        ///   The channel.
+        /// </param>
+        /// <param name = "intensity">
+        ///   The intensity.
+        /// </param>
         public void SetColor(Channel channel, byte intensity)
         {
-            Pixel.SetColor(channel, intensity);
-            PropertyChanged.NotifyPropertyChanged("ChannelColor", this);
+            this.Pixel.SetColor(channel, intensity);
+            this.PropertyChanged.NotifyPropertyChanged("ChannelColor", this);
         }
 
+        /// <summary>
+        ///   The can convert to empty.
+        /// </summary>
+        /// <returns>
+        ///   The can convert to empty.
+        /// </returns>
         private bool CanConvertToEmpty()
         {
-            return !(Pixel is EmptyPixel);
+            return !(this.Pixel is EmptyPixel);
         }
 
+        /// <summary>
+        ///   The can convert to rgb.
+        /// </summary>
+        /// <returns>
+        ///   The can convert to rgb.
+        /// </returns>
         private bool CanConvertToRgb()
         {
-            var rgb = Pixel as RedGreenBluePixel;
+            var rgb = this.Pixel as RedGreenBluePixel;
             return rgb == null || !(rgb is RedGreenBlueWhitePixel);
         }
 
+        /// <summary>
+        ///   The can convert to rgbw.
+        /// </summary>
+        /// <returns>
+        ///   The can convert to rgbw.
+        /// </returns>
         private bool CanConvertToRgbw()
         {
-            return !(Pixel is RedGreenBlueWhitePixel);
+            return !(this.Pixel is RedGreenBlueWhitePixel);
         }
 
+        /// <summary>
+        ///   The can convert to single.
+        /// </summary>
+        /// <returns>
+        ///   The can convert to single.
+        /// </returns>
         private bool CanConvertToSingle()
         {
-            return !(Pixel is SingleColorPixel);
+            return !(this.Pixel is SingleColorPixel);
         }
 
+        /// <summary>
+        ///   The convert to empty.
+        /// </summary>
         private void ConvertToEmpty()
         {
-            Pixel = new EmptyPixel();
+            this.Pixel = new EmptyPixel();
         }
 
+        /// <summary>
+        ///   The convert to rgb.
+        /// </summary>
         private void ConvertToRgb()
         {
-            Pixel = new RedGreenBluePixel(null, null, null);
+            this.Pixel = new RedGreenBluePixel(null, null, null);
         }
 
+        /// <summary>
+        ///   The convert to rgbw.
+        /// </summary>
         private void ConvertToRgbw()
         {
-            Pixel = new RedGreenBlueWhitePixel(null, null, null, null);
+            this.Pixel = new RedGreenBlueWhitePixel(null, null, null, null);
         }
 
+        /// <summary>
+        ///   The convert to single.
+        /// </summary>
         private void ConvertToSingle()
         {
-            Pixel = new SingleColorPixel(null, Colors.White);
+            this.Pixel = new SingleColorPixel(null, Colors.White);
         }
     }
 }

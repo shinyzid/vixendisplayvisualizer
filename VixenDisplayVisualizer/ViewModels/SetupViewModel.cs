@@ -1,9 +1,14 @@
+// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Windows.Forms;
     using System.Windows.Input;
+
     using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
     using Vixen.PlugIns.VixenDisplayVisualizer.Pixels;
 
@@ -18,17 +23,29 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         private DisplayElement _currentDisplayElement;
 
         /// <summary>
+        ///   The _display height.
+        /// </summary>
+        private int _displayHeight;
+
+        /// <summary>
+        ///   The _display width.
+        /// </summary>
+        private int _displayWidth;
+
+        /// <summary>
         ///   Initializes a new instance of the <see cref = "SetupViewModel" /> class.
         /// </summary>
         public SetupViewModel()
         {
-            AddElementCommand = new RelayCommand(x => AddElement());
-            EditElementCommand = new RelayCommand(x => EditDisplayElement(), x => CanEditDisplayElement());
-            DeleteElementCommand = new RelayCommand(x => DeleteDisplayElement(), x => CanDeleteDisplayElement());
-            DisplayElements = new ObservableCollection<DisplayElement>();
-            Channels = new ObservableCollection<Channel>();
-            DisplayWidth = 800;
-            DisplayHeight = 600;
+            this.AddElementCommand = new RelayCommand(x => this.AddElement());
+            this.EditElementCommand = new RelayCommand(
+                x => this.EditDisplayElement(), x => this.CanEditDisplayElement());
+            this.DeleteElementCommand = new RelayCommand(
+                x => this.DeleteDisplayElement(), x => this.CanDeleteDisplayElement());
+            this.DisplayElements = new ObservableCollection<DisplayElement>();
+            this.Channels = new ObservableCollection<Channel>();
+            this.DisplayWidth = 800;
+            this.DisplayHeight = 600;
         }
 
         /// <summary>
@@ -48,44 +65,19 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         {
             get
             {
-                return _currentDisplayElement;
+                return this._currentDisplayElement;
             }
 
             set
             {
-                _currentDisplayElement = value;
-                OnPropertyChanged("CurrentDisplayElement");
+                this._currentDisplayElement = value;
+                this.OnPropertyChanged("CurrentDisplayElement");
             }
         }
 
-        private int _displayWidth;
-        public int DisplayWidth
-        {
-            get
-            {
-                return _displayWidth;
-            }
-            set
-            {
-                _displayWidth = value;
-                OnPropertyChanged("DisplayWidth");
-            }
-        }
-
-        private int _displayHeight;
-        public int DisplayHeight
-        {
-            get
-            {
-                return _displayHeight;
-            }
-            set
-            {
-                _displayHeight = value;
-                OnPropertyChanged("DisplayHeight");
-            }
-        }
-
+        /// <summary>
+        ///   Gets DeleteElementCommand.
+        /// </summary>
         public ICommand DeleteElementCommand { get; private set; }
 
         /// <summary>
@@ -93,6 +85,43 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         /// </summary>
         public ObservableCollection<DisplayElement> DisplayElements { get; set; }
 
+        /// <summary>
+        ///   Gets or sets DisplayHeight.
+        /// </summary>
+        public int DisplayHeight
+        {
+            get
+            {
+                return this._displayHeight;
+            }
+
+            set
+            {
+                this._displayHeight = value;
+                this.OnPropertyChanged("DisplayHeight");
+            }
+        }
+
+        /// <summary>
+        ///   Gets or sets DisplayWidth.
+        /// </summary>
+        public int DisplayWidth
+        {
+            get
+            {
+                return this._displayWidth;
+            }
+
+            set
+            {
+                this._displayWidth = value;
+                this.OnPropertyChanged("DisplayWidth");
+            }
+        }
+
+        /// <summary>
+        ///   Gets EditElementCommand.
+        /// </summary>
         public ICommand EditElementCommand { get; private set; }
 
         /// <summary>
@@ -100,57 +129,77 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         /// </summary>
         private void AddElement()
         {
-            var displayElement = new DisplayElement(10, 10, 100, 0, 0, 100, new List<PixelMapping>());
-            displayElement.Name = "My New Element";
-            var viewModel = new ElementEditorViewModel(Channels, displayElement);
+            var displayElement = new DisplayElement(10, 10, 100, 0, 0, 100, new List<PixelMapping>())
+                { Name = "My New Element" };
+            var viewModel = new ElementEditorViewModel(this.Channels, displayElement);
             using (var editor = new ElementEditor(viewModel))
             {
                 editor.ShowDialog();
-                DisplayElements.Add(displayElement);
-                CurrentDisplayElement = displayElement;
+                this.DisplayElements.Add(displayElement);
+                this.CurrentDisplayElement = displayElement;
             }
         }
 
+        /// <summary>
+        ///   The can delete display element.
+        /// </summary>
+        /// <returns>
+        ///   The can delete display element.
+        /// </returns>
         private bool CanDeleteDisplayElement()
         {
-            return CurrentDisplayElement != null;
+            return this.CurrentDisplayElement != null;
         }
 
+        /// <summary>
+        ///   The can edit display element.
+        /// </summary>
+        /// <returns>
+        ///   The can edit display element.
+        /// </returns>
         private bool CanEditDisplayElement()
         {
-            return CurrentDisplayElement != null;
+            return this.CurrentDisplayElement != null;
         }
 
+        /// <summary>
+        ///   The delete display element.
+        /// </summary>
         private void DeleteDisplayElement()
         {
-            var displayElement = CurrentDisplayElement;
+            var displayElement = this.CurrentDisplayElement;
             if (displayElement == null)
             {
                 return;
             }
 
-            if (MessageBox.Show(
-                                string.Format("Are you sure you want to delete the selected display element named '{0}' ?", displayElement.Name), 
-                                "Confirm delete", 
-                                MessageBoxButtons.YesNo, 
-                                MessageBoxIcon.Question, 
-                                MessageBoxDefaultButton.Button2)
-                == DialogResult.Yes)
+            if (
+                MessageBox.Show(
+                    string.Format(
+                        "Are you sure you want to delete the selected display element named '{0}' ?", 
+                        displayElement.Name), 
+                    "Confirm delete", 
+                    MessageBoxButtons.YesNo, 
+                    MessageBoxIcon.Question, 
+                    MessageBoxDefaultButton.Button2) == DialogResult.Yes)
             {
-                DisplayElements.Remove(displayElement);
-                CurrentDisplayElement = null;
+                this.DisplayElements.Remove(displayElement);
+                this.CurrentDisplayElement = null;
             }
         }
 
+        /// <summary>
+        ///   The edit display element.
+        /// </summary>
         private void EditDisplayElement()
         {
-            var displayElement = CurrentDisplayElement;
+            var displayElement = this.CurrentDisplayElement;
             if (displayElement == null)
             {
                 return;
             }
 
-            var viewModel = new ElementEditorViewModel(Channels, displayElement);
+            var viewModel = new ElementEditorViewModel(this.Channels, displayElement);
             using (var editor = new ElementEditor(viewModel))
             {
                 editor.ShowDialog();

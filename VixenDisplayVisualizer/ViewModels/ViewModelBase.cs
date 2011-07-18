@@ -9,24 +9,17 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
     using System.Diagnostics;
 
     /// <summary>
-    /// The view model base.
+    ///   The view model base.
     /// </summary>
     public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "ViewModelBase" /> class.
-        /// </summary>
-        protected ViewModelBase()
-        {
-        }
-
-        /// <summary>
-        /// Warns the developer if this object does not have
+        ///   Warns the developer if this object does not have
         ///   a public property with the specified name. This 
         ///   method does not exist in a Release build.
         /// </summary>
-        /// <param name="propertyName">
-        /// The property Name.
+        /// <param name = "propertyName">
+        ///   The property Name.
         /// </param>
         [Conditional("DEBUG")]
         [DebuggerStepThrough]
@@ -36,7 +29,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             // public, instance property on this object.
             if (TypeDescriptor.GetProperties(this)[propertyName] == null)
             {
-                string msg = "Invalid property name: " + propertyName;
+                var msg = "Invalid property name: " + propertyName;
 
                 if (this.ThrowOnInvalidPropertyName)
                 {
@@ -61,16 +54,16 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Raises this object's PropertyChanged event.
+        ///   Raises this object's PropertyChanged event.
         /// </summary>
-        /// <param name="propertyName">
-        /// The property that has a new value.
+        /// <param name = "propertyName">
+        ///   The property that has a new value.
         /// </param>
         protected virtual void OnPropertyChanged(string propertyName)
         {
             this.VerifyPropertyName(propertyName);
 
-            PropertyChangedEventHandler handler = this.PropertyChanged;
+            var handler = this.PropertyChanged;
             if (handler != null)
             {
                 var e = new PropertyChangedEventArgs(propertyName);
@@ -79,7 +72,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         }
 
         /// <summary>
-        /// Invoked when this object is being removed from the application
+        ///   Invoked when this object is being removed from the application
         ///   and will be subject to garbage collection.
         /// </summary>
         public void Dispose()
@@ -88,7 +81,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         }
 
         /// <summary>
-        /// Child classes can override this method to perform 
+        ///   Child classes can override this method to perform 
         ///   clean-up logic, such as removing event handlers.
         /// </summary>
         protected virtual void OnDispose()
@@ -98,12 +91,12 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
 #if DEBUG
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="ViewModelBase"/> class. 
+        ///   Finalizes an instance of the <see cref = "ViewModelBase" /> class. 
         ///   Useful for ensuring that ViewModel objects are properly garbage collected.
         /// </summary>
         ~ViewModelBase()
         {
-            string msg = string.Format("{0} ({1}) Finalized", this.GetType().Name, this.GetHashCode());
+            var msg = string.Format("{0} ({1}) Finalized", this.GetType().Name, this.GetHashCode());
             Debug.WriteLine(msg);
         }
 

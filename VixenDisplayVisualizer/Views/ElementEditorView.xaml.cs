@@ -4,10 +4,8 @@
 // --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Views
 {
-    using System.Windows.Controls;
-
     /// <summary>
-    /// Interaction logic for ElementEditorView.xaml
+    ///   Interaction logic for ElementEditorView.xaml
     /// </summary>
     public partial class ElementEditorView
     {

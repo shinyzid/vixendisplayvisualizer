@@ -9,14 +9,15 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
     using Vixen.PlugIns.VixenDisplayVisualizer.ViewModels;
 
     /// <summary>
-    /// The setup.
+    ///   The setup.
     /// </summary>
     public partial class Setup : Form
     {
         /// <summary>
         ///   Initializes a new instance of the <see cref = "Setup" /> class.
         /// </summary>
-        /// <param name="viewModel"></param>
+        /// <param name = "viewModel">
+        /// </param>
         public Setup(SetupViewModel viewModel)
         {
             this.InitializeComponent();

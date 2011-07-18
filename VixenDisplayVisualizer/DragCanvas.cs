@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     using System;
@@ -11,49 +15,70 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
     ///   A Canvas which manages dragging of the UIElements it contains.
     /// </summary>
     public class DragCanvas : Canvas
-    {
-        // Stores a reference to the UIElement currently being dragged by the user.
+    {       
+        /// <summary>
+        ///   Stores a reference to the UIElement currently being dragged by the user.
+        /// </summary>
         public static readonly DependencyProperty AllowDragOutOfViewProperty;
 
+        /// <summary>
+        ///   The allow dragging property.
+        /// </summary>
         public static readonly DependencyProperty AllowDraggingProperty;
 
+        /// <summary>
+        ///   The can be dragged property.
+        /// </summary>
         public static readonly DependencyProperty CanBeDraggedProperty;
 
+        /// <summary>
+        ///   The _element being dragged.
+        /// </summary>
         private UIElement _elementBeingDragged;
 
+        /// <summary>
+        ///   The _is drag in progress.
+        /// </summary>
         private bool _isDragInProgress;
 
+        /// <summary>
+        ///   The _modify left offset.
+        /// </summary>
         private bool _modifyLeftOffset;
 
+        /// <summary>
+        ///   The _modify top offset.
+        /// </summary>
         private bool _modifyTopOffset;
-
-        // Keeps track of where the mouse cursor was when a drag operation began.		
+		
+        /// <summary>
+        ///   Keeps track of where the mouse cursor was when a drag operation began.
+        /// </summary>
         private Point _origCursorLocation;
 
-        // The offsets from the DragCanvas' edges when the drag operation began.
+        /// <summary>
+        ///   The offsets from the DragCanvas' edges when the drag operation began.
+        /// </summary>
         private double _origHorizOffset;
 
+        /// <summary>
+        ///   The _orig vert offset.
+        /// </summary>
         private double _origVertOffset;
 
         // Keeps track of which horizontal and vertical offset should be modified for the drag element.
 
+        /// <summary>
+        ///   Initializes static members of the <see cref = "DragCanvas" /> class.
+        /// </summary>
         static DragCanvas()
         {
             AllowDraggingProperty = DependencyProperty.Register(
-                                                                "AllowDragging", 
-                                                                typeof(bool), 
-                                                                typeof(DragCanvas), 
-                                                                new PropertyMetadata(true));
+                "AllowDragging", typeof(bool), typeof(DragCanvas), new PropertyMetadata(true));
             AllowDragOutOfViewProperty = DependencyProperty.Register(
-                                                                     "AllowDragOutOfView", 
-                                                                     typeof(bool), 
-                                                                     typeof(DragCanvas), 
-                                                                     new UIPropertyMetadata(false));
+                "AllowDragOutOfView", typeof(bool), typeof(DragCanvas), new UIPropertyMetadata(false));
             CanBeDraggedProperty = DependencyProperty.RegisterAttached(
-                                                                       "CanBeDragged", 
-                                                                       typeof(bool), 
-                                                                       typeof(DragCanvas), 
-                                                                       new UIPropertyMetadata(true));
+                "CanBeDragged", typeof(bool), typeof(DragCanvas), new UIPropertyMetadata(true));
         }
 
         /// <summary>
@@ -64,12 +89,12 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         {
             get
             {
-                return (bool)GetValue(AllowDragOutOfViewProperty);
+                return (bool)this.GetValue(AllowDragOutOfViewProperty);
             }
 
             set
             {
-                SetValue(AllowDragOutOfViewProperty, value);
+                this.SetValue(AllowDragOutOfViewProperty, value);
             }
         }
 
@@ -81,12 +106,12 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         {
             get
             {
-                return (bool)GetValue(AllowDraggingProperty);
+                return (bool)this.GetValue(AllowDraggingProperty);
             }
 
             set
             {
-                SetValue(AllowDraggingProperty, value);
+                this.SetValue(AllowDraggingProperty, value);
             }
         }
 
@@ -101,40 +126,49 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         {
             get
             {
-                if (!AllowDragging)
+                if (!this.AllowDragging)
                 {
                     return null;
                 }
 
-                return _elementBeingDragged;
+                return this._elementBeingDragged;
             }
 
             protected set
             {
-                if (_elementBeingDragged != null)
+                if (this._elementBeingDragged != null)
                 {
-                    _elementBeingDragged.ReleaseMouseCapture();
+                    this._elementBeingDragged.ReleaseMouseCapture();
                 }
 
-                if (!AllowDragging)
+                if (!this.AllowDragging)
                 {
-                    _elementBeingDragged = null;
+                    this._elementBeingDragged = null;
                 }
                 else
                 {
                     if (GetCanBeDragged(value))
                     {
-                        _elementBeingDragged = value;
-                        _elementBeingDragged.CaptureMouse();
+                        this._elementBeingDragged = value;
+                        this._elementBeingDragged.CaptureMouse();
                     }
                     else
                     {
-                        _elementBeingDragged = null;
+                        this._elementBeingDragged = null;
                     }
                 }
             }
         }
 
+        /// <summary>
+        ///   The get can be dragged.
+        /// </summary>
+        /// <param name = "uiElement">
+        ///   The ui element.
+        /// </param>
+        /// <returns>
+        ///   The get can be dragged.
+        /// </returns>
         public static bool GetCanBeDragged(UIElement uiElement)
         {
             if (uiElement == null)
@@ -145,6 +179,15 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             return (bool)uiElement.GetValue(CanBeDraggedProperty);
         }
 
+        /// <summary>
+        ///   The set can be dragged.
+        /// </summary>
+        /// <param name = "uiElement">
+        ///   The ui element.
+        /// </param>
+        /// <param name = "value">
+        ///   The value.
+        /// </param>
         public static void SetCanBeDragged(UIElement uiElement, bool value)
         {
             if (uiElement != null)
@@ -165,7 +208,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         /// </param>
         public void BringToFront(UIElement element)
         {
-            UpdateZOrder(element, true);
+            this.UpdateZOrder(element, true);
         }
 
         /// <summary>
@@ -184,8 +227,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                 // If the current object is a UIElement which is a child of the
                 // Canvas, exit the loop and return it.
                 var elem = depObj as UIElement;
-                if (elem != null
-                    && Children.Contains(elem))
+                if (elem != null && this.Children.Contains(elem))
                 {
                     break;
                 }
@@ -193,8 +235,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                 // VisualTreeHelper works with objects of type Visual or Visual3D.
                 // If the current object is not derived from Visual or Visual3D,
                 // then use the LogicalTreeHelper to find the parent element.
-                if (depObj is Visual
-                    || depObj is Visual3D)
+                if (depObj is Visual || depObj is Visual3D)
                 {
                     depObj = VisualTreeHelper.GetParent(depObj);
                 }
@@ -219,51 +260,62 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         /// </param>
         public void SendToBack(UIElement element)
         {
-            UpdateZOrder(element, false);
+            this.UpdateZOrder(element, false);
         }
 
+        /// <summary>
+        ///   The on preview mouse left button down.
+        /// </summary>
+        /// <param name = "e">
+        ///   The e.
+        /// </param>
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnPreviewMouseLeftButtonDown(e);
 
-            _isDragInProgress = false;
+            this._isDragInProgress = false;
 
             // Cache the mouse cursor location.
-            _origCursorLocation = e.GetPosition(this);
+            this._origCursorLocation = e.GetPosition(this);
 
             // Walk up the visual tree from the element that was clicked, 
             // looking for an element that is a direct child of the Canvas.
-            ElementBeingDragged = FindCanvasChild(e.Source as DependencyObject);
-            if (ElementBeingDragged == null)
+            this.ElementBeingDragged = this.FindCanvasChild(e.Source as DependencyObject);
+            if (this.ElementBeingDragged == null)
             {
                 return;
             }
 
             // Get the element's offsets from the four sides of the Canvas.
-            var left = GetLeft(ElementBeingDragged);
-            var right = GetRight(ElementBeingDragged);
-            var top = GetTop(ElementBeingDragged);
-            var bottom = GetBottom(ElementBeingDragged);
+            var left = GetLeft(this.ElementBeingDragged);
+            var right = GetRight(this.ElementBeingDragged);
+            var top = GetTop(this.ElementBeingDragged);
+            var bottom = GetBottom(this.ElementBeingDragged);
 
             // Calculate the offset deltas and determine for which sides
             // of the Canvas to adjust the offsets.
-            _origHorizOffset = ResolveOffset(left, right, out _modifyLeftOffset);
-            _origVertOffset = ResolveOffset(top, bottom, out _modifyTopOffset);
+            this._origHorizOffset = ResolveOffset(left, right, out this._modifyLeftOffset);
+            this._origVertOffset = ResolveOffset(top, bottom, out this._modifyTopOffset);
 
             // Set the Handled flag so that a control being dragged 
             // does not react to the mouse input.
             e.Handled = true;
 
-            _isDragInProgress = true;
+            this._isDragInProgress = true;
         }
 
+        /// <summary>
+        ///   The on preview mouse move.
+        /// </summary>
+        /// <param name = "e">
+        ///   The e.
+        /// </param>
         protected override void OnPreviewMouseMove(MouseEventArgs e)
         {
             base.OnPreviewMouseMove(e);
 
             // If no element is being dragged, there is nothing to do.
-            if (ElementBeingDragged == null
-                || !_isDragInProgress)
+            if (this.ElementBeingDragged == null || !this._isDragInProgress)
             {
                 return;
             }
@@ -275,84 +327,90 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             double newHorizontalOffset, newVerticalOffset;
 
             // Determine the horizontal offset.
-            if (_modifyLeftOffset)
+            if (this._modifyLeftOffset)
             {
-                newHorizontalOffset = _origHorizOffset + (cursorLocation.X - _origCursorLocation.X);
+                newHorizontalOffset = this._origHorizOffset + (cursorLocation.X - this._origCursorLocation.X);
             }
             else
             {
-                newHorizontalOffset = _origHorizOffset - (cursorLocation.X - _origCursorLocation.X);
+                newHorizontalOffset = this._origHorizOffset - (cursorLocation.X - this._origCursorLocation.X);
             }
 
             // Determine the vertical offset.
-            if (_modifyTopOffset)
+            if (this._modifyTopOffset)
             {
-                newVerticalOffset = _origVertOffset + (cursorLocation.Y - _origCursorLocation.Y);
+                newVerticalOffset = this._origVertOffset + (cursorLocation.Y - this._origCursorLocation.Y);
             }
             else
             {
-                newVerticalOffset = _origVertOffset - (cursorLocation.Y - _origCursorLocation.Y);
+                newVerticalOffset = this._origVertOffset - (cursorLocation.Y - this._origCursorLocation.Y);
             }
 
-            if (! AllowDragOutOfView)
+            if (! this.AllowDragOutOfView)
             {
                 // Get the bounding rect of the drag element.
-                var elemRect = CalculateDragElementRect(newHorizontalOffset, newVerticalOffset);
+                var elemRect = this.CalculateDragElementRect(newHorizontalOffset, newVerticalOffset);
 
                 // If the element is being dragged out of the viewable area, 
                 // determine the ideal rect location, so that the element is 
                 // within the edge(s) of the canvas.
                 var leftAlign = elemRect.Left < 0;
-                var rightAlign = elemRect.Right > ActualWidth;
+                var rightAlign = elemRect.Right > this.ActualWidth;
 
                 if (leftAlign)
                 {
-                    newHorizontalOffset = _modifyLeftOffset ? 0 : ActualWidth - elemRect.Width;
+                    newHorizontalOffset = this._modifyLeftOffset ? 0 : this.ActualWidth - elemRect.Width;
                 }
                 else if (rightAlign)
                 {
-                    newHorizontalOffset = _modifyLeftOffset ? ActualWidth - elemRect.Width : 0;
+                    newHorizontalOffset = this._modifyLeftOffset ? this.ActualWidth - elemRect.Width : 0;
                 }
 
                 var topAlign = elemRect.Top < 0;
-                var bottomAlign = elemRect.Bottom > ActualHeight;
+                var bottomAlign = elemRect.Bottom > this.ActualHeight;
 
                 if (topAlign)
                 {
-                    newVerticalOffset = _modifyTopOffset ? 0 : ActualHeight - elemRect.Height;
+                    newVerticalOffset = this._modifyTopOffset ? 0 : this.ActualHeight - elemRect.Height;
                 }
                 else if (bottomAlign)
                 {
-                    newVerticalOffset = _modifyTopOffset ? ActualHeight - elemRect.Height : 0;
-                }                
-            }            
+                    newVerticalOffset = this._modifyTopOffset ? this.ActualHeight - elemRect.Height : 0;
+                }
+            }
 
-            if (_modifyLeftOffset)
+            if (this._modifyLeftOffset)
             {
-                SetLeft(ElementBeingDragged, newHorizontalOffset);
+                SetLeft(this.ElementBeingDragged, newHorizontalOffset);
             }
             else
             {
-                SetRight(ElementBeingDragged, newHorizontalOffset);
+                SetRight(this.ElementBeingDragged, newHorizontalOffset);
             }
 
-            if (_modifyTopOffset)
+            if (this._modifyTopOffset)
             {
-                SetTop(ElementBeingDragged, newVerticalOffset);
+                SetTop(this.ElementBeingDragged, newVerticalOffset);
             }
             else
             {
-                SetBottom(ElementBeingDragged, newVerticalOffset);
-            }            
+                SetBottom(this.ElementBeingDragged, newVerticalOffset);
+            }
         }
 
+        /// <summary>
+        ///   The on preview mouse up.
+        /// </summary>
+        /// <param name = "e">
+        ///   The e.
+        /// </param>
         protected override void OnPreviewMouseUp(MouseButtonEventArgs e)
         {
             base.OnPreviewMouseUp(e);
 
             // Reset the field whether the left or right mouse button was 
             // released, in case a context menu was opened on the drag element.
-            ElementBeingDragged = null;
+            this.ElementBeingDragged = null;
         }
 
         /// <summary>
@@ -372,6 +430,9 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         ///   for the offset from the side represented by the 'side1' 
         ///   parameter.  Otherwise, it will be set to false.
         /// </param>
+        /// <returns>
+        ///   The resolve offset.
+        /// </returns>
         private static double ResolveOffset(double side1, double side2, out bool useSide1)
         {
             // If the Canvas.Left and Canvas.Right attached properties 
@@ -407,33 +468,39 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         /// <summary>
         ///   Returns a Rect which describes the bounds of the element being dragged.
         /// </summary>
+        /// <param name = "newHorizOffset">
+        ///   The new Horiz Offset.
+        /// </param>
+        /// <param name = "newVertOffset">
+        ///   The new Vert Offset.
+        /// </param>
         private Rect CalculateDragElementRect(double newHorizOffset, double newVertOffset)
         {
-            if (ElementBeingDragged == null)
+            if (this.ElementBeingDragged == null)
             {
                 throw new InvalidOperationException("ElementBeingDragged is null.");
             }
 
-            var elemSize = ElementBeingDragged.RenderSize;
+            var elemSize = this.ElementBeingDragged.RenderSize;
 
             double x, y;
 
-            if (_modifyLeftOffset)
+            if (this._modifyLeftOffset)
             {
                 x = newHorizOffset;
             }
             else
             {
-                x = ActualWidth - newHorizOffset - elemSize.Width;
+                x = this.ActualWidth - newHorizOffset - elemSize.Width;
             }
 
-            if (_modifyTopOffset)
+            if (this._modifyTopOffset)
             {
                 y = newVertOffset;
             }
             else
             {
-                y = ActualHeight - newVertOffset - elemSize.Height;
+                y = this.ActualHeight - newVertOffset - elemSize.Height;
             }
 
             var elemLoc = new Point(x, y);
@@ -457,19 +524,18 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                 throw new ArgumentNullException("element");
             }
 
-            if (!Children.Contains(element))
+            if (!this.Children.Contains(element))
             {
                 throw new ArgumentException("Must be a child element of the Canvas.", "element");
-            }            
+            }
 
             // Determine the Z-Index for the target UIElement.
             var elementNewZIndex = -1;
             if (bringToFront)
             {
-                foreach (UIElement elem in Children)
+                foreach (UIElement elem in this.Children)
                 {
-                    if (elem.Visibility
-                        != Visibility.Collapsed)
+                    if (elem.Visibility != Visibility.Collapsed)
                     {
                         ++elementNewZIndex;
                     }
@@ -487,7 +553,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             var elementCurrentZIndex = GetZIndex(element);
 
             // Update the Z-Index of every UIElement in the Canvas.
-            foreach (UIElement childElement in Children)
+            foreach (UIElement childElement in this.Children)
             {
                 if (childElement == element)
                 {
@@ -499,8 +565,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
 
                     // Only modify the z-index of an element if it is  
                     // in between the target element's old and new z-index.
-                    if (bringToFront && elementCurrentZIndex < zIndex
-                        || !bringToFront && zIndex < elementCurrentZIndex)
+                    if (bringToFront && elementCurrentZIndex < zIndex || !bringToFront && zIndex < elementCurrentZIndex)
                     {
                         SetZIndex(childElement, zIndex + offset);
                     }

@@ -187,28 +187,40 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<Border CornerRadius="5" Margin="2" Padding="2">
+		<Border CornerRadius="5"
+		        Margin="2"
+		        Padding="2">
 			<ContentControl Content="{Binding DisplayElement}">
 				<ContentControl.ContentTemplate>
 					<DataTemplate DataType="{x:Type vdv:DisplayElement}">
 						<StackPanel Orientation="Horizontal">
-							<GroupBox Margin="2" Padding="2" Header="Name">
+							<GroupBox Margin="2"
+							          Padding="2"
+							          Header="Name">
 								<TextBox Text="{Binding Name}"
 								         MinWidth="100" />
 							</GroupBox>
-                            <GroupBox Margin="2" Padding="2" Header="Rows">								
+							<GroupBox Margin="2"
+							          Padding="2"
+							          Header="Rows">
 								<TextBox Text="{Binding Rows}"
 								         MinWidth="30" />
 							</GroupBox>
-                            <GroupBox Margin="2" Padding="2" Header="Columns">
+							<GroupBox Margin="2"
+							          Padding="2"
+							          Header="Columns">
 								<TextBox MinWidth="30"
 								         Text="{Binding Columns}" />
 							</GroupBox>
-                            <GroupBox Margin="2" Padding="2" Header="Height">								
+							<GroupBox Margin="2"
+							          Padding="2"
+							          Header="Height">
 								<TextBox MinWidth="30"
 								         Text="{Binding Height}" />
 							</GroupBox>
-                            <GroupBox Margin="2" Padding="2" Header="Width">
+							<GroupBox Margin="2"
+							          Padding="2"
+							          Header="Width">
 								<TextBox MinWidth="30"
 								         Text="{Binding Width}" />
 							</GroupBox>
@@ -224,7 +236,7 @@
 		        Margin="0"
 		        Padding="0"
 		        x:Name="ListBorder">
-            <ListView ItemsSource="{Binding PixelMappings}"
+			<ListView ItemsSource="{Binding PixelMappings}"
 			          HorizontalContentAlignment="Stretch"
 			          VerticalContentAlignment="Stretch"
 			          Height="{Binding ElementName=ListBorder, Path=Height}"

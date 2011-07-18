@@ -11,15 +11,17 @@
 	<UserControl.Resources>
 		<ResourceDictionary>
 
-            <Style TargetType="ListBoxItem" x:Key="MyStyle">
-                <Style.Resources>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
-                </Style.Resources>
-            </Style>
+			<Style TargetType="ListBoxItem"
+			       x:Key="MyStyle">
+				<Style.Resources>
+					<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+					                 Color="Transparent" />
+				</Style.Resources>
+			</Style>
 
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-            <vdv:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
-            
+			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+			<vdv:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
+
 			<DataTemplate DataType="{x:Type Pixels:SingleColorPixel}">
 				<Border>
 					<Border.Background>
@@ -173,38 +175,40 @@
 			<GroupBox Header="Available Elements">
 				<ListView ItemsSource="{Binding DisplayElements}"
 				          SelectedItem="{Binding CurrentDisplayElement}"
-                          ItemContainerStyle="{StaticResource MyStyle}"
-                          HorizontalContentAlignment="Stretch"
-                          VerticalContentAlignment="Stretch">
+				          ItemContainerStyle="{StaticResource MyStyle}"
+				          HorizontalContentAlignment="Stretch"
+				          VerticalContentAlignment="Stretch">
 					<ListView.ItemTemplate>
 						<DataTemplate DataType="{x:Type vdv:DisplayElement}">
-                            <Grid>
-                                <Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
-                                    <Border Margin="2"
-                                            Padding="2"
-                                            BorderBrush="Red"
-                                            SnapsToDevicePixels="True"
-                                            BorderThickness="2"
-                                            Background="Black"
-                                            CornerRadius="3">
-                                        <StackPanel>
-                                            <TextBlock Foreground="White" Text="{Binding Name}" />
-                                        </StackPanel>
-                                    </Border>
-                                </Grid>
+							<Grid>
+								<Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+									<Border Margin="2"
+									        Padding="2"
+									        BorderBrush="Red"
+									        SnapsToDevicePixels="True"
+									        BorderThickness="2"
+									        Background="Black"
+									        CornerRadius="3">
+										<StackPanel>
+											<TextBlock Foreground="White"
+											           Text="{Binding Name}" />
+										</StackPanel>
+									</Border>
+								</Grid>
 
-                                <Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollapsedConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
-                                    <Border Margin="2"
-                                            Padding="2"
-                                            BorderBrush="Gray"
-                                            SnapsToDevicePixels="True"
-                                            BorderThickness="2"
-                                            Background="Transparent"
-                                            CornerRadius="3">
-                                        <TextBlock Foreground="Black" Text="{Binding Name}" />
-                                    </Border>
-                                </Grid>
-                            </Grid>							
+								<Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollapsedConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+									<Border Margin="2"
+									        Padding="2"
+									        BorderBrush="Gray"
+									        SnapsToDevicePixels="True"
+									        BorderThickness="2"
+									        Background="Transparent"
+									        CornerRadius="3">
+										<TextBlock Foreground="Black"
+										           Text="{Binding Name}" />
+									</Border>
+								</Grid>
+							</Grid>
 						</DataTemplate>
 					</ListView.ItemTemplate>
 				</ListView>
@@ -216,28 +220,34 @@
 			</StackPanel>
 		</Grid>
 		<StackPanel Grid.Column="1">
-            <Border CornerRadius="5" Margin="2" Padding="2">
+			<Border CornerRadius="5"
+			        Margin="2"
+			        Padding="2">
 				<StackPanel Orientation="Horizontal">
-					<GroupBox Header="Width" Padding="2" HorizontalContentAlignment="Stretch">
-                        <TextBox Text="{Binding DisplayWidth, Mode=TwoWay}" />
-                    </GroupBox>
-                    <GroupBox Header="Height" Padding="2" HorizontalContentAlignment="Stretch">
-                        <TextBox Text="{Binding DisplayHeight, Mode=TwoWay}" />
-                    </GroupBox>
-                </StackPanel>
+					<GroupBox Header="Width"
+					          Padding="2"
+					          HorizontalContentAlignment="Stretch">
+						<TextBox Text="{Binding DisplayWidth, Mode=TwoWay}" />
+					</GroupBox>
+					<GroupBox Header="Height"
+					          Padding="2"
+					          HorizontalContentAlignment="Stretch">
+						<TextBox Text="{Binding DisplayHeight, Mode=TwoWay}" />
+					</GroupBox>
+				</StackPanel>
 			</Border>
 			<GroupBox Header="Display Layout">
 				<Border BorderThickness="0"
 				        x:Name="CanvasBorder">
 					<ItemsControl Background="LightCyan"
-                                  MinWidth="{Binding DisplayWidth}"
-                                                MaxWidth="{Binding DisplayWidth}"
-								                MinHeight="{Binding DisplayHeight}"
-								                MaxHeight="{Binding DisplayHeight}"
+					              MinWidth="{Binding DisplayWidth}"
+					              MaxWidth="{Binding DisplayWidth}"
+					              MinHeight="{Binding DisplayHeight}"
+					              MaxHeight="{Binding DisplayHeight}"
 					              ItemsSource="{Binding DisplayElements}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
-								<vdv:DragCanvas  />
+								<vdv:DragCanvas />
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 						<ItemsControl.ItemContainerStyle>
