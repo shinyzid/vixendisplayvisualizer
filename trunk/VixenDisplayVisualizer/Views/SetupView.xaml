@@ -11,6 +11,15 @@
 	<UserControl.Resources>
 		<ResourceDictionary>
 
+            <Style TargetType="ListBoxItem" x:Key="MyStyle">
+                <Style.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                </Style.Resources>
+            </Style>
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <vdv:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
+            
 			<DataTemplate DataType="{x:Type Channels:SingleColorChannel}">
 				<Border>
 					<Border.Background>
@@ -163,10 +172,39 @@
 			</Grid.RowDefinitions>
 			<GroupBox Header="Available Elements">
 				<ListView ItemsSource="{Binding DisplayElements}"
-				          SelectedItem="{Binding CurrentDisplayElement}">
+				          SelectedItem="{Binding CurrentDisplayElement}"
+                          ItemContainerStyle="{StaticResource MyStyle}"
+                          HorizontalContentAlignment="Stretch"
+                          VerticalContentAlignment="Stretch">
 					<ListView.ItemTemplate>
 						<DataTemplate DataType="{x:Type vdv:DisplayElement}">
-							<TextBlock Text="{Binding Name}" />
+                            <Grid>
+                                <Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+                                    <Border Margin="2"
+                                            Padding="2"
+                                            BorderBrush="Red"
+                                            SnapsToDevicePixels="True"
+                                            BorderThickness="2"
+                                            Background="Black"
+                                            CornerRadius="3">
+                                        <StackPanel>
+                                            <TextBlock Foreground="White" Text="{Binding Name}" />
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+
+                                <Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollapsedConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+                                    <Border Margin="2"
+                                            Padding="2"
+                                            BorderBrush="Gray"
+                                            SnapsToDevicePixels="True"
+                                            BorderThickness="2"
+                                            Background="Transparent"
+                                            CornerRadius="3">
+                                        <TextBlock Foreground="Black" Text="{Binding Name}" />
+                                    </Border>
+                                </Grid>
+                            </Grid>							
 						</DataTemplate>
 					</ListView.ItemTemplate>
 				</ListView>
@@ -178,14 +216,16 @@
 			</StackPanel>
 		</Grid>
 		<StackPanel Grid.Column="1">
-			<GroupBox Header="Display Size">
+            <Border CornerRadius="5" Margin="2" Padding="2">
 				<StackPanel Orientation="Horizontal">
-					<TextBlock>Width</TextBlock>
-                    <TextBox Text="{Binding DisplayWidth, Mode=TwoWay}" />                   
-                    <TextBlock>Height</TextBlock>
-                    <TextBox Text="{Binding DisplayHeight, Mode=TwoWay}" />
+					<GroupBox Header="Width" Padding="2" HorizontalContentAlignment="Stretch">
+                        <TextBox Text="{Binding DisplayWidth, Mode=TwoWay}" />
+                    </GroupBox>
+                    <GroupBox Header="Height" Padding="2" HorizontalContentAlignment="Stretch">
+                        <TextBox Text="{Binding DisplayHeight, Mode=TwoWay}" />
+                    </GroupBox>
                 </StackPanel>
-			</GroupBox>
+			</Border>
 			<GroupBox Header="Display Layout">
 				<Border BorderThickness="0"
 				        x:Name="CanvasBorder">

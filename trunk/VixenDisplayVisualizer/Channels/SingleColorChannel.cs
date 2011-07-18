@@ -5,6 +5,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 
     public class SingleColorChannel : IChannel, INotifyPropertyChanged
     {
+        private Channel _channel;
         private Color _displayColor;
 
         public SingleColorChannel(Channel channel, Color color)
@@ -16,7 +17,19 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Channel Channel { get; set; }
+        public Channel Channel
+        {
+            get
+            {
+                return _channel;
+            }
+
+            set
+            {
+                _channel = value;
+                PropertyChanged.NotifyPropertyChanged("Channel", this);
+            }
+        }
 
         public Color ChannelColor { get; private set; }
 
@@ -36,7 +49,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 
         public bool Contains(Channel channel)
         {
-            return Channel.ID == channel.ID;
+            var thisChannel = Channel;
+            return thisChannel == null || channel == null ? false : thisChannel.ID == channel.ID;
         }
 
         public void SetColor(Channel channel, byte intensity)

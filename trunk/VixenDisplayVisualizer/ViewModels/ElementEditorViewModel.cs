@@ -25,7 +25,9 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             MappedChannels = new ObservableCollection<MappedChannel>(displayElement.MappedChannels);
         }
 
-        public ElementEditorViewModel() {}
+        public ElementEditorViewModel()
+        {
+        }
 
         public IEnumerable<Channel> Channels { get; private set; }
 

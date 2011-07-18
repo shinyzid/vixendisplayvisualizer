@@ -35,5 +35,21 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
 
             return result;
         }
+
+        public static string GetAttributeValue(this XmlNode node, string attributeName)
+        {
+            if (node == null)
+            {
+                return null;
+            }
+
+            var attribute = node.Attributes.GetNamedItem(attributeName);
+            if (attribute == null)
+            {
+                return null;
+            }
+
+            return attribute.Value;
+        }
     }
 }

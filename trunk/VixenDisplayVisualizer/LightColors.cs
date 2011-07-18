@@ -1,27 +1,17 @@
 namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     using System.Collections.Generic;
-    using System.Windows.Media;
 
     public static class LightColors
     {
-        private static readonly List<Color> _colors;
+        private static readonly List<string> _colors;
 
         static LightColors()
         {
-            _colors = new List<Color>(7)
-                      {
-                          System.Windows.Media.Colors.White,
-                          System.Windows.Media.Colors.Red,
-                          System.Windows.Media.Colors.Orange,
-                          System.Windows.Media.Colors.Yellow,
-                          System.Windows.Media.Colors.Green,
-                          System.Windows.Media.Colors.Blue,
-                          System.Windows.Media.Colors.Purple
-                      };
+            _colors = new List<string>(7) { "White", "Red", "Orange", "Yellow", "Green", "Blue", "Purple" };
         }
 
-        public static List<Color> GetColors()
+        public static List<string> GetColors()
         {
             return _colors;
         }

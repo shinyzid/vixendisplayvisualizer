@@ -163,22 +163,27 @@
                                 {
                                     channelNode.AppendAttribute("Type", "Single");
                                     var singleColorChannel = (SingleColorChannel)channel;
-                                    channelNode.AppendAttribute("ChannelId", singleColorChannel.Channel.ID.ToString());
+                                    var vixenChannel = singleColorChannel.Channel;
+                                    channelNode.AppendAttribute("ChannelId", vixenChannel == null ? string.Empty : vixenChannel.ID.ToString());
                                     channelNode.AppendAttribute("Color", singleColorChannel.DisplayColor.ToString());
                                 }
                                 else
                                 {
                                     var rgb = channel as RedGreenBlueChannel;
 
-                                    channelNode.AppendAttribute("RedChannel", rgb.RedChannel.ID.ToString());
-                                    channelNode.AppendAttribute("GreenChannel", rgb.GreenChannel.ID.ToString());
-                                    channelNode.AppendAttribute("BlueChannel", rgb.BlueChannel.ID.ToString());
+                                    var redChannel = rgb.RedChannel;
+                                    channelNode.AppendAttribute("RedChannel", redChannel == null ? string.Empty : redChannel.ID.ToString());
+                                    var greenChannel = rgb.GreenChannel;
+                                    channelNode.AppendAttribute("GreenChannel", greenChannel == null ? string.Empty : greenChannel.ID.ToString());
+                                    var blueChannel = rgb.BlueChannel;
+                                    channelNode.AppendAttribute("BlueChannel", blueChannel == null ? string.Empty : blueChannel.ID.ToString());
 
                                     var rgbw = channel as RedGreenBlueWhiteChannel;
                                     var type = "RGB";
                                     if (rgbw != null)
                                     {
-                                        channelNode.AppendAttribute("WhiteChannel", rgbw.WhiteChannel.ID.ToString());
+                                        var whiteChannel = rgbw.WhiteChannel;
+                                        channelNode.AppendAttribute("WhiteChannel", whiteChannel == null ? string.Empty : whiteChannel.ID.ToString());
                                         type += "W";
                                     }
 
@@ -258,31 +263,36 @@
                         switch (type)
                         {
                             case "Single":
-                                var channelId = ulong.Parse(channelNode.Attributes.GetNamedItem("ChannelId").Value);
+                                var channelIdValue = channelNode.GetAttributeValue("ChannelId");
+                                var channelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
                                 var color = (Color)ColorConverter.ConvertFromString(channelNode.Attributes.GetNamedItem("Color").Value);
-                                channel = new SingleColorChannel(_channels.First(x => x.ID == channelId), color);
+                                channel = new SingleColorChannel(_channels.FirstOrDefault(x => x.ID == channelId), color);
                                 break;
                             case "RGB":
-                                var redChannel =
-                                    _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("RedChannel").Value));
-                                var greenChannel =
-                                    _channels.First(
-                                                    x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("GreenChannel").Value));
-                                var blueChannel =
-                                    _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("BlueChannel").Value));
+                                channelIdValue = channelNode.GetAttributeValue("RedChannel");
+                                var redChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
+                                var redChannel = _channels.FirstOrDefault(x => x.ID == redChannelId);
+                                channelIdValue = channelNode.GetAttributeValue("GreenChannel");
+                                var blueChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
+                                var greenChannel = _channels.FirstOrDefault(x => x.ID == blueChannelId);
+                                channelIdValue = channelNode.GetAttributeValue("BlueChannel");
+                                var greenChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
+                                var blueChannel = _channels.FirstOrDefault(x => x.ID == greenChannelId);
                                 channel = new RedGreenBlueChannel(redChannel, greenChannel, blueChannel);
                                 break;
                             case "RGBW":
-                                redChannel =
-                                    _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("RedChannel").Value));
-                                greenChannel =
-                                    _channels.First(
-                                                    x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("GreenChannel").Value));
-                                blueChannel =
-                                    _channels.First(x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("BlueChannel").Value));
-                                var whiteChannel =
-                                    _channels.First(
-                                                    x => x.ID == ulong.Parse(channelNode.Attributes.GetNamedItem("WhiteChannel").Value));
+                                channelIdValue = channelNode.GetAttributeValue("RedChannel");
+                                redChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
+                                redChannel = _channels.FirstOrDefault(x => x.ID == redChannelId);
+                                channelIdValue = channelNode.GetAttributeValue("GreenChannel");
+                                blueChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
+                                greenChannel = _channels.FirstOrDefault(x => x.ID == blueChannelId);
+                                channelIdValue = channelNode.GetAttributeValue("BlueChannel");
+                                greenChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
+                                blueChannel = _channels.FirstOrDefault(x => x.ID == greenChannelId);
+                                channelIdValue = channelNode.GetAttributeValue("WhiteChannel");
+                                var whiteChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
+                                var whiteChannel = _channels.FirstOrDefault(x => x.ID == whiteChannelId);
                                 channel = new RedGreenBlueWhiteChannel(redChannel, greenChannel, blueChannel, whiteChannel);
                                 break;
                             default:

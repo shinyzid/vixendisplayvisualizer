@@ -80,6 +80,7 @@
     <Compile Include="DragCanvas.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="ColorToColorNameConverter.cs" />
     <Compile Include="ViewModels\ElementEditorViewModel.cs" />
     <Compile Include="ViewModels\SetupViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
