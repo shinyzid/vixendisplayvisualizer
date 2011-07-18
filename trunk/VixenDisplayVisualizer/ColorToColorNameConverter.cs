@@ -1,3 +1,7 @@
+// --------------------------------------------------------------------------------
+// Copyright (c) 2011 Erik Mathisen
+// See the file license.txt for copying permission.
+// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     using System;
@@ -5,9 +9,30 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
     using System.Windows.Data;
     using System.Windows.Media;
 
+    /// <summary>
+    ///   The color to color name converter.
+    /// </summary>
     [ValueConversion(typeof(Color), typeof(string))]
     public class ColorToColorNameConverter : IValueConverter
     {
+        /// <summary>
+        ///   The convert.
+        /// </summary>
+        /// <param name = "value">
+        ///   The value.
+        /// </param>
+        /// <param name = "targetType">
+        ///   The target type.
+        /// </param>
+        /// <param name = "parameter">
+        ///   The parameter.
+        /// </param>
+        /// <param name = "culture">
+        ///   The culture.
+        /// </param>
+        /// <returns>
+        ///   The convert.
+        /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (!(value is Color))
@@ -49,6 +74,24 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             return Colors.White;
         }
 
+        /// <summary>
+        ///   The convert back.
+        /// </summary>
+        /// <param name = "value">
+        ///   The value.
+        /// </param>
+        /// <param name = "targetType">
+        ///   The target type.
+        /// </param>
+        /// <param name = "parameter">
+        ///   The parameter.
+        /// </param>
+        /// <param name = "culture">
+        ///   The culture.
+        /// </param>
+        /// <returns>
+        ///   The convert back.
+        /// </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var colorName = value as string;

@@ -6,28 +6,56 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+
     using Vixen.PlugIns.VixenDisplayVisualizer.Pixels;
 
+    /// <summary>
+    ///   The element editor view model.
+    /// </summary>
     public class ElementEditorViewModel : ViewModelBase
     {
-        private DisplayElement _displayElement;
+        /// <summary>
+        ///   The _current pixel mapping.
+        /// </summary>
         private PixelMapping _currentPixelMapping;
-        private string _mappedChannelType;
 
+        /// <summary>
+        ///   The _display element.
+        /// </summary>
+        private DisplayElement _displayElement;
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref = "ElementEditorViewModel" /> class.
+        /// </summary>
+        /// <param name = "channels">
+        ///   The channels.
+        /// </param>
+        /// <param name = "displayElement">
+        ///   The display element.
+        /// </param>
         public ElementEditorViewModel(IEnumerable<Channel> channels, DisplayElement displayElement)
             : this()
         {
-            Channels = channels;
-            _displayElement = displayElement;
-            PixelMappings = new ObservableCollection<PixelMapping>(displayElement.PixelMappings);
+            this.Channels = channels;
+            this._displayElement = displayElement;
+            this.PixelMappings = new ObservableCollection<PixelMapping>(displayElement.PixelMappings);
         }
 
+        /// <summary>
+        ///   Initializes a new instance of the <see cref = "ElementEditorViewModel" /> class.
+        /// </summary>
         public ElementEditorViewModel()
         {
         }
 
+        /// <summary>
+        ///   Gets Channels.
+        /// </summary>
         public IEnumerable<Channel> Channels { get; private set; }
 
+        /// <summary>
+        ///   Gets or sets CurrentPixelMapping.
+        /// </summary>
         public PixelMapping CurrentPixelMapping
         {
             get
@@ -42,6 +70,9 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             }
         }
 
+        /// <summary>
+        ///   Gets or sets DisplayElement.
+        /// </summary>
         public DisplayElement DisplayElement
         {
             get
@@ -56,6 +87,9 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             }
         }
 
+        /// <summary>
+        ///   Gets PixelMappings.
+        /// </summary>
         public ObservableCollection<PixelMapping> PixelMappings { get; private set; }
     }
 }

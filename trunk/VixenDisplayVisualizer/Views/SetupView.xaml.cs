@@ -5,7 +5,7 @@
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Views
 {
     /// <summary>
-    /// Interaction logic for SetupView.xaml
+    ///   Interaction logic for SetupView.xaml
     /// </summary>
     public partial class SetupView
     {
