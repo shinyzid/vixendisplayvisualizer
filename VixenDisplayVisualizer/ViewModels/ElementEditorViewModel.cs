@@ -4,17 +4,14 @@
 // --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Windows.Input;
-    using Vixen.PlugIns.VixenDisplayVisualizer.Channels;
+    using Vixen.PlugIns.VixenDisplayVisualizer.Pixels;
 
     public class ElementEditorViewModel : ViewModelBase
     {
         private DisplayElement _displayElement;
-
-        private MappedChannel _currentMappedChannel;
+        private PixelMapping _currentPixelMapping;
         private string _mappedChannelType;
 
         public ElementEditorViewModel(IEnumerable<Channel> channels, DisplayElement displayElement)
@@ -22,7 +19,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         {
             Channels = channels;
             _displayElement = displayElement;
-            MappedChannels = new ObservableCollection<MappedChannel>(displayElement.MappedChannels);
+            PixelMappings = new ObservableCollection<PixelMapping>(displayElement.PixelMappings);
         }
 
         public ElementEditorViewModel()
@@ -31,39 +28,17 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
 
         public IEnumerable<Channel> Channels { get; private set; }
 
-        public MappedChannel CurrentMappedChannel
+        public PixelMapping CurrentPixelMapping
         {
             get
             {
-                return this._currentMappedChannel;
+                return this._currentPixelMapping;
             }
 
             set
             {
-                this._currentMappedChannel = value;
-                this.OnPropertyChanged("CurrentMappedChannel");
-                UpdateMappedChannelType();
-            }
-        }
-
-        private void UpdateMappedChannelType()
-        {
-            var channel = _currentMappedChannel.Channel;
-            if (channel is RedGreenBlueWhiteChannel)
-            {
-                MappedChannelType = "RGB+W";
-            }
-            else if (channel is RedGreenBlueChannel)
-            {
-                MappedChannelType = "RGB";
-            }
-            else if (channel is SingleColorChannel)
-            {
-                MappedChannelType = "Single";
-            }
-            else
-            {
-                MappedChannelType = "None";
+                this._currentPixelMapping = value;
+                this.OnPropertyChanged("CurrentPixelMapping");
             }
         }
 
@@ -81,20 +56,6 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             }
         }
 
-        public string MappedChannelType
-        {
-            get
-            {
-                return _mappedChannelType;
-            }
-
-            set
-            {
-                _mappedChannelType = value;
-                OnPropertyChanged("MappedChannelType");
-            }
-        }
-
-        public ObservableCollection<MappedChannel> MappedChannels { get; private set; }
+        public ObservableCollection<PixelMapping> PixelMappings { get; private set; }
     }
 }

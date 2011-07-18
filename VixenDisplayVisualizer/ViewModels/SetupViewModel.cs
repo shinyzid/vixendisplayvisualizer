@@ -4,8 +4,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
     using System.Collections.ObjectModel;
     using System.Windows.Forms;
     using System.Windows.Input;
-    using Vixen.PlugIns.VixenDisplayVisualizer.Channels;
     using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
+    using Vixen.PlugIns.VixenDisplayVisualizer.Pixels;
 
     /// <summary>
     ///   The setup view model.
@@ -100,7 +100,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         /// </summary>
         private void AddElement()
         {
-            var displayElement = new DisplayElement(10, 10, 100, 0, 0, 100, new List<MappedChannel>());
+            var displayElement = new DisplayElement(10, 10, 100, 0, 0, 100, new List<PixelMapping>());
             displayElement.Name = "My New Element";
             var viewModel = new ElementEditorViewModel(Channels, displayElement);
             using (var editor = new ElementEditor(viewModel))

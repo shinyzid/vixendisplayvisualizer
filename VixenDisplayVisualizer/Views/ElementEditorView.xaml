@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:Channels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Channels"
              xmlns:vdv="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer"
+             xmlns:Pixels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Pixels"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="600"
@@ -19,7 +19,7 @@
 			                    x:Key="LightColors">
 			</ObjectDataProvider>
 
-			<DataTemplate DataType="{x:Type Channels:EmptyChannel}">
+			<DataTemplate DataType="{x:Type Pixels:EmptyPixel}">
 				<Border HorizontalAlignment="Stretch"
 				        VerticalAlignment="Stretch"
 				        Background="Black"
@@ -35,7 +35,7 @@
 					</TextBlock>
 				</Border>
 			</DataTemplate>
-			<DataTemplate DataType="{x:Type Channels:SingleColorChannel}">
+			<DataTemplate DataType="{x:Type Pixels:SingleColorPixel}">
 				<Border BorderBrush="White"
 				        Background="Black"
 				        HorizontalAlignment="Stretch"
@@ -77,7 +77,7 @@
 					</Grid>
 				</Border>
 			</DataTemplate>
-			<DataTemplate DataType="{x:Type Channels:RedGreenBlueChannel}">
+			<DataTemplate DataType="{x:Type Pixels:RedGreenBluePixel}">
 				<Border BorderBrush="White"
 				        Background="Black"
 				        HorizontalAlignment="Stretch"
@@ -127,7 +127,7 @@
 					</Grid>
 				</Border>
 			</DataTemplate>
-			<DataTemplate DataType="{x:Type Channels:RedGreenBlueWhiteChannel}">
+			<DataTemplate DataType="{x:Type Pixels:RedGreenBlueWhitePixel}">
 				<Border BorderBrush="White"
 				        Background="Black"
 				        HorizontalAlignment="Stretch"
@@ -224,11 +224,11 @@
 		        Margin="0"
 		        Padding="0"
 		        x:Name="ListBorder">
-			<ListView ItemsSource="{Binding MappedChannels}"
+            <ListView ItemsSource="{Binding PixelMappings}"
 			          HorizontalContentAlignment="Stretch"
 			          VerticalContentAlignment="Stretch"
 			          Height="{Binding ElementName=ListBorder, Path=Height}"
-			          SelectedItem="{Binding CurrentMappedChannel}">
+			          SelectedItem="{Binding CurrentPixelMapping}">
 				<ListView.ItemsPanel>
 					<ItemsPanelTemplate>
 						<UniformGrid Rows="{Binding DisplayElement.Rows}"
@@ -236,7 +236,7 @@
 					</ItemsPanelTemplate>
 				</ListView.ItemsPanel>
 				<ListView.ItemTemplate>
-					<DataTemplate DataType="{x:Type Channels:MappedChannel}">
+					<DataTemplate DataType="{x:Type Pixels:PixelMapping}">
 						<Border BorderBrush="White"
 						        Background="Black"
 						        HorizontalAlignment="Stretch"
@@ -258,7 +258,7 @@
 										<Button Command="{Binding ConvertToRgbwCommand}">RGB+W</Button>
 									</StackPanel>
 								</GroupBox>
-								<ContentControl Content="{Binding Channel}"
+								<ContentControl Content="{Binding Pixel}"
 								                Grid.Row="1" />
 							</Grid>
 						</Border>

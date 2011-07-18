@@ -51,9 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BooleanToCollapsedConverter.cs" />
-    <Compile Include="Channels\EmptyChannel.cs" />
-    <Compile Include="Channels\IChannel.cs" />
-    <Compile Include="Channels\MappedChannel.cs" />
+    <Compile Include="Pixels\EmptyPixel.cs" />
+    <Compile Include="Pixels\IPixel.cs" />
+    <Compile Include="Pixels\PixelMapping.cs" />
     <Compile Include="LightColors.cs" />
     <Compile Include="Dialogs\DisplayVisualizer.cs">
       <SubType>Form</SubType>
@@ -61,8 +61,8 @@
     <Compile Include="Dialogs\DisplayVisualizer.Designer.cs">
       <DependentUpon>DisplayVisualizer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Channels\RedGreenBlueChannel.cs" />
-    <Compile Include="Channels\RedGreenBlueWhiteChannel.cs" />
+    <Compile Include="Pixels\RedGreenBluePixel.cs" />
+    <Compile Include="Pixels\RedGreenBlueWhitePixel.cs" />
     <Compile Include="Dialogs\ElementEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,7 +75,7 @@
     <Compile Include="Dialogs\Setup.Designer.cs">
       <DependentUpon>Setup.cs</DependentUpon>
     </Compile>
-    <Compile Include="Channels\SingleColorChannel.cs" />
+    <Compile Include="Pixels\SingleColorPixel.cs" />
     <Compile Include="DisplayElement.cs" />
     <Compile Include="DragCanvas.cs" />
     <Compile Include="Extensions.cs" />

@@ -1,14 +1,14 @@
-﻿namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
+﻿namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
 {
     using System.ComponentModel;
     using System.Windows.Media;
 
-    internal class RedGreenBlueWhiteChannel : RedGreenBlueChannel
+    internal class RedGreenBlueWhitePixel : RedGreenBluePixel
     {
         private byte _white;
         private Channel _whiteChannel;
 
-        public RedGreenBlueWhiteChannel(Channel red, Channel green, Channel blue, Channel white)
+        public RedGreenBlueWhitePixel(Channel red, Channel green, Channel blue, Channel white)
             : base(red, green, blue)
         {
             WhiteChannel = white;

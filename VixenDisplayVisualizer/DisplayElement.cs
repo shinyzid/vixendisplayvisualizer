@@ -3,7 +3,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using Vixen.PlugIns.VixenDisplayVisualizer.Channels;
+    using Vixen.PlugIns.VixenDisplayVisualizer.Pixels;
 
     public class DisplayElement : INotifyPropertyChanged
     {
@@ -22,9 +22,9 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         private int _width;
 
         public DisplayElement(
-            int columns, int rows, int height, int leftOffset, int topOffset, int width, IList<MappedChannel> mappedChannels)
+            int columns, int rows, int height, int leftOffset, int topOffset, int width, IList<PixelMapping> mappedChannels)
         {
-            MappedChannels = new ObservableCollection<MappedChannel>(mappedChannels);
+            PixelMappings = new ObservableCollection<PixelMapping>(mappedChannels);
             _columns = columns;
             _rows = rows;
             Height = height;
@@ -34,7 +34,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             var numberOfCells = rows * columns;           
             for (var index = mappedChannels.Count; index < numberOfCells; index++)
             {
-                MappedChannels.Add(new MappedChannel(new EmptyChannel()));
+                PixelMappings.Add(new PixelMapping(new EmptyPixel()));
             }
         }
 
@@ -83,7 +83,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             }
         }
 
-        public ObservableCollection<MappedChannel> MappedChannels { get; private set; }
+        public ObservableCollection<PixelMapping> PixelMappings { get; private set; }
 
         public string Name
         {
@@ -145,14 +145,14 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         private void AdjustMappedChannels()
         {
             var numberOfCells = _rows * _columns;
-            while (MappedChannels.Count > numberOfCells)
+            while (PixelMappings.Count > numberOfCells)
             {
-                MappedChannels.RemoveAt(MappedChannels.Count - 1);
+                PixelMappings.RemoveAt(PixelMappings.Count - 1);
             }
 
-            while (MappedChannels.Count < numberOfCells)
+            while (PixelMappings.Count < numberOfCells)
             {
-                MappedChannels.Add(new MappedChannel(new EmptyChannel()));
+                PixelMappings.Add(new PixelMapping(new EmptyPixel()));
             }
         }
     }

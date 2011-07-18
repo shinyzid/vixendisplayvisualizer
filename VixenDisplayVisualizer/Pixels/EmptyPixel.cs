@@ -1,8 +1,8 @@
-namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
+namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
 {
     using System.Windows.Media;
 
-    public class EmptyChannel : IChannel
+    public class EmptyPixel : IPixel
     {
         public Color ChannelColor
         {

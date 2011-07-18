@@ -1,22 +1,20 @@
-namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
+namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
 {
     using System.ComponentModel;
     using System.Windows.Media;
 
-    public class RedGreenBlueChannel : IChannel, INotifyPropertyChanged
+    public class RedGreenBluePixel : IPixel, INotifyPropertyChanged
     {
         protected byte _blue;
-
         protected byte _green;
-
         protected byte _red;
-        private Channel _blueChannel;
 
+        private Channel _blueChannel;
         private Color _channelColor;
         private Channel _greenChannel;
         private Channel _redChannel;
 
-        public RedGreenBlueChannel(Channel red, Channel green, Channel blue)
+        public RedGreenBluePixel(Channel red, Channel green, Channel blue)
         {
             _channelColor = Colors.Black;
             RedChannel = red;

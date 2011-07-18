@@ -1,22 +1,22 @@
-namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
+namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
 {
     using System;
     using System.ComponentModel;
     using System.Windows.Input;
     using System.Windows.Media;
 
-    public class MappedChannel : INotifyPropertyChanged
+    public class PixelMapping : INotifyPropertyChanged
     {
-        private IChannel _channel;
+        private IPixel _pixel;
 
-        public MappedChannel(IChannel channel)
+        public PixelMapping(IPixel pixel)
         {
-            if (channel == null)
+            if (pixel == null)
             {
-                throw new ArgumentNullException("channel");
+                throw new ArgumentNullException("pixel");
             }
 
-            Channel = channel;
+            Pixel = pixel;
             ConvertToEmptyCommand = new RelayCommand(x => ConvertToEmpty(), x => CanConvertToEmpty());
             ConvertToSingleCommand = new RelayCommand(x => ConvertToSingle(), x => CanConvertToSingle());
             ConvertToRgbCommand = new RelayCommand(x => ConvertToRgb(), x => CanConvertToRgb());
@@ -25,17 +25,17 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public IChannel Channel
+        public IPixel Pixel
         {
             get
             {
-                return _channel;
+                return _pixel;
             }
 
             set
             {
-                _channel = value;
-                PropertyChanged.NotifyPropertyChanged("Channel", this);
+                _pixel = value;
+                PropertyChanged.NotifyPropertyChanged("Pixel", this);
             }
         }
 
@@ -43,7 +43,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
         {
             get
             {
-                var channel = Channel;
+                var channel = Pixel;
                 return channel == null ? Colors.Black : channel.ChannelColor;
             }
         }
@@ -53,58 +53,59 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
         public ICommand ConvertToRgbCommand { get; private set; }
 
         public ICommand ConvertToRgbwCommand { get; private set; }
+
         public ICommand ConvertToSingleCommand { get; private set; }
 
         public bool Contains(Channel channel)
         {
-            return Channel == null ? false : Channel.Contains(channel);
+            return Pixel == null ? false : Pixel.Contains(channel);
         }
 
         public void SetColor(Channel channel, byte intensity)
         {
-            Channel.SetColor(channel, intensity);
+            Pixel.SetColor(channel, intensity);
             PropertyChanged.NotifyPropertyChanged("ChannelColor", this);
         }
 
         private bool CanConvertToEmpty()
         {
-            return !(Channel is EmptyChannel);
+            return !(Pixel is EmptyPixel);
         }
 
         private bool CanConvertToRgb()
         {
-            var rgb = Channel as RedGreenBlueChannel;
-            return rgb == null || !(rgb is RedGreenBlueWhiteChannel);
+            var rgb = Pixel as RedGreenBluePixel;
+            return rgb == null || !(rgb is RedGreenBlueWhitePixel);
         }
 
         private bool CanConvertToRgbw()
         {
-            return !(Channel is RedGreenBlueWhiteChannel);
+            return !(Pixel is RedGreenBlueWhitePixel);
         }
 
         private bool CanConvertToSingle()
         {
-            return !(Channel is SingleColorChannel);
+            return !(Pixel is SingleColorPixel);
         }
 
         private void ConvertToEmpty()
         {
-            Channel = new EmptyChannel();
+            Pixel = new EmptyPixel();
         }
 
         private void ConvertToRgb()
         {
-            Channel = new RedGreenBlueChannel(null, null, null);
+            Pixel = new RedGreenBluePixel(null, null, null);
         }
 
         private void ConvertToRgbw()
         {
-            Channel = new RedGreenBlueWhiteChannel(null, null, null, null);
+            Pixel = new RedGreenBlueWhitePixel(null, null, null, null);
         }
 
         private void ConvertToSingle()
         {
-            Channel = new SingleColorChannel(null, Colors.White);
+            Pixel = new SingleColorPixel(null, Colors.White);
         }
     }
 }

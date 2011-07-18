@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:VixenDisplayVisualizer="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer"
-             xmlns:Channels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Channels"
+             xmlns:Pixels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Pixels"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="800">
@@ -18,7 +18,7 @@
 				        Background="Black"
 				        Height="{Binding Height}"
 				        Width="{Binding Width}">
-					<ItemsControl ItemsSource="{Binding MappedChannels}">
+					<ItemsControl ItemsSource="{Binding PixelMappings}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<UniformGrid Columns="{Binding Columns}"
@@ -28,7 +28,7 @@
 					</ItemsControl>
 				</Border>
 			</DataTemplate>
-			<DataTemplate DataType="{x:Type Channels:MappedChannel}">
+			<DataTemplate DataType="{x:Type Pixels:PixelMapping}">
 				<Border BorderBrush="Gray" BorderThickness="1">
 					<Border.Background>
 						<SolidColorBrush Color="{Binding ChannelColor}" />

@@ -1,14 +1,14 @@
-namespace Vixen.PlugIns.VixenDisplayVisualizer.Channels
+namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
 {
     using System.ComponentModel;
     using System.Windows.Media;
 
-    public class SingleColorChannel : IChannel, INotifyPropertyChanged
+    public class SingleColorPixel : IPixel, INotifyPropertyChanged
     {
         private Channel _channel;
         private Color _displayColor;
 
-        public SingleColorChannel(Channel channel, Color color)
+        public SingleColorPixel(Channel channel, Color color)
         {
             Channel = channel;
             ChannelColor = Colors.Black;
