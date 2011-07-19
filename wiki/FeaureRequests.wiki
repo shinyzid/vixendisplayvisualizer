@@ -1,0 +1,17 @@
+#summary Features yet to be implemented.
+
+= Introduction =
+
+Here is a list of desired features that are not implemented yet in the plugin.
+
+= Details =
+
+Element Editor
+  * Keyboard navigation should select entire text box
+  * Make pixel editor a popup
+
+Setup
+  * Reorder elements
+  * have the "next" add element click to default to same values as last added element instead of defaulting to 10x10.. and or a button that says add "another" and possible add "another consecutive" that adds the next x number of channels.. 
+  * Set background image
+  * Import/Export
