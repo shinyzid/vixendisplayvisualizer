@@ -9,6 +9,7 @@ Here is a list of desired features that are not implemented yet in the plugin.
 Element Editor
   * Keyboard navigation should select entire text box
   * Make pixel editor a popup
+  * Once the R, in RGB or RGB+W is setup, auto set the rest of the channels.
 
 Setup
   * Reorder elements
