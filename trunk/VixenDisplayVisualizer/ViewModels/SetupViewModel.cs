@@ -4,11 +4,14 @@
 // --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Windows.Controls;
     using System.Windows.Forms;
     using System.Windows.Input;
-
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
     using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
     using Vixen.PlugIns.VixenDisplayVisualizer.Pixels;
 
@@ -35,18 +38,45 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         /// <summary>
         ///   Initializes a new instance of the <see cref = "SetupViewModel" /> class.
         /// </summary>
-        public SetupViewModel(int displayWidth, int displayHeight)
+        public SetupViewModel(int displayWidth, int displayHeight, ImageSource backgroundImage)
         {
             this.AddElementCommand = new RelayCommand(x => this.AddElement());
             this.EditElementCommand = new RelayCommand(
                 x => this.EditDisplayElement(), x => this.CanEditDisplayElement());
             this.DeleteElementCommand = new RelayCommand(
                 x => this.DeleteDisplayElement(), x => this.CanDeleteDisplayElement());
+            this.SetBackgroundCommand = new RelayCommand(x => SetBackground());
             this.DisplayElements = new ObservableCollection<DisplayElement>();
             this.Channels = new ObservableCollection<Channel>();
             this.DisplayWidth = displayWidth == 0 ? 800 : displayWidth;
             this.DisplayHeight = displayHeight == 0 ? 600 : displayHeight;
+            BackgroundImage = backgroundImage;
         }
+
+        private void SetBackground()
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.FileName = "Image"; // Default file name
+            openFileDialog.DefaultExt = ".bmp|.jpg|.png"; // Default file extension
+            openFileDialog.Filter = "Imageds (.bmp)|*.bmp|*.png|*.jpg"; // Filter files by extension
+
+            // Show open file dialog box
+            var result = openFileDialog.ShowDialog();
+
+            // Process open file dialog box results
+            if (result == true)
+            {
+                // Open document
+                string filename = openFileDialog.FileName;
+                var image = new BitmapImage();
+                image.BeginInit();
+                image.UriSource = new Uri(filename, UriKind.Absolute);
+                image.EndInit();
+                BackgroundImage = image;
+            }
+        }
+
+        public ICommand SetBackgroundCommand { get; private set; }
 
         /// <summary>
         ///   Gets AddElementCommand.
@@ -72,6 +102,20 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             {
                 this._currentDisplayElement = value;
                 this.OnPropertyChanged("CurrentDisplayElement");
+            }
+        }
+
+        private ImageSource _backgroundImage;
+        public ImageSource BackgroundImage
+        {
+            get
+            {
+                return _backgroundImage;
+            }
+            set
+            {
+                _backgroundImage = value;
+                OnPropertyChanged("BackgroundImage");
             }
         }
 
