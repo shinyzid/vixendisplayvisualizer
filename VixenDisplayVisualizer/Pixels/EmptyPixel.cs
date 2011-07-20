@@ -18,7 +18,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
         {
             get
             {
-                return Colors.Black;
+                return Colors.Transparent;
             }
         }
 

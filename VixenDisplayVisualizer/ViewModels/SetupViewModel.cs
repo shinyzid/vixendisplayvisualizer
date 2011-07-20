@@ -35,7 +35,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         /// <summary>
         ///   Initializes a new instance of the <see cref = "SetupViewModel" /> class.
         /// </summary>
-        public SetupViewModel()
+        public SetupViewModel(int displayWidth, int displayHeight)
         {
             this.AddElementCommand = new RelayCommand(x => this.AddElement());
             this.EditElementCommand = new RelayCommand(
@@ -44,8 +44,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
                 x => this.DeleteDisplayElement(), x => this.CanDeleteDisplayElement());
             this.DisplayElements = new ObservableCollection<DisplayElement>();
             this.Channels = new ObservableCollection<Channel>();
-            this.DisplayWidth = 800;
-            this.DisplayHeight = 600;
+            this.DisplayWidth = displayWidth == 0 ? 800 : displayWidth;
+            this.DisplayHeight = displayHeight == 0 ? 600 : displayHeight;
         }
 
         /// <summary>

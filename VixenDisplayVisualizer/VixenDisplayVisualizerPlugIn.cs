@@ -62,6 +62,9 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
         /// </summary>
         private XmlNode _setupNode;
 
+        private int _displayHeight;
+        private int _displayWidth;
+
         /// <summary>
         ///   Gets Author.
         /// </summary>
@@ -178,12 +181,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             {
                 this.LoadDataFromSetupNode();
 
-                ////var system = (ISystem)Interfaces.Available["ISystem"];
-                ////var constructor = typeof(DisplayVisualizer).GetConstructor(new[] { typeof(VisualizerViewModel) });
                 var viewModel = new VisualizerViewModel(this._channels, this._elements);
-
-                ////var form = system..InstantiateForm(constructor, new object[] { viewModel });
-                this._displayVisualizer = new DisplayVisualizer(viewModel);
+                this._displayVisualizer = new DisplayVisualizer(viewModel, _displayWidth, _displayHeight);
                 this._displayVisualizer.Show();
             }
         }
@@ -197,7 +196,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             {
                 this.LoadDataFromSetupNode();
 
-                var viewModel = new SetupViewModel();
+                var viewModel = new SetupViewModel(_displayWidth, _displayHeight);
                 this._channels.ForEach(x => viewModel.Channels.Add(x));
                 this._elements.ForEach(x => viewModel.DisplayElements.Add(x));
                 bool saveData;
@@ -206,6 +205,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                     this._setupDialog.ShowDialog();
                     this._elements.Clear();
                     this._elements.AddRange(viewModel.DisplayElements);
+                    this._displayWidth = viewModel.DisplayWidth;
+                    this._displayHeight = viewModel.DisplayHeight;
                     saveData = true;
                 }
 
@@ -214,6 +215,27 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                     while (this._setupNode.ChildNodes.Count > 0)
                     {
                         this._setupNode.RemoveChild(this._setupNode.ChildNodes[0]);
+                    }
+
+                    var heightAttribute = _setupNode.Attributes.GetNamedItem("displayHeight");
+                    var widthAttribute = _setupNode.Attributes.GetNamedItem("displayWidth");
+
+                    if (heightAttribute == null)
+                    {
+                        _setupNode.AppendAttribute("displayHeight", _displayHeight.ToString());
+                    }
+                    else
+                    {
+                        heightAttribute.Value = _displayHeight.ToString();
+                    }
+
+                    if (widthAttribute == null)
+                    {
+                        _setupNode.AppendAttribute("displayWidth", _displayWidth.ToString());
+                    }
+                    else
+                    {
+                        widthAttribute.Value = _displayWidth.ToString();
                     }
 
                     foreach (var element in this._elements)
@@ -323,6 +345,15 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                 }
             }
 
+            var heightAttribute = setupNodeAttributes.GetNamedItem("displayHeight");
+            var widthAttribute = setupNodeAttributes.GetNamedItem("displayWidth");
+
+            if (widthAttribute != null && heightAttribute != null)
+            {
+                _displayHeight = heightAttribute.Value.TryParseInt32(0);
+                _displayWidth = widthAttribute.Value.TryParseInt32(0);
+            }
+
             this._elements.Clear();
             foreach (XmlNode node in this._setupNode.ChildNodes)
             {
@@ -408,8 +439,10 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                 }
 
                 var displayElement = new DisplayElement(
-                    columns, rows, height, leftOffset, topOffset, width, mappedChannels);
-                displayElement.Name = attributes.GetNamedItem("Name").Value;
+                    columns, rows, height, leftOffset, topOffset, width, mappedChannels)
+                                     {
+                                         Name = attributes.GetNamedItem("Name").Value
+                                     };
                 this._elements.Add(displayElement);
             }
         }

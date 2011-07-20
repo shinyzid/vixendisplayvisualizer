@@ -61,7 +61,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
         /// </param>
         public RedGreenBluePixel(Channel red, Channel green, Channel blue)
         {
-            this._channelColor = Colors.Black;
+            this._channelColor = Colors.Transparent;
             this.RedChannel = red;
             this.GreenChannel = green;
             this.BlueChannel = blue;
