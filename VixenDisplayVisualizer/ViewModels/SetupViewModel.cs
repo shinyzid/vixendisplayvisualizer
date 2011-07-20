@@ -56,9 +56,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         private void SetBackground()
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.FileName = "Image"; // Default file name
             openFileDialog.DefaultExt = ".bmp|.jpg|.png"; // Default file extension
-            openFileDialog.Filter = "Imageds (.bmp)|*.bmp|*.png|*.jpg"; // Filter files by extension
+            openFileDialog.Filter = "Image Files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png"; // Filter files by extension
 
             // Show open file dialog box
             var result = openFileDialog.ShowDialog();
