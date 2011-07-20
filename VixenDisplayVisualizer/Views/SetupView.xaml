@@ -217,6 +217,7 @@
 				<Button Command="{Binding AddElementCommand}">Add Element</Button>
 				<Button Command="{Binding EditElementCommand}">Edit Element</Button>
 				<Button Command="{Binding DeleteElementCommand}">Delete Element</Button>
+                <Button Command="{Binding SetBackgroundCommand}">Set background</Button>
 			</StackPanel>
 		</Grid>
 		<Grid Grid.Column="1">
@@ -260,16 +261,19 @@
 						          ItemsSource="{Binding DisplayElements}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
-									<vdv:DragCanvas ClipToBounds="True"
-									                Background="Transparent"
+                                    <vdv:DragCanvas ClipToBounds="True"
 									                HorizontalAlignment="Left"
 									                MaxWidth="{Binding DisplayWidth}"
 									                MaxHeight="{Binding DisplayHeight}"
 									                MinWidth="{Binding DisplayWidth}"
 									                MinHeight="{Binding DisplayHeight}"
 									                Width="{Binding DisplayWidth}"
-									                Height="{Binding DisplayHeight}" />
-								</ItemsPanelTemplate>
+									                Height="{Binding DisplayHeight}" >
+                                        <Canvas.Background>
+                                            <ImageBrush ImageSource="{Binding BackgroundImage}" Stretch="Fill" />
+                                        </Canvas.Background>
+                                    </vdv:DragCanvas>
+                                </ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
 							<ItemsControl.ItemContainerStyle>
 								<Style TargetType="ContentPresenter">

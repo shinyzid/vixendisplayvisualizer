@@ -7,8 +7,10 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
     using System.Collections.Generic;
     using System.Linq;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Forms;
     using System.Windows.Media;
+    using System.Windows.Media.Imaging;
     using System.Xml;
 
     using Vixen.PlugIns.VixenDisplayVisualizer.Dialogs;
@@ -64,6 +66,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
 
         private int _displayHeight;
         private int _displayWidth;
+        private ImageSource _background;
 
         /// <summary>
         ///   Gets Author.
@@ -196,7 +199,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             {
                 this.LoadDataFromSetupNode();
 
-                var viewModel = new SetupViewModel(_displayWidth, _displayHeight);
+                var viewModel = new SetupViewModel(_displayWidth, _displayHeight, _background);
                 this._channels.ForEach(x => viewModel.Channels.Add(x));
                 this._elements.ForEach(x => viewModel.DisplayElements.Add(x));
                 bool saveData;
@@ -303,6 +306,12 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                         }
 
                         this._setupNode.AppendChild(node);
+                    }
+
+                    _background = viewModel.BackgroundImage;
+                    if (_background == null)
+                    {
+                        _background = new BitmapImage();
                     }
 
                     this.LoadDataFromSetupNode();
