@@ -33,7 +33,7 @@
 			<DataTemplate DataType="{x:Type Pixels:EmptyPixel}">
 				<Border>
 					<Border.Background>
-						<SolidColorBrush Color="DarkGray" />
+						<SolidColorBrush Color="Transparent" />
 					</Border.Background>
 				</Border>
 			</DataTemplate>
@@ -131,9 +131,9 @@
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type vdv:DisplayElement}">
-				<Border BorderBrush="Orange"
-				        Background="Black"
-				        BorderThickness="3"
+				<Border BorderBrush="Black"
+				        Background="Transparent"
+				        BorderThickness=".5"
 				        Height="{Binding Height, Mode=TwoWay}"
 				        Width="{Binding Width, Mode=TwoWay}">
 					<ItemsControl ItemsSource="{Binding PixelMappings}"
@@ -147,11 +147,11 @@
 						</ItemsControl.ItemsPanel>
 						<ItemsControl.ItemTemplate>
 							<DataTemplate DataType="{x:Type Pixels:PixelMapping}">
-								<Border BorderBrush="LightGray"
-								        BorderThickness="1"
+								<Border BorderBrush="Transparent"
+								        BorderThickness=".5"
 								        VerticalAlignment="Stretch"
 								        HorizontalAlignment="Stretch"
-								        Background="Black">
+								        Background="Transparent">
 									<ContentControl Content="{Binding Pixel}" />
 								</Border>
 							</DataTemplate>
@@ -219,7 +219,11 @@
 				<Button Command="{Binding DeleteElementCommand}">Delete Element</Button>
 			</StackPanel>
 		</Grid>
-		<StackPanel Grid.Column="1">
+		<Grid Grid.Column="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
 			<Border CornerRadius="5"
 			        Margin="2"
 			        Padding="2">
@@ -236,32 +240,51 @@
 					</GroupBox>
 				</StackPanel>
 			</Border>
-			<GroupBox Header="Display Layout">
-				<Border BorderThickness="0"
-				        x:Name="CanvasBorder">
-					<ItemsControl Background="LightCyan"
-					              MinWidth="{Binding DisplayWidth}"
-					              MaxWidth="{Binding DisplayWidth}"
-					              MinHeight="{Binding DisplayHeight}"
-					              MaxHeight="{Binding DisplayHeight}"
-					              ItemsSource="{Binding DisplayElements}">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<vdv:DragCanvas />
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-						<ItemsControl.ItemContainerStyle>
-							<Style TargetType="ContentPresenter">
-								<Setter Property="Canvas.Left"
-								        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
-								<Setter Property="Canvas.Top"
-								        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
-							</Style>
-						</ItemsControl.ItemContainerStyle>
-					</ItemsControl>
-				</Border>
-			</GroupBox>
-		</StackPanel>
+			<Border x:Name="scrollborder"
+			        Grid.Row="1"
+			        BorderThickness="0">
+				<ScrollViewer VerticalScrollBarVisibility="Auto"
+				              HorizontalScrollBarVisibility="Auto"
+				              HorizontalContentAlignment="Left"
+				              VerticalContentAlignment="Top"
+				              Width="{Binding ElementName=scrollborder, Path=Width}"
+				              Height="{Binding ElementName=scrollborder, Path=Height}">
+					<GroupBox Header="Display Layout"
+					          BorderBrush="Black"
+					          HorizontalAlignment="Left"
+					          VerticalAlignment="Top"
+					          BorderThickness="2">
+						<ItemsControl Background="Gray"
+						          Width="{Binding DisplayWidth}"
+						          Height="{Binding DisplayHeight}"
+						          ItemsSource="{Binding DisplayElements}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<vdv:DragCanvas ClipToBounds="True"
+									                Background="Transparent"
+									                HorizontalAlignment="Left"
+									                MaxWidth="{Binding DisplayWidth}"
+									                MaxHeight="{Binding DisplayHeight}"
+									                MinWidth="{Binding DisplayWidth}"
+									                MinHeight="{Binding DisplayHeight}"
+									                Width="{Binding DisplayWidth}"
+									                Height="{Binding DisplayHeight}" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemContainerStyle>
+								<Style TargetType="ContentPresenter">
+									<Setter Property="Canvas.Left"
+									        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
+									<Setter Property="Canvas.Top"
+									        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
+								</Style>
+							</ItemsControl.ItemContainerStyle>
+						</ItemsControl>
+
+					</GroupBox>
+				</ScrollViewer>
+			</Border>
+		</Grid>
 
 	</Grid>
 </UserControl>

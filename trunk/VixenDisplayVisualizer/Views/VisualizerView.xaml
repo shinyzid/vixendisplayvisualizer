@@ -13,9 +13,9 @@
 			<DataTemplate DataType="{x:Type VixenDisplayVisualizer:DisplayElement}">
 				<Border Canvas.Top="{Binding TopOffset}"
 				        Canvas.Left="{Binding LeftOffset}"
-				        BorderBrush="Gray"
-				        BorderThickness="5"
-				        Background="Black"
+				        BorderBrush="Transparent"
+				        BorderThickness="0"
+				        Background="Transparent"
 				        Height="{Binding Height}"
 				        Width="{Binding Width}">
 					<ItemsControl ItemsSource="{Binding PixelMappings}">
@@ -29,7 +29,7 @@
 				</Border>
 			</DataTemplate>
 			<DataTemplate DataType="{x:Type Pixels:PixelMapping}">
-				<Border BorderBrush="Gray"
+				<Border BorderBrush="Transparent"
 				        BorderThickness="1">
 					<Border.Background>
 						<SolidColorBrush Color="{Binding ChannelColor}" />

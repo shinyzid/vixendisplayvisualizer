@@ -4,6 +4,7 @@
 // --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
 {
+    using System;
     using System.Windows.Forms;
 
     using Vixen.PlugIns.VixenDisplayVisualizer.ViewModels;
@@ -24,11 +25,15 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
         /// <param name = "viewModel">
         ///   The view model.
         /// </param>
-        public DisplayVisualizer(VisualizerViewModel viewModel)
+        public DisplayVisualizer(VisualizerViewModel viewModel, int width, int height)
         {
             this.InitializeComponent();
             this.visualizerView.DataContext = viewModel;
             this._viewModel = viewModel;
+
+            var workingArea = Screen.PrimaryScreen.WorkingArea;
+            this.Width = Math.Min(workingArea.Width, width == 0 ? 800 : width);
+            this.Height = Math.Min(workingArea.Height, height == 0 ? 600 : height);
         }
 
         /// <summary>

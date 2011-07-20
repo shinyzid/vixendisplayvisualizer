@@ -34,7 +34,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
         public SingleColorPixel(Channel channel, Color color)
         {
             this.Channel = channel;
-            this.ChannelColor = Colors.Black;
+            this.ChannelColor = Colors.Transparent;
             this.DisplayColor = color;
         }
 

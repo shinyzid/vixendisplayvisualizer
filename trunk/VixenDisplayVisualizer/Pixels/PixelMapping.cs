@@ -54,7 +54,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
             get
             {
                 var channel = this.Pixel;
-                return channel == null ? Colors.Black : channel.ChannelColor;
+                return channel == null ? Colors.Transparent : channel.ChannelColor;
             }
         }
 
