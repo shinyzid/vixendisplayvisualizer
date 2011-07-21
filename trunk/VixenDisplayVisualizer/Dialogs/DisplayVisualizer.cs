@@ -25,13 +25,15 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Dialogs
         /// <param name = "viewModel">
         ///   The view model.
         /// </param>
-        public DisplayVisualizer(VisualizerViewModel viewModel, int width, int height)
+        public DisplayVisualizer(VisualizerViewModel viewModel)
         {
             this.InitializeComponent();
             this.visualizerView.DataContext = viewModel;
             this._viewModel = viewModel;
 
             var workingArea = Screen.PrimaryScreen.WorkingArea;
+            var width = viewModel.DisplayWidth + 50;
+            var height = viewModel.DisplayHeight + 65;
             this.Width = Math.Min(workingArea.Width, width == 0 ? 800 : width);
             this.Height = Math.Min(workingArea.Height, height == 0 ? 600 : height);
         }
