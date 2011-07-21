@@ -40,35 +40,56 @@
 	</UserControl.Resources>
 	<Grid>
 		<GroupBox Header="Display Canvas"
-		          Grid.Column="1">
+		          Grid.Column="1"
+		          VerticalAlignment="Top"
+		          HorizontalAlignment="Left">
 			<Border Grid.Row="1"
 			        Background="Transparent"
-			        VerticalAlignment="Stretch"
 			        Margin="0"
 			        Padding="0"
 			        x:Name="ListBorder">
-				<ItemsControl Background="LightCyan"
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+				              HorizontalScrollBarVisibility="Auto"
+				              HorizontalContentAlignment="Left"
+				              VerticalContentAlignment="Top"
+				              Width="{Binding ElementName=ListBorder, Path=Width}"
+				              Height="{Binding ElementName=ListBorder, Path=Height}">
+                    <ItemsControl Background="Gray"
 				              MinWidth="{Binding DisplayWidth}"
 				              MaxWidth="{Binding DisplayWidth}"
+				              Height="{Binding DisplayHeight}"
+				              Width="{Binding DisplayWidth}"
 				              MinHeight="{Binding DisplayHeight}"
 				              MaxHeight="{Binding DisplayHeight}"
 				              ItemsSource="{Binding DisplayElements}">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<Canvas IsItemsHost="True"
-							        ScrollViewer.CanContentScroll="True" />
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemContainerStyle>
-						<Style TargetType="ContentPresenter">
-							<Setter Property="Canvas.Left"
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas IsItemsHost="True"
+							        MinWidth="{Binding DisplayWidth}"
+							        MaxWidth="{Binding DisplayWidth}"
+							        Height="{Binding DisplayHeight}"
+							        Width="{Binding DisplayWidth}"
+							        MinHeight="{Binding DisplayHeight}"
+							        MaxHeight="{Binding DisplayHeight}"
+							        ScrollViewer.CanContentScroll="True">
+                                    <Canvas.Background>
+                                        <ImageBrush ImageSource="{Binding BackgroundImage}"
+									            Stretch="Fill" />
+                                    </Canvas.Background>
+                                </Canvas>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left"
 							        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
-							<Setter Property="Canvas.Top"
+                                <Setter Property="Canvas.Top"
 							        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
-						</Style>
-					</ItemsControl.ItemContainerStyle>
-				</ItemsControl>
-			</Border>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
 		</GroupBox>
 
 	</Grid>

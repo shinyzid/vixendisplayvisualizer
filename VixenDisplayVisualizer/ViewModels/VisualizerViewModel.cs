@@ -4,8 +4,10 @@
 // --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Windows.Media.Imaging;
 
     /// <summary>
     ///   The visualizer view model.
@@ -21,11 +23,18 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         /// <param name = "displayElements">
         ///   The display elements.
         /// </param>
-        public VisualizerViewModel(List<Channel> channels, List<DisplayElement> displayElements)
+        public VisualizerViewModel(List<Channel> channels, List<DisplayElement> displayElements, BitmapSource backgroundImage, int displayWidth, int displayHeight)
         {
             this.Channels = channels;
             this.DisplayElements = displayElements;
+            BackgroundImage = backgroundImage;
+            DisplayWidth = displayWidth;
+            DisplayHeight = displayHeight;
         }
+
+        public int DisplayHeight { get; set; }
+
+        public int DisplayWidth { get; set; }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "VisualizerViewModel" /> class.
@@ -34,6 +43,21 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         {
             this.Channels = new List<Channel>();
             this.DisplayElements = new List<DisplayElement>();
+            BackgroundImage = null;
+        }
+
+        private BitmapSource _backgroundImage;
+        public BitmapSource BackgroundImage
+        {
+            get
+            {
+                return _backgroundImage;
+            }
+            set
+            {
+                _backgroundImage = value;
+                OnPropertyChanged("BackgroundImage");
+            }
         }
 
         /// <summary>

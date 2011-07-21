@@ -182,8 +182,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             {
                 this.LoadDataFromSetupNode();
 
-                var viewModel = new VisualizerViewModel(this._channels, this._elements);
-                this._displayVisualizer = new DisplayVisualizer(viewModel, _displayWidth, _displayHeight);
+                var viewModel = new VisualizerViewModel(this._channels, this._elements, _background, _displayWidth, _displayHeight);
+                this._displayVisualizer = new DisplayVisualizer(viewModel);
                 this._displayVisualizer.Show();
             }
         }
