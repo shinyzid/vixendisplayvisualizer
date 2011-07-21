@@ -5,9 +5,9 @@
 namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Windows;
-    using System.Windows.Controls;
     using System.Windows.Forms;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
@@ -66,7 +66,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
 
         private int _displayHeight;
         private int _displayWidth;
-        private ImageSource _background;
+        private BitmapSource _background;
 
         /// <summary>
         ///   Gets Author.
@@ -146,9 +146,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             this._channels.AddRange(executableObject.Channels);
             this._setupData = setupData;
             this._setupNode = setupNode;
-            this.LoadDataFromSetupNode();
-
-            ////_setupData.GetBytes(_setupNode, "BackgroundImage", new byte[0]);
+            this.LoadDataFromSetupNode();            
         }
 
         /// <summary>
@@ -210,6 +208,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                     this._elements.AddRange(viewModel.DisplayElements);
                     this._displayWidth = viewModel.DisplayWidth;
                     this._displayHeight = viewModel.DisplayHeight;
+                    _background = viewModel.BackgroundImage;
                     saveData = true;
                 }
 
@@ -218,6 +217,12 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                     while (this._setupNode.ChildNodes.Count > 0)
                     {
                         this._setupNode.RemoveChild(this._setupNode.ChildNodes[0]);
+                    }
+
+                    var imageBytes = _background.ToByteArray();
+                    if (imageBytes.Length > 0)
+                    {
+                        _setupData.SetBytes(_setupNode, "BackgroundImage", imageBytes);
                     }
 
                     var heightAttribute = _setupNode.Attributes.GetNamedItem("displayHeight");
@@ -307,13 +312,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
 
                         this._setupNode.AppendChild(node);
                     }
-
-                    _background = viewModel.BackgroundImage;
-                    if (_background == null)
-                    {
-                        _background = new BitmapImage();
-                    }
-
+                    
                     this.LoadDataFromSetupNode();
                 }
 
@@ -338,6 +337,18 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             var setupNodeAttributes = this._setupNode.Attributes;
             var fromAttribute = setupNodeAttributes.GetNamedItem("from");
             var toAttribute = setupNodeAttributes.GetNamedItem("to");
+            var imageData = _setupData.GetBytes(_setupNode, "BackgroundImage", new byte[0]);
+
+            if (imageData.Length > 0)
+            {
+                var image = new BitmapImage();
+                var decoder = new JpegBitmapDecoder(new MemoryStream(imageData), BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                _background = decoder.Frames[0];
+            }
+            else
+            {
+                _background = null;
+            }
 
             // if we got both attributes, try and parse them
             if (fromAttribute != null && toAttribute != null)
@@ -367,7 +378,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             foreach (XmlNode node in this._setupNode.ChildNodes)
             {
                 var attributes = node.Attributes;
-                if (attributes == null)
+                if (attributes == null || attributes.Count == 0)
                 {
                     continue;
                 }
