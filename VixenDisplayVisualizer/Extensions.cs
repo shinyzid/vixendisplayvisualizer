@@ -1,10 +1,8 @@
-// --------------------------------------------------------------------------------
-// Copyright (c) 2011 Erik Mathisen
-// See the file license.txt for copying permission.
-// --------------------------------------------------------------------------------
 namespace Vixen.PlugIns.VixenDisplayVisualizer
 {
     using System.ComponentModel;
+    using System.IO;
+    using System.Windows.Media.Imaging;
     using System.Xml;
 
     /// <summary>
@@ -29,6 +27,20 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             var attribute = node.OwnerDocument.CreateAttribute(name);
             attribute.Value = value;
             node.Attributes.Append(attribute);
+        }
+
+        public static byte[] ToByteArray(this BitmapSource imageSource)
+        {
+            if (imageSource == null)
+            {
+                return new byte[0];
+            }
+
+            var memStream = new MemoryStream();
+            var encoder = new JpegBitmapEncoder { QualityLevel = 30 };
+            encoder.Frames.Add(BitmapFrame.Create(imageSource));
+            encoder.Save(memStream);
+            return memStream.GetBuffer();
         }
 
         /// <summary>

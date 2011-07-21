@@ -38,7 +38,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         /// <summary>
         ///   Initializes a new instance of the <see cref = "SetupViewModel" /> class.
         /// </summary>
-        public SetupViewModel(int displayWidth, int displayHeight, ImageSource backgroundImage)
+        public SetupViewModel(int displayWidth, int displayHeight, BitmapSource backgroundImage)
         {
             this.AddElementCommand = new RelayCommand(x => this.AddElement());
             this.EditElementCommand = new RelayCommand(
@@ -104,8 +104,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             }
         }
 
-        private ImageSource _backgroundImage;
-        public ImageSource BackgroundImage
+        private BitmapSource _backgroundImage;
+        public BitmapSource BackgroundImage
         {
             get
             {
