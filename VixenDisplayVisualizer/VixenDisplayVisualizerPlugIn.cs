@@ -200,16 +200,26 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                 var viewModel = new SetupViewModel(_displayWidth, _displayHeight, _background);
                 this._channels.ForEach(x => viewModel.Channels.Add(x));
                 this._elements.ForEach(x => viewModel.DisplayElements.Add(x));
-                bool saveData;
+                bool saveData = false;
                 using (this._setupDialog = new Setup(viewModel))
                 {
                     this._setupDialog.ShowDialog();
-                    this._elements.Clear();
-                    this._elements.AddRange(viewModel.DisplayElements);
-                    this._displayWidth = viewModel.DisplayWidth;
-                    this._displayHeight = viewModel.DisplayHeight;
-                    _background = viewModel.BackgroundImage;
-                    saveData = true;
+
+                    var result = MessageBox.Show(
+                                                 "Do you want to save the changes made?",
+                                                 "Save Changes",
+                                                 MessageBoxButton.YesNo,
+                                                 MessageBoxImage.Question,
+                                                 MessageBoxResult.No);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        saveData = true;
+                        this._elements.Clear();
+                        this._elements.AddRange(viewModel.DisplayElements);
+                        this._displayWidth = viewModel.DisplayWidth;
+                        this._displayHeight = viewModel.DisplayHeight;
+                        _background = viewModel.BackgroundImage;
+                    }
                 }
 
                 if (saveData)
@@ -256,6 +266,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                         node.AppendAttribute("LeftOffset", element.LeftOffset.ToString());
                         node.AppendAttribute("TopOffset", element.TopOffset.ToString());
                         node.AppendAttribute("Name", element.Name);
+                        node.AppendAttribute("IsUnlocked", element.IsUnlocked.ToString());
                         foreach (var mappedChannel in element.PixelMappings)
                         {
                             var mappedNode = node.OwnerDocument.CreateElement("PixelMapping");
@@ -275,7 +286,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                                     var singleColorChannel = (SingleColorPixel)channel;
                                     var vixenChannel = singleColorChannel.Channel;
                                     channelNode.AppendAttribute(
-                                        "ChannelId", vixenChannel == null ? string.Empty : vixenChannel.ID.ToString());
+                                                                "ChannelId",
+                                                                vixenChannel == null ? string.Empty : vixenChannel.ID.ToString());
                                     channelNode.AppendAttribute("Color", singleColorChannel.DisplayColor.ToString());
                                 }
                                 else
@@ -284,13 +296,16 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
 
                                     var redChannel = rgb.RedChannel;
                                     channelNode.AppendAttribute(
-                                        "RedChannel", redChannel == null ? string.Empty : redChannel.ID.ToString());
+                                                                "RedChannel",
+                                                                redChannel == null ? string.Empty : redChannel.ID.ToString());
                                     var greenChannel = rgb.GreenChannel;
                                     channelNode.AppendAttribute(
-                                        "GreenChannel", greenChannel == null ? string.Empty : greenChannel.ID.ToString());
+                                                                "GreenChannel",
+                                                                greenChannel == null ? string.Empty : greenChannel.ID.ToString());
                                     var blueChannel = rgb.BlueChannel;
                                     channelNode.AppendAttribute(
-                                        "BlueChannel", blueChannel == null ? string.Empty : blueChannel.ID.ToString());
+                                                                "BlueChannel",
+                                                                blueChannel == null ? string.Empty : blueChannel.ID.ToString());
 
                                     var rgbw = channel as RedGreenBlueWhitePixel;
                                     var type = "RGB";
@@ -298,8 +313,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                                     {
                                         var whiteChannel = rgbw.WhiteChannel;
                                         channelNode.AppendAttribute(
-                                            "WhiteChannel", 
-                                            whiteChannel == null ? string.Empty : whiteChannel.ID.ToString());
+                                                                    "WhiteChannel",
+                                                                    whiteChannel == null ? string.Empty : whiteChannel.ID.ToString());
                                         type += "W";
                                     }
 
@@ -312,10 +327,9 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
 
                         this._setupNode.AppendChild(node);
                     }
-                    
-                    this.LoadDataFromSetupNode();
                 }
 
+                this.LoadDataFromSetupNode();
                 this._setupDialog = null;
             }
             else
@@ -341,7 +355,6 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
 
             if (imageData.Length > 0)
             {
-                var image = new BitmapImage();
                 var decoder = new JpegBitmapDecoder(new MemoryStream(imageData), BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
                 _background = decoder.Frames[0];
             }
@@ -389,6 +402,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                 var width = attributes.GetNamedItem("Width").Value.TryParseInt32(0);
                 var topOffset = attributes.GetNamedItem("TopOffset").Value.TryParseInt32(0);
                 var leftOffset = attributes.GetNamedItem("LeftOffset").Value.TryParseInt32(0);
+                var item = attributes.GetNamedItem("IsUnlocked");
+                var isUnlocked = item == null ? true : bool.Parse(item.Value);
 
                 var mappedChannels = new List<PixelMapping>();
                 foreach (XmlNode mappedNode in node.ChildNodes)
@@ -459,7 +474,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                 }
 
                 var displayElement = new DisplayElement(
-                    columns, rows, height, leftOffset, topOffset, width, mappedChannels)
+                    columns, rows, height, leftOffset, topOffset, width, mappedChannels, isUnlocked)
                                      {
                                          Name = attributes.GetNamedItem("Name").Value
                                      };

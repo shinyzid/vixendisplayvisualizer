@@ -261,7 +261,10 @@
 									        BorderThickness="2"
 									        Background="Black"
 									        CornerRadius="3">
-										<TextBlock>
+                                        <StackPanel>
+                                        <TextBlock Foreground="White"
+											           Text="{Binding Name}" />
+                                            <TextBlock Foreground="White">
 											<TextBlock.Resources>
 												<Style TargetType="Hyperlink"
 												       BasedOn="{StaticResource {x:Type Hyperlink}}">
@@ -281,15 +284,15 @@
 
 													</Style.Triggers>
 												</Style>
-											</TextBlock.Resources>
-											<TextBlock Foreground="White"
-											           Text="{Binding Name}" />
-											•
+											</TextBlock.Resources>											
 											<Hyperlink Command="{Binding Path=DataContext.MoveUpCommand, ElementName=Instance}">Move Up</Hyperlink>
 											•
 											<Hyperlink Command="{Binding Path=DataContext.MoveDownCommand, ElementName=Instance}">Move Down</Hyperlink>
+                                            • Movable 
+                                            <CheckBox IsChecked="{Binding IsUnlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 										</TextBlock>
-									</Border>
+                                        </StackPanel>
+                                    </Border>
 								</Grid>
 
 								<Grid Visibility="{Binding Path=IsSelected, Converter={StaticResource BooleanToCollapsedConverter}, RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
@@ -372,7 +375,9 @@
 									        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
 									<Setter Property="Canvas.Top"
 									        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
-								</Style>
+                                    <Setter Property="vdv:DragCanvas.CanBeDragged"
+									        Value="{Binding Path=IsUnlocked, Mode=TwoWay}" />
+                                </Style>
 							</ItemsControl.ItemContainerStyle>
 						</ItemsControl>
 
