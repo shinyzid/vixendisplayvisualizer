@@ -1,6 +1,6 @@
 #summary Change Log for the Vixen Display Visualizer
 
-= Next release = 
+= v1.11.7.22 = 
   * Ability to reorder elements 
   * Ability to set the background image
   * Ability to lock the display elements in place 
