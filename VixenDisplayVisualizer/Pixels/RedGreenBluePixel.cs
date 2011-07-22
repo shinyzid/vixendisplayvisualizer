@@ -5,6 +5,7 @@
 namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
 {
     using System.ComponentModel;
+    using System.Linq;
     using System.Windows.Media;
 
     /// <summary>
@@ -203,7 +204,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
                 }
             }
 
-            this.ChannelColor = Color.FromRgb(this._red, this._green, this._blue);
+            var alpha = new[] { _red, _green, _blue }.Max();
+            this.ChannelColor = Color.FromArgb(alpha, this._red, this._green, this._blue);
         }
     }
 }
