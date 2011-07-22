@@ -32,7 +32,12 @@
 				<Border BorderBrush="Transparent"
 				        BorderThickness="1">
 					<Border.Background>
-						<SolidColorBrush Color="{Binding ChannelColor}" />
+                        <RadialGradientBrush Center="0.5,0.5">
+                            <GradientStop Color="{Binding ChannelColor}"
+							              Offset=".5" />
+                            <GradientStop Color="Transparent"
+							              Offset="1" />
+                        </RadialGradientBrush>
 					</Border.Background>
 				</Border>
 			</DataTemplate>
