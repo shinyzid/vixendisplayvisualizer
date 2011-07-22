@@ -81,7 +81,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             int leftOffset, 
             int topOffset, 
             int width, 
-            IList<PixelMapping> mappedChannels)
+            IList<PixelMapping> mappedChannels,
+            bool isUnlocked)
         {
             this.PixelMappings = new ObservableCollection<PixelMapping>(mappedChannels);
             this._columns = columns;
@@ -90,6 +91,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             this.LeftOffset = leftOffset;
             this.TopOffset = topOffset;
             this.Width = width;
+            this.IsUnlocked = isUnlocked;
             var numberOfCells = rows * columns;
             for (var index = mappedChannels.Count; index < numberOfCells; index++)
             {
@@ -117,6 +119,20 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                 this._columns = value;
                 this.PropertyChanged.NotifyPropertyChanged("Columns", this);
                 this.AdjustMappedChannels();
+            }
+        }
+
+        private bool _isUnlocked;
+        public bool IsUnlocked
+        {
+            get
+            {
+                return _isUnlocked;
+            }
+            set
+            {
+                _isUnlocked = value;
+                this.PropertyChanged.NotifyPropertyChanged("IsUnlocked", this);
             }
         }
 
