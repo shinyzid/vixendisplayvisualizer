@@ -1,0 +1,4 @@
+#summary Change Log for the Vixen Display Visualizer
+
+= v1.11.7.18 =
+ 
