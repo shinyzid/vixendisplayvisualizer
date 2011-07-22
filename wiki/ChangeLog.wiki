@@ -1,4 +1,8 @@
 #summary Change Log for the Vixen Display Visualizer
 
 = v1.11.7.18 =
+  * Initial alpha release
+  * Ability create, edit, delete display elements
+  * Support for empty, single color, RGB, and RGB+W pixels
+
  
