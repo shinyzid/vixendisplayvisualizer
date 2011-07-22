@@ -46,11 +46,39 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
             this.DeleteElementCommand = new RelayCommand(
                 x => this.DeleteDisplayElement(), x => this.CanDeleteDisplayElement());
             this.SetBackgroundCommand = new RelayCommand(x => SetBackground());
+            this.MoveUpCommand = new RelayCommand(x => MoveUp(), x => CanMoveUp());
+            this.MoveDownCommand = new RelayCommand(x => MoveDown(), x => CanMoveDown());
             this.DisplayElements = new ObservableCollection<DisplayElement>();
             this.Channels = new ObservableCollection<Channel>();
             this.DisplayWidth = displayWidth == 0 ? 800 : displayWidth;
             this.DisplayHeight = displayHeight == 0 ? 600 : displayHeight;
             BackgroundImage = backgroundImage;
+        }
+
+        private void MoveDown()
+        {
+            var currentDisplayElement = CurrentDisplayElement;
+            var index = DisplayElements.IndexOf(currentDisplayElement);
+            DisplayElements.Move(index, index + 1);
+        }
+
+        private bool CanMoveDown()
+        {
+            var currentDisplayElement = CurrentDisplayElement;
+            return currentDisplayElement != null && DisplayElements.IndexOf(currentDisplayElement) != DisplayElements.Count - 1;
+        }
+
+        private void MoveUp()
+        {
+            var currentDisplayElement = CurrentDisplayElement;
+            var index = DisplayElements.IndexOf(currentDisplayElement);
+            DisplayElements.Move(index, index - 1);
+        }
+
+        private bool CanMoveUp()
+        {
+            var currentDisplayElement = CurrentDisplayElement;
+            return currentDisplayElement != null && DisplayElements.IndexOf(currentDisplayElement) != 0;
         }
 
         private void SetBackground()
@@ -76,6 +104,8 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.ViewModels
         }
 
         public ICommand SetBackgroundCommand { get; private set; }
+        public ICommand MoveUpCommand { get; private set; }
+        public ICommand MoveDownCommand { get; private set; }
 
         /// <summary>
         ///   Gets AddElementCommand.

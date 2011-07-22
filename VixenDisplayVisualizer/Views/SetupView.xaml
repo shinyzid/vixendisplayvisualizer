@@ -6,11 +6,11 @@
              xmlns:vdv="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer"
              xmlns:Pixels="clr-namespace:Vixen.PlugIns.VixenDisplayVisualizer.Pixels"
              mc:Ignorable="d"
+             x:Name="Instance"
              d:DesignHeight="300"
              d:DesignWidth="300">
 	<UserControl.Resources>
 		<ResourceDictionary>
-
 			<Style TargetType="ListBoxItem"
 			       x:Key="MyStyle">
 				<Style.Resources>
@@ -25,10 +25,12 @@
 			<DataTemplate DataType="{x:Type Pixels:SingleColorPixel}">
 				<Border>
 					<Border.Background>
-                        <RadialGradientBrush Center="0.5,0.5">
-                            <GradientStop Color="{Binding DisplayColor}" Offset=".5" />
-                            <GradientStop Color="Transparent" Offset="1" />
-                        </RadialGradientBrush>
+						<RadialGradientBrush Center="0.5,0.5">
+							<GradientStop Color="{Binding DisplayColor}"
+							              Offset=".5" />
+							<GradientStop Color="Transparent"
+							              Offset="1" />
+						</RadialGradientBrush>
 					</Border.Background>
 				</Border>
 			</DataTemplate>
@@ -113,73 +115,73 @@
 				</Grid>
 			</DataTemplate>
 
-            <DataTemplate DataType="{x:Type Pixels:RedGreenBluePixel}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Border Margin="0"
+			<DataTemplate DataType="{x:Type Pixels:RedGreenBluePixel}">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Border Margin="0"
 					        BorderThickness="0"
 					        Grid.Row="0"
 					        Grid.Column="0">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="1,1"
+						<Border.Background>
+							<LinearGradientBrush StartPoint="1,1"
 							                     EndPoint="0,0">
-                                <GradientStop Color="Red"
+								<GradientStop Color="Red"
 								              Offset="0" />
-                                <GradientStop Color="Transparent"
+								<GradientStop Color="Transparent"
 								              Offset="1" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                    </Border>
+							</LinearGradientBrush>
+						</Border.Background>
+					</Border>
 
-                    <Border Margin="0"
+					<Border Margin="0"
 					        BorderThickness="0"
 					        Grid.Row="0"
 					        Grid.Column="1">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,1"
+						<Border.Background>
+							<LinearGradientBrush StartPoint="0,1"
 							                     EndPoint="1,0">
-                                <GradientStop Color="Green"
+								<GradientStop Color="Green"
 								              Offset="0" />
-                                <GradientStop Color="Transparent"
+								<GradientStop Color="Transparent"
 								              Offset="1" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                    </Border>
+							</LinearGradientBrush>
+						</Border.Background>
+					</Border>
 
-                    <Border Margin="0"
+					<Border Margin="0"
 					        BorderThickness="0"
 					        Grid.Row="1"
 					        Grid.Column="0">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="1,0"
+						<Border.Background>
+							<LinearGradientBrush StartPoint="1,0"
 							                     EndPoint="0,1">
-                                <GradientStop Color="Blue"
+								<GradientStop Color="Blue"
 								              Offset="0" />
-                                <GradientStop Color="Transparent"
+								<GradientStop Color="Transparent"
 								              Offset="1" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                    </Border>
+							</LinearGradientBrush>
+						</Border.Background>
+					</Border>
 
-                    <Border Margin="0"
+					<Border Margin="0"
 					        BorderThickness="0"
 					        Grid.Row="1"
 					        Grid.Column="1">
-                        <Border.Background>
-                            <SolidColorBrush Color="Transparent" />
-                        </Border.Background>
-                    </Border>
-                </Grid>
-            </DataTemplate>
+						<Border.Background>
+							<SolidColorBrush Color="Transparent" />
+						</Border.Background>
+					</Border>
+				</Grid>
+			</DataTemplate>
 
-            <DataTemplate DataType="{x:Type vdv:DisplayElement}">
+			<DataTemplate DataType="{x:Type vdv:DisplayElement}">
 				<Border BorderBrush="Black"
 				        Background="Transparent"
 				        BorderThickness=".5"
@@ -218,10 +220,31 @@
 
 		<Grid>
 			<Grid.RowDefinitions>
-				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
-			<GroupBox Header="Available Elements">
+			<GroupBox Header="Commands">
+				<StackPanel>
+					<Button Margin="2"
+					        Command="{Binding SetBackgroundCommand}">
+						Set background
+					</Button>
+					<Button Margin="2"
+					        Command="{Binding AddElementCommand}">
+						Add Element
+					</Button>
+					<Button Margin="2"
+					        Command="{Binding EditElementCommand}">
+						Edit Element
+					</Button>
+					<Button Margin="2"
+					        Command="{Binding DeleteElementCommand}">
+						Delete Element
+					</Button>
+				</StackPanel>
+			</GroupBox>
+			<GroupBox Header="Display Elements"
+			          Grid.Row="1">
 				<ListView ItemsSource="{Binding DisplayElements}"
 				          SelectedItem="{Binding CurrentDisplayElement}"
 				          ItemContainerStyle="{StaticResource MyStyle}"
@@ -238,10 +261,34 @@
 									        BorderThickness="2"
 									        Background="Black"
 									        CornerRadius="3">
-										<StackPanel>
+										<TextBlock>
+											<TextBlock.Resources>
+												<Style TargetType="Hyperlink"
+												       BasedOn="{StaticResource {x:Type Hyperlink}}">
+													<Setter Property="Foreground"
+													        Value="LightSkyBlue" />
+													<Style.Triggers>
+														<MultiTrigger>
+															<MultiTrigger.Conditions>
+																<Condition Property="IsMouseOver"
+																           Value="True" />
+																<Condition Property="IsEnabled"
+																           Value="True" />
+															</MultiTrigger.Conditions>
+															<Setter Property="Foreground"
+															        Value="Yellow" />
+														</MultiTrigger>
+
+													</Style.Triggers>
+												</Style>
+											</TextBlock.Resources>
 											<TextBlock Foreground="White"
 											           Text="{Binding Name}" />
-										</StackPanel>
+											•
+											<Hyperlink Command="{Binding Path=DataContext.MoveUpCommand, ElementName=Instance}">Move Up</Hyperlink>
+											•
+											<Hyperlink Command="{Binding Path=DataContext.MoveDownCommand, ElementName=Instance}">Move Down</Hyperlink>
+										</TextBlock>
 									</Border>
 								</Grid>
 
@@ -262,12 +309,6 @@
 					</ListView.ItemTemplate>
 				</ListView>
 			</GroupBox>
-			<StackPanel Grid.Row="1">
-				<Button Command="{Binding AddElementCommand}">Add Element</Button>
-				<Button Command="{Binding EditElementCommand}">Edit Element</Button>
-				<Button Command="{Binding DeleteElementCommand}">Delete Element</Button>
-                <Button Command="{Binding SetBackgroundCommand}">Set background</Button>
-			</StackPanel>
 		</Grid>
 		<Grid Grid.Column="1">
 			<Grid.RowDefinitions>
@@ -305,24 +346,25 @@
 					          VerticalAlignment="Top"
 					          BorderThickness="2">
 						<ItemsControl Background="Gray"
-						          Width="{Binding DisplayWidth}"
-						          Height="{Binding DisplayHeight}"
-						          ItemsSource="{Binding DisplayElements}">
+						              Width="{Binding DisplayWidth}"
+						              Height="{Binding DisplayHeight}"
+						              ItemsSource="{Binding DisplayElements}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
-                                    <vdv:DragCanvas ClipToBounds="True"
+									<vdv:DragCanvas ClipToBounds="True"
 									                HorizontalAlignment="Left"
 									                MaxWidth="{Binding DisplayWidth}"
 									                MaxHeight="{Binding DisplayHeight}"
 									                MinWidth="{Binding DisplayWidth}"
 									                MinHeight="{Binding DisplayHeight}"
 									                Width="{Binding DisplayWidth}"
-									                Height="{Binding DisplayHeight}" >
-                                        <Canvas.Background>
-                                            <ImageBrush ImageSource="{Binding BackgroundImage}" Stretch="Fill" />
-                                        </Canvas.Background>
-                                    </vdv:DragCanvas>
-                                </ItemsPanelTemplate>
+									                Height="{Binding DisplayHeight}">
+										<Canvas.Background>
+											<ImageBrush ImageSource="{Binding BackgroundImage}"
+											            Stretch="Fill" />
+										</Canvas.Background>
+									</vdv:DragCanvas>
+								</ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
 							<ItemsControl.ItemContainerStyle>
 								<Style TargetType="ContentPresenter">
