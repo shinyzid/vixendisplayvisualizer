@@ -12,13 +12,8 @@ Element Editor
   * Once the R, in RGB or RGB+W is setup, auto set the rest of the channels.
 
 Setup
-  * Reorder elements
   * have the "next" add element click to default to same values as last added element instead of defaulting to 10x10.. and or a button that says add "another" and possible add "another consecutive" that adds the next x number of channels.. 
-  * Set background image / background color
   * Import/Export
-  * Lock elements in place
 
 Display
-  * No intensity should be transparent
-  * scroll bars
-  * open to size defined in the setup
+  * Nothing outstanding
