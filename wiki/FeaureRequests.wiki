@@ -14,6 +14,7 @@ Element Editor
 Setup
   * have the "next" add element click to default to same values as last added element instead of defaulting to 10x10.. and or a button that says add "another" and possible add "another consecutive" that adds the next x number of channels.. 
   * Import/Export
+  * Slider for a "darkening" mask
 
 Display
   * Nothing outstanding
