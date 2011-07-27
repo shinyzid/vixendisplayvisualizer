@@ -94,7 +94,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
         public bool Contains(Channel channel)
         {
             var thisChannel = this.Channel;
-            return thisChannel == null || channel == null ? false : thisChannel.ID == channel.ID;
+            return thisChannel == null || channel == null ? false : thisChannel.Name == channel.Name;
         }
 
         /// <summary>

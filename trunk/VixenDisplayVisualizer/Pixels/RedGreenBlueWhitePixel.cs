@@ -80,7 +80,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
         {
             var whiteChannel = this.WhiteChannel;
             return channel != null
-                   && (base.Contains(channel) || (whiteChannel != null && whiteChannel.ID == channel.ID));
+                   && (base.Contains(channel) || (whiteChannel != null && whiteChannel.Name == channel.Name));
         }
 
         /// <summary>
@@ -99,31 +99,31 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer.Pixels
                 return;
             }
 
-            var channelId = channel.ID;
+            var channelName = channel.Name;
             var halfIntensity = (byte)(intensity / 2);
             var redChannel = this.RedChannel;
-            if (redChannel != null && channelId == redChannel.ID)
+            if (redChannel != null && channelName == redChannel.Name)
             {
                 this._red = halfIntensity;
             }
             else
             {
                 var greenChannel = this.GreenChannel;
-                if (greenChannel != null && channelId == greenChannel.ID)
+                if (greenChannel != null && channelName == greenChannel.Name)
                 {
                     this._green = halfIntensity;
                 }
                 else
                 {
                     var blueChannel = this.BlueChannel;
-                    if (blueChannel != null && channelId == blueChannel.ID)
+                    if (blueChannel != null && channelName == blueChannel.Name)
                     {
                         this._blue = halfIntensity;
                     }
                     else
                     {
                         var whiteChannel = this.WhiteChannel;
-                        if (whiteChannel != null && channelId == whiteChannel.ID)
+                        if (whiteChannel != null && channelName == whiteChannel.Name)
                         {
                             this._white = halfIntensity;
                         }

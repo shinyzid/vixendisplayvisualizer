@@ -173,10 +173,11 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
             this._setupNode = null;
         }
 
-        /// <summary>
-        ///   The startup.
-        /// </summary>
+#if VIXEN_2_1
+        public List<Form> Startup()
+#else
         public void Startup()
+#endif
         {
             if (this._channels.Any())
             {
@@ -186,6 +187,10 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                 this._displayVisualizer = new DisplayVisualizer(viewModel);
                 this._displayVisualizer.Show();
             }
+
+#if VIXEN_2_1
+            return new List<Form>(1) {_displayVisualizer};
+#endif
         }
 
         /// <summary>
@@ -271,50 +276,50 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                         {
                             var mappedNode = node.OwnerDocument.CreateElement("PixelMapping");
 
-                            var channel = mappedChannel.Pixel;
-                            if (channel != null)
+                            var pixel = mappedChannel.Pixel;
+                            if (pixel != null)
                             {
                                 var channelNode = mappedNode.OwnerDocument.CreateElement("Channel");
                                 mappedNode.AppendChild(channelNode);
-                                if (channel is EmptyPixel)
+                                if (pixel is EmptyPixel)
                                 {
                                     channelNode.AppendAttribute("Type", "Empty");
                                 }
-                                else if (channel is SingleColorPixel)
+                                else if (pixel is SingleColorPixel)
                                 {
                                     channelNode.AppendAttribute("Type", "Single");
-                                    var singleColorChannel = (SingleColorPixel)channel;
+                                    var singleColorChannel = (SingleColorPixel)pixel;
                                     var vixenChannel = singleColorChannel.Channel;
                                     channelNode.AppendAttribute(
                                                                 "ChannelId",
-                                                                vixenChannel == null ? string.Empty : vixenChannel.ID.ToString());
+                                                                vixenChannel == null ? string.Empty : vixenChannel.Name);
                                     channelNode.AppendAttribute("Color", singleColorChannel.DisplayColor.ToString());
                                 }
                                 else
                                 {
-                                    var rgb = channel as RedGreenBluePixel;
+                                    var rgb = pixel as RedGreenBluePixel;
 
                                     var redChannel = rgb.RedChannel;
                                     channelNode.AppendAttribute(
                                                                 "RedChannel",
-                                                                redChannel == null ? string.Empty : redChannel.ID.ToString());
+                                                                redChannel == null ? string.Empty : redChannel.Name);
                                     var greenChannel = rgb.GreenChannel;
                                     channelNode.AppendAttribute(
                                                                 "GreenChannel",
-                                                                greenChannel == null ? string.Empty : greenChannel.ID.ToString());
+                                                                greenChannel == null ? string.Empty : greenChannel.Name);
                                     var blueChannel = rgb.BlueChannel;
                                     channelNode.AppendAttribute(
                                                                 "BlueChannel",
-                                                                blueChannel == null ? string.Empty : blueChannel.ID.ToString());
+                                                                blueChannel == null ? string.Empty : blueChannel.Name);
 
-                                    var rgbw = channel as RedGreenBlueWhitePixel;
+                                    var rgbw = pixel as RedGreenBlueWhitePixel;
                                     var type = "RGB";
                                     if (rgbw != null)
                                     {
                                         var whiteChannel = rgbw.WhiteChannel;
                                         channelNode.AppendAttribute(
                                                                     "WhiteChannel",
-                                                                    whiteChannel == null ? string.Empty : whiteChannel.ID.ToString());
+                                                                    whiteChannel == null ? string.Empty : whiteChannel.Name);
                                         type += "W";
                                     }
 
@@ -421,46 +426,42 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                         {
                             case "Single":
                                 var channelIdValue = channelNode.GetAttributeValue("ChannelId");
-                                var channelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
+                                var channelId = string.IsNullOrEmpty(channelIdValue) ? string.Empty : channelIdValue;
                                 var color =
                                     (Color)
                                     ColorConverter.ConvertFromString(channelNode.Attributes.GetNamedItem("Color").Value);
                                 pixel = new SingleColorPixel(
-                                    this._channels.FirstOrDefault(x => x.ID == channelId), color);
+                                    this._channels.FirstOrDefault(x => x.Name == channelId), color);
                                 break;
                             case "RGB":
                                 channelIdValue = channelNode.GetAttributeValue("RedChannel");
                                 var redChannelId = string.IsNullOrEmpty(channelIdValue)
-                                                       ? 0
-                                                       : ulong.Parse(channelIdValue);
-                                var redChannel = this._channels.FirstOrDefault(x => x.ID == redChannelId);
+                                                      ? string.Empty : channelIdValue;
+                                var redChannel = this._channels.FirstOrDefault(x => x.Name == redChannelId);
                                 channelIdValue = channelNode.GetAttributeValue("GreenChannel");
                                 var blueChannelId = string.IsNullOrEmpty(channelIdValue)
-                                                        ? 0
-                                                        : ulong.Parse(channelIdValue);
-                                var greenChannel = this._channels.FirstOrDefault(x => x.ID == blueChannelId);
+                                                        ? string.Empty : channelIdValue;
+                                var greenChannel = this._channels.FirstOrDefault(x => x.Name == blueChannelId);
                                 channelIdValue = channelNode.GetAttributeValue("BlueChannel");
                                 var greenChannelId = string.IsNullOrEmpty(channelIdValue)
-                                                         ? 0
-                                                         : ulong.Parse(channelIdValue);
-                                var blueChannel = this._channels.FirstOrDefault(x => x.ID == greenChannelId);
+                                                         ? string.Empty : channelIdValue;
+                                var blueChannel = this._channels.FirstOrDefault(x => x.Name == greenChannelId);
                                 pixel = new RedGreenBluePixel(redChannel, greenChannel, blueChannel);
                                 break;
                             case "RGBW":
                                 channelIdValue = channelNode.GetAttributeValue("RedChannel");
-                                redChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
-                                redChannel = this._channels.FirstOrDefault(x => x.ID == redChannelId);
+                                redChannelId = string.IsNullOrEmpty(channelIdValue) ? string.Empty : channelIdValue;
+                                redChannel = this._channels.FirstOrDefault(x => x.Name == redChannelId);
                                 channelIdValue = channelNode.GetAttributeValue("GreenChannel");
-                                blueChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
-                                greenChannel = this._channels.FirstOrDefault(x => x.ID == blueChannelId);
+                                blueChannelId = string.IsNullOrEmpty(channelIdValue) ? string.Empty : channelIdValue;
+                                greenChannel = this._channels.FirstOrDefault(x => x.Name == blueChannelId);
                                 channelIdValue = channelNode.GetAttributeValue("BlueChannel");
-                                greenChannelId = string.IsNullOrEmpty(channelIdValue) ? 0 : ulong.Parse(channelIdValue);
-                                blueChannel = this._channels.FirstOrDefault(x => x.ID == greenChannelId);
+                                greenChannelId = string.IsNullOrEmpty(channelIdValue) ? string.Empty : channelIdValue;
+                                blueChannel = this._channels.FirstOrDefault(x => x.Name == greenChannelId);
                                 channelIdValue = channelNode.GetAttributeValue("WhiteChannel");
                                 var whiteChannelId = string.IsNullOrEmpty(channelIdValue)
-                                                         ? 0
-                                                         : ulong.Parse(channelIdValue);
-                                var whiteChannel = this._channels.FirstOrDefault(x => x.ID == whiteChannelId);
+                                                         ? string.Empty : channelIdValue;
+                                var whiteChannel = this._channels.FirstOrDefault(x => x.Name == whiteChannelId);
                                 pixel = new RedGreenBlueWhitePixel(redChannel, greenChannel, blueChannel, whiteChannel);
                                 break;
                             default:
@@ -480,6 +481,11 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
                                      };
                 this._elements.Add(displayElement);
             }
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }
