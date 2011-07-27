@@ -6,15 +6,17 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A216F22F-261A-449C-ABA7-3A6868DDA65A}"
 	ProjectSection(SolutionItems) = preProject
 		License.txt = License.txt
-		Vixen.exe = Vixen.exe
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.5", "2.5", "{A23EB4DF-AFEC-4EE6-A857-21762D0A2028}"
 	ProjectSection(SolutionItems) = preProject
-		Vixen.exe = Vixen.exe
+		2.5\Vixen.exe = 2.5\Vixen.exe
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.1", "2.1", "{02CDE400-D07A-4148-A699-1118ABC93982}"
+	ProjectSection(SolutionItems) = preProject
+		2.1\Vixen.exe = 2.1\Vixen.exe
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
