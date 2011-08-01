@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Vixen.PlugIns.VixenDisplayVisualizer</RootNamespace>
-    <AssemblyName>VixenDisplayVisualizer</AssemblyName>
+    <AssemblyName>VixenDisplayVisualizer-2.5</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

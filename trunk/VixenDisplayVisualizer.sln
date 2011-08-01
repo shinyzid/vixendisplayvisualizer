@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VixenDisplayVisualizer", "VixenDisplayVisualizer\VixenDisplayVisualizer.csproj", "{9ADC2E21-C28E-46DB-97AE-30E325360A5D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VixenDisplayVisualizer-2.5", "VixenDisplayVisualizer\VixenDisplayVisualizer-2.5.csproj", "{9ADC2E21-C28E-46DB-97AE-30E325360A5D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A216F22F-261A-449C-ABA7-3A6868DDA65A}"
 	ProjectSection(SolutionItems) = preProject
