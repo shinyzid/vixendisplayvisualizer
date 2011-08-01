@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.1", "2.1", "{02CDE400-D07
 		2.1\Vixen.exe = 2.1\Vixen.exe
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VixenDisplayVisualizer-2.1", "VixenDisplayVisualizer\VixenDisplayVisualizer-2.1.csproj", "{F065CDF0-2C6D-4A8C-81D0-C53785E466A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{9ADC2E21-C28E-46DB-97AE-30E325360A5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ADC2E21-C28E-46DB-97AE-30E325360A5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9ADC2E21-C28E-46DB-97AE-30E325360A5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F065CDF0-2C6D-4A8C-81D0-C53785E466A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F065CDF0-2C6D-4A8C-81D0-C53785E466A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F065CDF0-2C6D-4A8C-81D0-C53785E466A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F065CDF0-2C6D-4A8C-81D0-C53785E466A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
