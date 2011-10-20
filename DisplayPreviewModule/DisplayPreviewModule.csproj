@@ -5,21 +5,20 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F065CDF0-2C6D-4A8C-81D0-C53785E466A8}</ProjectGuid>
+    <ProjectGuid>{13F15246-D19A-4E00-86F9-1F969919D617}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vixen.PlugIns.VixenDisplayVisualizer</RootNamespace>
-    <AssemblyName>VixenDisplayVisualizer-2.1</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>Vixen.Modules.DisplayPreviewModule</RootNamespace>
+    <AssemblyName>DisplayPreviewModule</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;VIXEN_2_1</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -27,7 +26,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;VIXEN_2_1</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -37,88 +36,66 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider" />
-    <Reference Include="Vixen, Version=2.5.0.7, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <ExecutableExtension>.exe</ExecutableExtension>
-      <HintPath>..\2.1\Vixen.exe</HintPath>
+    <Reference Include="Vixen">
+      <HintPath>..\3.0\Vixen.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BooleanToCollapsedConverter.cs" />
-    <Compile Include="Pixels\EmptyPixel.cs" />
-    <Compile Include="Pixels\IPixel.cs" />
-    <Compile Include="Pixels\PixelMapping.cs" />
-    <Compile Include="LightColors.cs" />
-    <Compile Include="Dialogs\DisplayVisualizer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\DisplayVisualizer.Designer.cs">
-      <DependentUpon>DisplayVisualizer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pixels\RedGreenBluePixel.cs" />
-    <Compile Include="Pixels\RedGreenBlueWhitePixel.cs" />
-    <Compile Include="Dialogs\ElementEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\ElementEditor.Designer.cs">
-      <DependentUpon>ElementEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\Setup.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\Setup.Designer.cs">
-      <DependentUpon>Setup.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Pixels\SingleColorPixel.cs" />
-    <Compile Include="DisplayElement.cs" />
-    <Compile Include="DragCanvas.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="RelayCommand.cs" />
-    <Compile Include="ColorToColorNameConverter.cs" />
-    <Compile Include="ViewModels\ElementEditorViewModel.cs" />
+    <Compile Include="Model\ChannelLocation.cs" />
+    <Compile Include="Model\Shapes\Circle.cs" />
+    <Compile Include="Model\Shapes\IDisplayShape.cs" />
+    <Compile Include="Model\Shapes\Grid.cs" />
+    <Compile Include="Model\Shapes\Line.cs" />
+    <Compile Include="Model\Shapes\Rectangle.cs" />
+    <Compile Include="Model\Shapes\ShapeType.cs" />
+    <Compile Include="Model\Shapes\Star.cs" />
+    <Compile Include="Model\Shapes\Triangle.cs" />
+    <Compile Include="ViewModels\DisplayItemEditorViewModel.cs" />
     <Compile Include="ViewModels\SetupViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\VisualizerViewModel.cs" />
-    <Compile Include="Views\ElementEditorView.xaml.cs">
-      <DependentUpon>ElementEditorView.xaml</DependentUpon>
+    <Compile Include="Views\ViewManager.cs" />
+    <Compile Include="WPF\BooleanToCollapsedConverter.cs" />
+    <Compile Include="WPF\ColorToColorNameConverter.cs" />
+    <Compile Include="Model\DisplayItem.cs" />
+    <Compile Include="Views\DisplayItemEditorView.xaml.cs">
+      <DependentUpon>DisplayItemEditorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\DisplayPreviewModuleDataModel.cs" />
+    <Compile Include="Model\DisplayPreviewModuleDescriptor.cs" />
+    <Compile Include="Model\DisplayPreviewModuleInstance.cs" />
+    <Compile Include="WPF\DragCanvas.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="WPF\LightColors.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WPF\RelayCommand.cs" />
     <Compile Include="Views\SetupView.xaml.cs">
       <DependentUpon>SetupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\VisualizerView.xaml.cs">
       <DependentUpon>VisualizerView.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="VixenDisplayVisualizerPlugIn.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Dialogs\DisplayVisualizer.resx">
-      <DependentUpon>DisplayVisualizer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\ElementEditor.resx">
-      <DependentUpon>ElementEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\Setup.resx">
-      <DependentUpon>Setup.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <Page Include="Views\ElementEditorView.xaml">
+    <Page Include="Views\DisplayItemEditorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SetupView.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\VisualizerView.xaml">
       <SubType>Designer</SubType>
@@ -126,9 +103,6 @@
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>rem copy "$(TargetPath)" "C:\Vixen\Vixen 2.1.1.0\Plugins\Output\"</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

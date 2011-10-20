@@ -1,0 +1,55 @@
+namespace Vixen.Modules.DisplayPreviewModule.Views
+{
+    using System;
+    using Vixen.Modules.DisplayPreviewModule.Model;
+    using Vixen.Modules.DisplayPreviewModule.ViewModels;
+    using Vixen.Sys;
+
+    public static class ViewManager
+    {
+        private static VisualizerView _view;
+        private static VisualizerViewModel _visualizerViewModel;
+
+        public static void DisplaySetupView(DisplayPreviewModuleDataModel dataModel)
+        {
+            var setupViewModel = new SetupViewModel(dataModel);
+            var setupView = new SetupView();
+            setupView.DataContext = setupViewModel;
+            setupView.ShowDialog();
+        }
+
+        public static void StartVisualizer(DisplayPreviewModuleDataModel dataModel)
+        {
+            _visualizerViewModel = new VisualizerViewModel(dataModel);
+            _view = new VisualizerView();
+            _view.DataContext = _visualizerViewModel;
+            _view.Closed += VisualizerViewClosed;
+        }
+
+        public static void UpdatePreviewExecutionStateValues(ExecutionStateValues stateValues)
+        {
+            if (_visualizerViewModel != null)
+            {
+                _visualizerViewModel.UpdateExecutionStateValues(stateValues);
+            }
+        }
+
+        private static void VisualizerViewClosed(object sender, EventArgs e)
+        {
+            if (_view != null)
+            {
+                _view.Closed -= VisualizerViewClosed;
+                _view = null;
+                _visualizerViewModel = null;
+            }
+        }
+
+        public static void EnsureVisualizerIsClosed()
+        {
+            if (_view != null)
+            {
+                _view.Close();
+            }
+        }
+    }
+}
