@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\ChannelLocation.cs" />
+    <Compile Include="Model\DisplayPreviewLog.cs" />
     <Compile Include="Model\Shapes\Circle.cs" />
     <Compile Include="Model\Shapes\IDisplayShape.cs" />
     <Compile Include="Model\Shapes\Grid.cs" />
@@ -103,6 +104,9 @@
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetPath)" C:\Vixen\Vixen3\Modules\App\</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
