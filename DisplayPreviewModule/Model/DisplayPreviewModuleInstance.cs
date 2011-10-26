@@ -102,7 +102,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
 
         private void InjectAppCommands()
         {
-            if (_application == null)
+            if (_application == null || _application.AppCommands == null)
             {
                 return;
             }
