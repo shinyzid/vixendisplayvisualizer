@@ -29,7 +29,7 @@
             }
         }
 
-        public override Type ModuleDataClass
+        public override Type ModuleStaticDataClass
         {
             get
             {

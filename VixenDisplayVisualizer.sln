@@ -23,6 +23,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisplayPreviewModule", "DisplayPreviewModule\DisplayPreviewModule.csproj", "{13F15246-D19A-4E00-86F9-1F969919D617}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.0", "3.0", "{36B3A984-C3F2-4381-875D-796770D82679}"
+	ProjectSection(SolutionItems) = preProject
+		3.0\Vixen.dll = 3.0\Vixen.dll
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisplayPreviewModuleTestHarness", "DisplayPreviewModuleTestHarness\DisplayPreviewModuleTestHarness.csproj", "{3A448A70-8646-4E5C-A3BF-EE9718A20C63}"
 EndProject

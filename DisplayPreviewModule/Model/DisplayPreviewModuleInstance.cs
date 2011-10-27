@@ -9,8 +9,13 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
 
     public class DisplayPreviewModuleInstance : AppModuleInstanceBase
     {
-        private readonly List<ProgramContext> _programContexts = new List<ProgramContext>();
+        private readonly List<ProgramContext> _programContexts;
         private IApplication _application;
+
+        public DisplayPreviewModuleInstance()
+        {
+            _programContexts = new List<ProgramContext>();
+        }
 
         public override IApplication Application
         {
@@ -31,8 +36,8 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         {
             Execution.ValuesChanged += ExecutionValuesChanged;
             Execution.NodesChanged += ExecutionNodesChanged;
-            Execution.ExecutionContextCreated += ExecutionExecutionContextCreated;
-            Execution.ExecutionContextReleased += ExecutionExecutionContextReleased;
+            Execution.ProgramContextCreated += this.ProgramContextCreated;
+            Execution.ProgramContextReleased += this.ProgramContextReleased;
         }
 
         public void Setup()
@@ -44,8 +49,8 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         {
             Execution.NodesChanged -= ExecutionNodesChanged;
             Execution.ValuesChanged -= ExecutionValuesChanged;
-            Execution.ExecutionContextCreated -= ExecutionExecutionContextCreated;
-            Execution.ExecutionContextReleased -= ExecutionExecutionContextReleased;
+            Execution.ProgramContextCreated -= this.ProgramContextCreated;
+            Execution.ProgramContextReleased -= this.ProgramContextReleased;
         }
 
         private static void EnsureVisualizerIsClosed()
@@ -73,7 +78,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             EnsureVisualizerIsClosed();
         }
 
-        private void ExecutionExecutionContextCreated(object sender, EventArgs e)
+        private void ProgramContextCreated(object sender, EventArgs e)
         {
             var programContext = sender as ProgramContext;
             if (programContext != null)
@@ -84,7 +89,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             }
         }
 
-        private void ExecutionExecutionContextReleased(object sender, EventArgs e)
+        private void ProgramContextReleased(object sender, EventArgs e)
         {
             var programContext = sender as ProgramContext;
             if (programContext != null)
@@ -97,7 +102,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
 
         private DisplayPreviewModuleDataModel GetDisplayPreviewModuleDataModel()
         {
-            return (DisplayPreviewModuleDataModel)ModuleData;
+            return (DisplayPreviewModuleDataModel)StaticModuleData;
         }
 
         private void InjectAppCommands()
@@ -109,6 +114,9 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
 
             var appCommand = new AppCommand("Setup Preview Module");
             appCommand.Click += SetupAppCommandClick;
+            appCommand.Enabled = true;
+            appCommand.Visible = true;
+            appCommand.Text = "SPM";
             _application.AppCommands.Add(appCommand);
         }
 
