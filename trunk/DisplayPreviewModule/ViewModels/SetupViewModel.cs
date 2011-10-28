@@ -22,6 +22,8 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 
         private int _displayWidth;
 
+        private double _opacity;
+
         public SetupViewModel(DisplayPreviewModuleDataModel dataModel)
         {
             AddElementCommand = new RelayCommand(x => AddElement());
@@ -35,6 +37,20 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
             DisplayWidth = dataModel.DisplayWidth == 0 ? 800 : dataModel.DisplayWidth;
             DisplayHeight = dataModel.DisplayHeight == 0 ? 600 : dataModel.DisplayHeight;
             BackgroundImage = dataModel.BackgroundImage;
+            Opacity = dataModel.Opactity;
+        }
+
+        public double Opacity
+        {
+            get
+            {
+                return _opacity;
+            }
+            set
+            {
+                _opacity = value;
+                this.OnPropertyChanged("Opacity");
+            }
         }
 
         public ICommand AddElementCommand { get; private set; }
@@ -216,6 +232,7 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
                 image.UriSource = new Uri(filename, UriKind.Absolute);
                 image.EndInit();
                 BackgroundImage = image;
+                Opacity = 1;
             }
         }
     }

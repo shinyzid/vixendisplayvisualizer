@@ -333,6 +333,11 @@
 					          HorizontalContentAlignment="Stretch">
 						<TextBox Text="{Binding DisplayHeight, Mode=TwoWay}" />
 					</GroupBox>
+                    <GroupBox Header="Opacity"
+                              Padding="2"
+                              HorizontalContentAlignment="Stretch">
+                        <Slider Value="{Binding Opacity, Mode=TwoWay}" Minimum="0" Maximum="1" />
+                    </GroupBox>
 				</StackPanel>
 			</Border>
 			<Border x:Name="scrollborder"
@@ -349,7 +354,7 @@
 					          HorizontalAlignment="Left"
 					          VerticalAlignment="Top"
 					          BorderThickness="2">
-						<ItemsControl Background="Gray"
+						<ItemsControl Background="Black"
 						              Width="{Binding DisplayWidth}"
 						              Height="{Binding DisplayHeight}"
 						              ItemsSource="{Binding DisplayElements}">
@@ -365,6 +370,7 @@
 									                Height="{Binding DisplayHeight}">
 										<Canvas.Background>
 											<ImageBrush ImageSource="{Binding BackgroundImage}"
+                                                        Opacity="{Binding Opacity}"
 											            Stretch="Fill" />
 										</Canvas.Background>
 									</WPF:DragCanvas>

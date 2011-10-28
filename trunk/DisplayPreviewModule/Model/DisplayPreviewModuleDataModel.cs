@@ -10,6 +10,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
     [DataContract]
     public class DisplayPreviewModuleDataModel : ModuleDataModelBase
     {
+        [DataMember]
         public BitmapSource BackgroundImage { get; set; }
 
         [DataMember]
@@ -18,9 +19,14 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         [DataMember]
         public List<DisplayItem> DisplayElements { get; set; }
 
+        [DataMember]
         public int DisplayHeight { get; set; }
 
+        [DataMember]
         public int DisplayWidth { get; set; }
+
+        [DataMember]
+        public double Opactity { get; set; }
 
         public override IModuleDataModel Clone()
         {
