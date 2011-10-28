@@ -3,8 +3,11 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Runtime.Serialization;
+
     using Vixen.Sys;
 
+    [DataContract]
     public class DisplayItem : INotifyPropertyChanged
     {
         private int _height;
@@ -26,6 +29,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        [DataMember]
         public int Height
         {
             get
@@ -40,6 +44,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             }
         }
 
+        [DataMember]
         public bool IsUnlocked
         {
             get
@@ -54,6 +59,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             }
         }
 
+        [DataMember]
         public int LeftOffset
         {
             get
@@ -68,6 +74,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             }
         }
 
+        [DataMember]
         public string Name
         {
             get
@@ -82,8 +89,10 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             }
         }
 
+        [DataMember]
         public ObservableCollection<ChannelLocation> ChannelLocations { get; private set; }
 
+        [DataMember]
         public int TopOffset
         {
             get
@@ -98,6 +107,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             }
         }
 
+        [DataMember]
         public int Width
         {
             get
