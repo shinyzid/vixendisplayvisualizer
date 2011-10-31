@@ -1,6 +1,5 @@
 namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 {
-    using System;
     using System.Collections.Generic;
     using System.Windows.Media.Imaging;
     using Vixen.Modules.DisplayPreviewModule.Model;
@@ -43,7 +42,7 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 
         public void UpdateExecutionStateValues(ExecutionStateValues stateValues)
         {
-            throw new NotImplementedException();
+            // TODO
         }
     }
 }

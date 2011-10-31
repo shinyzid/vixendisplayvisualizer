@@ -10,7 +10,6 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
     using Vixen.Modules.DisplayPreviewModule.Model;
     using Vixen.Modules.DisplayPreviewModule.Views;
     using Vixen.Modules.DisplayPreviewModule.WPF;
-    using Vixen.Sys;
 
     public class SetupViewModel : ViewModelBase
     {
@@ -33,7 +32,6 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
             MoveUpCommand = new RelayCommand(x => MoveUp(), x => CanMoveUp());
             MoveDownCommand = new RelayCommand(x => MoveDown(), x => CanMoveDown());
             DisplayElements = new ObservableCollection<DisplayItem>();
-            Channels = new ObservableCollection<Channel>();
             DisplayWidth = dataModel.DisplayWidth == 0 ? 800 : dataModel.DisplayWidth;
             DisplayHeight = dataModel.DisplayHeight == 0 ? 600 : dataModel.DisplayHeight;
             BackgroundImage = dataModel.BackgroundImage;
@@ -68,8 +66,6 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
                 OnPropertyChanged("BackgroundImage");
             }
         }
-
-        public ObservableCollection<Channel> Channels { get; private set; }
 
         public DisplayItem CurrentDisplayElement
         {
@@ -130,8 +126,8 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
         /// </summary>
         private void AddElement()
         {
-            var displayElement = new DisplayItem(100, 100, 0, 0, new List<ChannelLocation>(), true, Channels) { Name = "My New Element" };
-            var viewModel = new DisplayItemEditorViewModel(Channels, displayElement);
+            var displayElement = new DisplayItem(100, 100, 0, 0, new List<ChannelLocation>(), true) { Name = "My New Element" };
+            var viewModel = new DisplayItemEditorViewModel(displayElement);
             var editor = new DisplayItemEditorView();
             editor.DataContext = viewModel;
             editor.ShowDialog();
@@ -193,7 +189,7 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
                 return;
             }
 
-            var viewModel = new DisplayItemEditorViewModel(Channels, displayElement);
+            var viewModel = new DisplayItemEditorViewModel(displayElement);
             var editor = new DisplayItemEditorView();
             editor.DataContext = viewModel;
             editor.ShowDialog();

@@ -5,8 +5,6 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
     using System.ComponentModel;
     using System.Runtime.Serialization;
 
-    using Vixen.Sys;
-
     [DataContract]
     public class DisplayItem : INotifyPropertyChanged
     {
@@ -17,7 +15,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         private int _topOffset;
         private int _width;
 
-        public DisplayItem(int width, int height, int leftOffset, int topOffset, IList<ChannelLocation> mappedChannels, bool isUnlocked, IList<Channel> availableChannels)
+        public DisplayItem(int width, int height, int leftOffset, int topOffset, IList<ChannelLocation> mappedChannels, bool isUnlocked)
         {
             ChannelLocations = new ObservableCollection<ChannelLocation>(mappedChannels);
             Height = height;

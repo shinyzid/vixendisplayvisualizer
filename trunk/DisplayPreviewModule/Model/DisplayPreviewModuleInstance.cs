@@ -36,21 +36,16 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         {
             Execution.ValuesChanged += ExecutionValuesChanged;
             Execution.NodesChanged += ExecutionNodesChanged;
-            Execution.ProgramContextCreated += this.ProgramContextCreated;
-            Execution.ProgramContextReleased += this.ProgramContextReleased;
-        }
-
-        public void Setup()
-        {
-            ViewManager.DisplaySetupView(GetDisplayPreviewModuleDataModel());
+            Execution.ProgramContextCreated += ProgramContextCreated;
+            Execution.ProgramContextReleased += ProgramContextReleased;
         }
 
         public override void Unloading()
         {
             Execution.NodesChanged -= ExecutionNodesChanged;
             Execution.ValuesChanged -= ExecutionValuesChanged;
-            Execution.ProgramContextCreated -= this.ProgramContextCreated;
-            Execution.ProgramContextReleased -= this.ProgramContextReleased;
+            Execution.ProgramContextCreated -= ProgramContextCreated;
+            Execution.ProgramContextReleased -= ProgramContextReleased;
         }
 
         private static void EnsureVisualizerIsClosed()
@@ -78,6 +73,38 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             EnsureVisualizerIsClosed();
         }
 
+        private DisplayPreviewModuleDataModel GetDisplayPreviewModuleDataModel()
+        {
+            return (DisplayPreviewModuleDataModel)StaticModuleData;
+        }
+
+        private void InjectAppCommands()
+        {
+            if (_application == null
+                || _application.AppCommands == null)
+            {
+                return;
+            }
+
+            var rootCommand = new AppCommand("Setup Preview Module", "Display Preview")
+                              {
+                                  Enabled = true, 
+                                  Visible = true, 
+                                  Style = AppCommand.AppCommandStyle.Menu
+                              };            
+            var command = new AppCommand("Edit Preview Setup", "Edit Preview Setup");
+            command.Click += SetupAppCommandClick;
+            command.Enabled = true;
+            command.Visible = true;
+            rootCommand.Add(command);
+            command = new AppCommand("Toggle preview window", "Toggle preview window");
+            command.Click += TogglePreviewWindowCommandClick;
+            command.Enabled = true;
+            command.Visible = true;
+            rootCommand.Add(command);
+            _application.AppCommands.Add(rootCommand);
+        }
+
         private void ProgramContextCreated(object sender, EventArgs e)
         {
             var programContext = sender as ProgramContext;
@@ -87,6 +114,11 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
                 programContext.ProgramStarted += ProgramContextProgramStarted;
                 programContext.ProgramEnded += ProgramContextProgramEnded;
             }
+        }
+
+        private void ProgramContextProgramStarted(object sender, EventArgs e)
+        {
+            Start();
         }
 
         private void ProgramContextReleased(object sender, EventArgs e)
@@ -100,29 +132,9 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             }
         }
 
-        private DisplayPreviewModuleDataModel GetDisplayPreviewModuleDataModel()
+        private void Setup()
         {
-            return (DisplayPreviewModuleDataModel)StaticModuleData;
-        }
-
-        private void InjectAppCommands()
-        {
-            if (_application == null || _application.AppCommands == null)
-            {
-                return;
-            }
-
-            var appCommand = new AppCommand("Setup Preview Module");
-            appCommand.Click += SetupAppCommandClick;
-            appCommand.Enabled = true;
-            appCommand.Visible = true;
-            appCommand.Text = "SPM";
-            _application.AppCommands.Add(appCommand);
-        }
-
-        private void ProgramContextProgramStarted(object sender, EventArgs e)
-        {
-            Start();
+            ViewManager.DisplaySetupView(GetDisplayPreviewModuleDataModel());
         }
 
         private void SetupAppCommandClick(object sender, EventArgs e)
@@ -133,6 +145,18 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         private void Start()
         {
             ViewManager.StartVisualizer(GetDisplayPreviewModuleDataModel());
+        }
+
+        private void TogglePreviewWindowCommandClick(object sender, EventArgs e)
+        {
+            if (ViewManager.IsVisualizerRunning)
+            {
+                ViewManager.EnsureVisualizerIsClosed();
+            }
+            else
+            {
+                ViewManager.StartVisualizer(GetDisplayPreviewModuleDataModel());
+            }
         }
     }
 }
