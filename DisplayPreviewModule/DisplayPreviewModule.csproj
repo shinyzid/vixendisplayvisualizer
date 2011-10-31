@@ -52,6 +52,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviors\DragSource.cs" />
+    <Compile Include="Behaviors\DragSourceBehaviour.cs" />
+    <Compile Include="Behaviors\DropTarget.cs" />
+    <Compile Include="Behaviors\DropTargetBehaviour.cs" />
+    <Compile Include="Behaviors\IDragSource.cs" />
+    <Compile Include="Behaviors\IDropTarget.cs" />
     <Compile Include="Model\ChannelLocation.cs" />
     <Compile Include="Model\DisplayPreviewLog.cs" />
     <Compile Include="Model\Shapes\Circle.cs" />

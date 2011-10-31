@@ -6,5 +6,10 @@
         {
             InitializeComponent();
         }
+
+        private void CloseButtonClick(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

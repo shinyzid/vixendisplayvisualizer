@@ -10,6 +10,8 @@ namespace Vixen.Modules.DisplayPreviewModule.Views
         private static VisualizerView _view;
         private static VisualizerViewModel _visualizerViewModel;
 
+        public static bool IsVisualizerRunning { get; private set; }
+
         public static void DisplaySetupView(DisplayPreviewModuleDataModel dataModel)
         {
             var setupViewModel = new SetupViewModel(dataModel);
@@ -24,6 +26,8 @@ namespace Vixen.Modules.DisplayPreviewModule.Views
             _view = new VisualizerView();
             _view.DataContext = _visualizerViewModel;
             _view.Closed += VisualizerViewClosed;
+            _view.Show();
+            IsVisualizerRunning = true;
         }
 
         public static void UpdatePreviewExecutionStateValues(ExecutionStateValues stateValues)
@@ -40,8 +44,10 @@ namespace Vixen.Modules.DisplayPreviewModule.Views
             {
                 _view.Closed -= VisualizerViewClosed;
                 _view = null;
-                _visualizerViewModel = null;
+                _visualizerViewModel = null;                
             }
+
+            IsVisualizerRunning = false;
         }
 
         public static void EnsureVisualizerIsClosed()
