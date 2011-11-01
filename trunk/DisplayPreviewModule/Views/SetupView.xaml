@@ -20,19 +20,6 @@
 
 			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 			<WPF:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
-
-			<!--<DataTemplate DataType="{x:Type Sys:Channel}">
-				<Border>
-					<Border.Background>
-						<RadialGradientBrush Center="0.5,0.5">
-							<GradientStop Color="{Binding DisplayColor}"
-							              Offset=".5" />
-							<GradientStop Color="Transparent"
-							              Offset="1" />
-						</RadialGradientBrush>
-					</Border.Background>
-				</Border>
-			</DataTemplate> -->
             
 			<DataTemplate DataType="{x:Type Model:DisplayItem}">
 				<Border BorderBrush="Black"

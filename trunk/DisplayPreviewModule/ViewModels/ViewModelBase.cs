@@ -15,6 +15,23 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
+        ///   Raises this object's PropertyChanged event.
+        /// </summary>
+        /// <param name = "propertyName">
+        ///   The property that has a new value.
+        /// </param>
+        protected void OnPropertyChanged(string propertyName)
+        {
+            VerifyPropertyName(propertyName);
+
+            var handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        /// <summary>
         ///   Warns the developer if this object does not have
         ///   a public property with the specified name. This 
         ///   method does not exist in a Release build.
@@ -31,23 +48,6 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
             if (TypeDescriptor.GetProperties(this)[propertyName] == null)
             {
                 throw new Exception(string.Format("Invalid property name: {0}", propertyName));
-            }
-        }
-
-        /// <summary>
-        ///   Raises this object's PropertyChanged event.
-        /// </summary>
-        /// <param name = "propertyName">
-        ///   The property that has a new value.
-        /// </param>
-        protected void OnPropertyChanged(string propertyName)
-        {
-            VerifyPropertyName(propertyName);
-
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }
