@@ -59,6 +59,7 @@
     <Compile Include="Behaviors\IDragSource.cs" />
     <Compile Include="Behaviors\IDropTarget.cs" />
     <Compile Include="Model\ChannelLocation.cs" />
+    <Compile Include="Model\ChannelSource.cs" />
     <Compile Include="Model\DisplayPreviewLog.cs" />
     <Compile Include="Model\Shapes\Circle.cs" />
     <Compile Include="Model\Shapes\IDisplayShape.cs" />

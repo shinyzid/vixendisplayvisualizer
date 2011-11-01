@@ -3,7 +3,11 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Linq;
     using System.Runtime.Serialization;
+    using System.Windows;
+    using Vixen.Modules.DisplayPreviewModule.Behaviors;
+    using Vixen.Sys;
 
     [DataContract]
     public class DisplayItem : INotifyPropertyChanged
@@ -12,10 +16,12 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         private bool _isUnlocked;
         private int _leftOffset;
         private string _name;
+        private IDropTarget _target;
         private int _topOffset;
         private int _width;
 
-        public DisplayItem(int width, int height, int leftOffset, int topOffset, IList<ChannelLocation> mappedChannels, bool isUnlocked)
+        public DisplayItem(
+            int width, int height, int leftOffset, int topOffset, IEnumerable<ChannelLocation> mappedChannels, bool isUnlocked)
         {
             ChannelLocations = new ObservableCollection<ChannelLocation>(mappedChannels);
             Height = height;
@@ -26,6 +32,9 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        [DataMember]
+        public ObservableCollection<ChannelLocation> ChannelLocations { get; private set; }
 
         [DataMember]
         public int Height
@@ -87,8 +96,13 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             }
         }
 
-        [DataMember]
-        public ObservableCollection<ChannelLocation> ChannelLocations { get; private set; }
+        public IDropTarget Target
+        {
+            get
+            {
+                return _target ?? (_target = new DropTarget<ChannelNode>(GetDropEffects, Drop));
+            }
+        }
 
         [DataMember]
         public int TopOffset
@@ -118,6 +132,22 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
                 _width = value;
                 PropertyChanged.NotifyPropertyChanged("Width", this);
             }
+        }
+
+        private void Drop(ChannelNode channelNode, Point point)
+        {
+            var channelLocation = new ChannelLocation { LeftOffset = point.X, TopOffset = point.Y, ChannelId = channelNode.Id };
+            ChannelLocations.Add(channelLocation);
+        }
+
+        private DragDropEffects GetDropEffects(ChannelNode channelNode)
+        {
+            if (ChannelLocations.Any(x => x.ChannelId == channelNode.Id || channelNode.Children.Any(y => y.Id == x.ChannelId)))
+            {
+                return DragDropEffects.None;
+            }
+
+            return DragDropEffects.Move;
         }
     }
 }

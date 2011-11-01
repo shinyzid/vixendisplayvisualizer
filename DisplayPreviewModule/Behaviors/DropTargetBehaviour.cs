@@ -47,9 +47,9 @@ namespace Vixen.Modules.DisplayPreviewModule.Behaviors
 
         private static void Drop(object sender, DragEventArgs e)
         {
+            var point = e.GetPosition((IInputElement)sender);
             var dropTarget = GetDropTarget((DependencyObject)sender);
-
-            dropTarget.Drop(e.Data);
+            dropTarget.Drop(e.Data, point);
             e.Handled = true;
         }
 

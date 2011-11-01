@@ -1,6 +1,5 @@
 namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 {
-    using System;
     using System.Collections.ObjectModel;
     using System.Linq;
     using Vixen.Modules.DisplayPreviewModule.Model;
@@ -8,26 +7,27 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 
     public class DisplayItemEditorViewModel : ViewModelBase
     {
+        private ObservableCollection<ChannelSource> _channelSources;
         private DisplayItem _displayItem;
-        private ObservableCollection<ChannelNode> _channelNodes;
 
         public DisplayItemEditorViewModel(DisplayItem displayItem)
         {
             _displayItem = displayItem;
-            var rootNodes = VixenSystem.Nodes.GetRootNodes().ToList();
-            ChannelNodes = new ObservableCollection<ChannelNode>(rootNodes);
+            var rootNodes = VixenSystem.Nodes.GetRootNodes().Select(x => new ChannelSource(x));
+            ChannelSources = new ObservableCollection<ChannelSource>(rootNodes);
         }
 
-        public ObservableCollection<ChannelNode> ChannelNodes
+        public ObservableCollection<ChannelSource> ChannelSources
         {
             get
             {
-                return _channelNodes;
+                return _channelSources;
             }
+
             set
             {
-                _channelNodes = value;
-                this.OnPropertyChanged("ChannelNodes");
+                _channelSources = value;
+                OnPropertyChanged("ChannelSources");
             }
         }
 
@@ -41,7 +41,7 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
             set
             {
                 _displayItem = value;
-                OnPropertyChanged("displayItem");
+                OnPropertyChanged("DisplayItem");
             }
         }
     }

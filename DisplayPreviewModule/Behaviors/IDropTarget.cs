@@ -8,7 +8,7 @@
         ///   Drops the specified data object
         /// </summary>
         /// <param name = "dataObject">The data object.</param>
-        void Drop(IDataObject dataObject);
+        void Drop(IDataObject dataObject, Point point);
 
         /// <summary>
         ///   Gets the effects.
