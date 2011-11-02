@@ -1,6 +1,7 @@
 namespace Vixen.Modules.DisplayPreviewModule.Views
 {
     using System;
+
     using Vixen.Modules.DisplayPreviewModule.Model;
     using Vixen.Modules.DisplayPreviewModule.ViewModels;
     using Vixen.Sys;
@@ -8,6 +9,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Views
     public static class ViewManager
     {
         private static VisualizerView _view;
+
         private static VisualizerViewModel _visualizerViewModel;
 
         public static bool IsVisualizerRunning { get; private set; }
@@ -15,16 +17,22 @@ namespace Vixen.Modules.DisplayPreviewModule.Views
         public static void DisplaySetupView(DisplayPreviewModuleDataModel dataModel)
         {
             var setupViewModel = new SetupViewModel(dataModel);
-            var setupView = new SetupView();
-            setupView.DataContext = setupViewModel;
+            var setupView = new SetupView { DataContext = setupViewModel };
             setupView.ShowDialog();
+        }
+
+        public static void EnsureVisualizerIsClosed()
+        {
+            if (_view != null)
+            {
+                _view.Close();
+            }
         }
 
         public static void StartVisualizer(DisplayPreviewModuleDataModel dataModel)
         {
             _visualizerViewModel = new VisualizerViewModel(dataModel);
-            _view = new VisualizerView();
-            _view.DataContext = _visualizerViewModel;
+            _view = new VisualizerView { DataContext = _visualizerViewModel };
             _view.Closed += VisualizerViewClosed;
             _view.Show();
             IsVisualizerRunning = true;
@@ -44,18 +52,10 @@ namespace Vixen.Modules.DisplayPreviewModule.Views
             {
                 _view.Closed -= VisualizerViewClosed;
                 _view = null;
-                _visualizerViewModel = null;                
+                _visualizerViewModel = null;
             }
 
             IsVisualizerRunning = false;
-        }
-
-        public static void EnsureVisualizerIsClosed()
-        {
-            if (_view != null)
-            {
-                _view.Close();
-            }
         }
     }
 }

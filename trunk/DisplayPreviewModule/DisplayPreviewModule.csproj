@@ -75,7 +75,6 @@
     <Compile Include="ViewModels\VisualizerViewModel.cs" />
     <Compile Include="Views\ViewManager.cs" />
     <Compile Include="WPF\BooleanToCollapsedConverter.cs" />
-    <Compile Include="WPF\ColorToColorNameConverter.cs" />
     <Compile Include="Model\DisplayItem.cs" />
     <Compile Include="Views\DisplayItemEditorView.xaml.cs">
       <DependentUpon>DisplayItemEditorView.xaml</DependentUpon>
@@ -85,7 +84,6 @@
     <Compile Include="Model\DisplayPreviewModuleInstance.cs" />
     <Compile Include="WPF\DragCanvas.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="WPF\LightColors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WPF\RelayCommand.cs" />
     <Compile Include="Views\SetupView.xaml.cs">
