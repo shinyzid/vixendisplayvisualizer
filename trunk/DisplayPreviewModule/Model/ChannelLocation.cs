@@ -9,6 +9,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
     public class ChannelLocation
     {
         private string _channelName;
+
         [DataMember]
         public double TopOffset { get; set; }
 
@@ -33,6 +34,11 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
 
                 return _channelName;
             }
+        }
+
+        public ChannelLocation Clone()
+        {
+            return new ChannelLocation { TopOffset = TopOffset, LeftOffset = LeftOffset, ChannelId = ChannelId };
         }
     }
 }

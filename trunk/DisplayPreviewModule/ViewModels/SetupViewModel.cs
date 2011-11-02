@@ -1,8 +1,8 @@
 namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.IO;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
@@ -10,59 +10,64 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
     using Vixen.Modules.DisplayPreviewModule.Model;
     using Vixen.Modules.DisplayPreviewModule.Views;
     using Vixen.Modules.DisplayPreviewModule.WPF;
+    using Vixen.Sys;
 
     public class SetupViewModel : ViewModelBase
     {
-        private BitmapSource _backgroundImage;
+        private readonly DisplayPreviewModuleDataModel _dataModel;
+
+        private BitmapImage _backgroundImage;
 
         private DisplayItem _currentDisplayElement;
 
-        private int _displayHeight;
-
-        private int _displayWidth;
-
-        private double _opacity;
-
         public SetupViewModel(DisplayPreviewModuleDataModel dataModel)
         {
+            _dataModel = dataModel;
             AddElementCommand = new RelayCommand(x => AddElement());
             EditElementCommand = new RelayCommand(x => EditDisplayElement(), x => CanEditDisplayElement());
             DeleteElementCommand = new RelayCommand(x => DeleteDisplayElement(), x => CanDeleteDisplayElement());
             SetBackgroundCommand = new RelayCommand(x => SetBackground());
             MoveUpCommand = new RelayCommand(x => MoveUp(), x => CanMoveUp());
             MoveDownCommand = new RelayCommand(x => MoveDown(), x => CanMoveDown());
-            DisplayElements = new ObservableCollection<DisplayItem>();
-            DisplayWidth = dataModel.DisplayWidth == 0 ? 800 : dataModel.DisplayWidth;
-            DisplayHeight = dataModel.DisplayHeight == 0 ? 600 : dataModel.DisplayHeight;
-            BackgroundImage = dataModel.BackgroundImage;
-            Opacity = dataModel.Opactity;
+            DisplayElements = dataModel.DisplayItems;
         }
 
         public double Opacity
         {
             get
             {
-                return _opacity;
+                return _dataModel.Opactity;
             }
             set
             {
-                _opacity = value;
-                this.OnPropertyChanged("Opacity");
+                _dataModel.Opactity = value;
+                OnPropertyChanged("Opacity");
             }
         }
 
         public ICommand AddElementCommand { get; private set; }
 
-        public BitmapSource BackgroundImage
+        public BitmapImage BackgroundImage
         {
             get
             {
+                if (_backgroundImage == null && _dataModel.BackgroundImage != null)
+                {
+                    var image = new BitmapImage();
+                    image.BeginInit();
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.UriSource = new Uri(_dataModel.BackgroundImage, UriKind.Absolute);
+                    image.EndInit();
+                    _backgroundImage = image;
+                }
+
                 return _backgroundImage;
             }
 
             set
             {
                 _backgroundImage = value;
+                _dataModel.BackgroundImage = value.UriSource.AbsoluteUri;
                 OnPropertyChanged("BackgroundImage");
             }
         }
@@ -89,12 +94,12 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
         {
             get
             {
-                return _displayHeight;
+                return _dataModel.DisplayHeight;
             }
 
             set
             {
-                _displayHeight = value;
+                _dataModel.DisplayHeight = value;
                 OnPropertyChanged("DisplayHeight");
             }
         }
@@ -103,12 +108,12 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
         {
             get
             {
-                return _displayWidth;
+                return _dataModel.DisplayWidth;
             }
 
             set
             {
-                _displayWidth = value;
+                _dataModel.DisplayWidth = value;
                 OnPropertyChanged("DisplayWidth");
             }
         }
@@ -126,7 +131,7 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
         /// </summary>
         private void AddElement()
         {
-            var displayElement = new DisplayItem(100, 100, 0, 0, new List<ChannelLocation>(), true) { Name = "My New Element" };
+            var displayElement = new DisplayItem(100, 100, 0, 0, new ObservableCollection<ChannelLocation>(), true) { Name = "My New Element" };
             var viewModel = new DisplayItemEditorViewModel(displayElement);
             var editor = new DisplayItemEditorView();
             editor.DataContext = viewModel;
@@ -222,10 +227,13 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
             if (result == true)
             {
                 // Open document
-                var filename = openFileDialog.FileName;
+                var imageFile = new FileInfo(openFileDialog.FileName);
+                var destFileName = Path.Combine(Paths.DataRootPath, "Background" + imageFile.Extension);
+                File.Copy(imageFile.FullName, destFileName, true);
                 var image = new BitmapImage();
-                image.BeginInit();
-                image.UriSource = new Uri(filename, UriKind.Absolute);
+                image.BeginInit();               
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.UriSource = new Uri(destFileName, UriKind.Absolute);
                 image.EndInit();
                 BackgroundImage = image;
                 Opacity = 1;

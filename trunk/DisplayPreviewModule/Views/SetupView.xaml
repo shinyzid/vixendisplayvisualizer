@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:Sys="clr-namespace:Vixen.Sys;assembly=Vixen"
         xmlns:WPF="clr-namespace:Vixen.Modules.DisplayPreviewModule.WPF"
         xmlns:Model="clr-namespace:Vixen.Modules.DisplayPreviewModule.Model"
         mc:Ignorable="d"
+        SizeToContent="WidthAndHeight"
         x:Name="Instance">
 	<Window.Resources>
 		<ResourceDictionary>
@@ -21,32 +21,40 @@
 			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 			<WPF:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
             
+            <DataTemplate DataType="{x:Type Model:ChannelLocation}">
+                <Ellipse Fill="#55FF0000" Width="10" Height="10" />
+            </DataTemplate>
+            
 			<DataTemplate DataType="{x:Type Model:DisplayItem}">
-				<Border BorderBrush="Black"
+				<Border BorderBrush="Gray"
 				        Background="Transparent"
-				        BorderThickness=".5"
+				        BorderThickness="1"
 				        Height="{Binding Height, Mode=TwoWay}"
 				        Width="{Binding Width, Mode=TwoWay}">
 					<ItemsControl ItemsSource="{Binding ChannelLocations}"
 					              HorizontalContentAlignment="Stretch"
 					              VerticalContentAlignment="Stretch">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<UniformGrid Columns="{Binding Columns}"
-								             Rows="{Binding Rows}" />
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="{x:Type Sys:Channel}">
-								<Border BorderBrush="Transparent"
-								        BorderThickness=".5"
-								        VerticalAlignment="Stretch"
-								        HorizontalAlignment="Stretch"
-								        Background="Transparent">
-									<ContentControl Content="{Binding Pixel}" />
-								</Border>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas ClipToBounds="True"
+									                HorizontalAlignment="Left"
+									                MaxWidth="{Binding Width}"
+									                MaxHeight="{Binding Height}"
+									                MinWidth="{Binding Width}"
+									                MinHeight="{Binding Height}"
+									                Width="{Binding Width}"
+									                Height="{Binding Height}">
+                                </Canvas>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="Canvas.Left"
+									        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
+                                <Setter Property="Canvas.Top"
+									        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
 					</ItemsControl>
 				</Border>
 			</DataTemplate>

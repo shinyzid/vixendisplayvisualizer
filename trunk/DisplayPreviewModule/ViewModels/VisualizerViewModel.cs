@@ -1,24 +1,22 @@
 namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 {
-    using System.Collections.Generic;
-    using System.Windows.Media.Imaging;
+    using System.Collections.ObjectModel;
     using Vixen.Modules.DisplayPreviewModule.Model;
     using Vixen.Sys;
 
     public class VisualizerViewModel : ViewModelBase
     {
-        private BitmapSource _backgroundImage;
+        private string _backgroundImage;
 
         public VisualizerViewModel(DisplayPreviewModuleDataModel displayPreviewModuleDataModel)
         {
-            Channels = displayPreviewModuleDataModel.Channels;
-            DisplayElements = displayPreviewModuleDataModel.DisplayElements;
+            DisplayElements = displayPreviewModuleDataModel.DisplayItems;
             BackgroundImage = displayPreviewModuleDataModel.BackgroundImage;
             DisplayWidth = displayPreviewModuleDataModel.DisplayWidth;
             DisplayHeight = displayPreviewModuleDataModel.DisplayHeight;
         }
 
-        public BitmapSource BackgroundImage
+        public string BackgroundImage
         {
             get
             {
@@ -32,9 +30,7 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
             }
         }
 
-        public List<Channel> Channels { get; set; }
-
-        public List<DisplayItem> DisplayElements { get; set; }
+        public ObservableCollection<DisplayItem> DisplayElements { get; set; }
 
         public int DisplayHeight { get; set; }
 
