@@ -6,7 +6,7 @@
     /// <summary>
     ///   Drag source implementation with strongly typed payload
     /// </summary>
-    /// <typeparam name = "T"></typeparam>
+    /// <typeparam name = "T">The type of the object being dragged.</typeparam>
     public class DragSource<T> : IDragSource
     {
         private readonly Func<T, object> _getData;
@@ -19,8 +19,6 @@
         /// <param name = "getData">The get data.</param>
         public DragSource(Func<T, DragDropEffects> getSupportedEffects, Func<T, object> getData)
         {
-            
-
             if (getSupportedEffects == null)
             {
                 throw new ArgumentNullException("getSupportedEffects");
@@ -30,9 +28,7 @@
             {
                 throw new ArgumentNullException("getData");
             }
-
-            
-
+           
             _getSupportedEffects = getSupportedEffects;
             _getData = getData;
         }
@@ -41,7 +37,7 @@
         ///   Gets the data.
         /// </summary>
         /// <param name = "dataContext">The data context of the element initiating the drag operation.</param>
-        /// <returns></returns>
+        /// <returns>The object being dragged.</returns>
         public object GetData(object dataContext)
         {
             return _getData((T)dataContext);
@@ -51,7 +47,7 @@
         ///   Gets the supported drop effects.
         /// </summary>
         /// <param name = "dataContext">The data context of the element initiating the drag oparation.</param>
-        /// <returns></returns>
+        /// <returns>The drag effects.</returns>
         public DragDropEffects GetDragEffects(object dataContext)
         {
             return _getSupportedEffects((T)dataContext);
