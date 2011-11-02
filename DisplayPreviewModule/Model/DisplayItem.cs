@@ -1,6 +1,5 @@
 namespace Vixen.Modules.DisplayPreviewModule.Model
 {
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
@@ -21,9 +20,9 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         private int _width;
 
         public DisplayItem(
-            int width, int height, int leftOffset, int topOffset, IEnumerable<ChannelLocation> mappedChannels, bool isUnlocked)
+            int width, int height, int leftOffset, int topOffset, ObservableCollection<ChannelLocation> mappedChannels, bool isUnlocked)
         {
-            ChannelLocations = new ObservableCollection<ChannelLocation>(mappedChannels);
+            ChannelLocations = mappedChannels;
             Height = height;
             LeftOffset = leftOffset;
             TopOffset = topOffset;
@@ -132,6 +131,17 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
                 _width = value;
                 PropertyChanged.NotifyPropertyChanged("Width", this);
             }
+        }
+
+        public DisplayItem Clone()
+        {
+            return new DisplayItem(
+                Width, 
+                Height, 
+                LeftOffset, 
+                TopOffset, 
+                new ObservableCollection<ChannelLocation>(ChannelLocations.Select(channelLocation => channelLocation.Clone()).ToList()), 
+                IsUnlocked);
         }
 
         private void Drop(ChannelNode channelNode, Point point)
