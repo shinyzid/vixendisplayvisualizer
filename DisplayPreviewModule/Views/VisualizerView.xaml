@@ -4,13 +4,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:Model="clr-namespace:Vixen.Modules.DisplayPreviewModule.Model"
+        xmlns:Views="clr-namespace:Vixen.Modules.DisplayPreviewModule.Views"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight">
 	<Window.Resources>
 		<ResourceDictionary>
 
             <DataTemplate DataType="{x:Type Model:ChannelLocation}">
-                <Ellipse Fill="#55FF0000" Width="10" Height="10" />
+                <Views:LightBulb />
             </DataTemplate>
             
             <DataTemplate DataType="{x:Type Model:DisplayItem}">

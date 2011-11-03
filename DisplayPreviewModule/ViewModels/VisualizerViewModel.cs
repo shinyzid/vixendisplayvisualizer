@@ -1,5 +1,6 @@
 namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 {
+    using System;
     using System.Collections.ObjectModel;
     using Vixen.Modules.DisplayPreviewModule.Model;
     using Vixen.Sys;
@@ -38,7 +39,11 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 
         public void UpdateExecutionStateValues(ExecutionStateValues stateValues)
         {
-            // TODO
+            foreach (var executionStateValue in stateValues)
+            {
+                Console.WriteLine(executionStateValue.Key.Id);
+                Console.WriteLine(executionStateValue.Value.GetParameterValue(0));
+            }
         }
     }
 }
