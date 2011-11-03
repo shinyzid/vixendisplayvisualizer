@@ -1,7 +1,7 @@
 namespace Vixen.Modules.DisplayPreviewModule.Views
 {
     using System;
-
+    using System.Windows.Threading;
     using Vixen.Modules.DisplayPreviewModule.Model;
     using Vixen.Modules.DisplayPreviewModule.ViewModels;
     using Vixen.Sys;
@@ -25,7 +25,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Views
         {
             if (_view != null)
             {
-                _view.Close();
+                _view.Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => _view.Close()));
             }
         }
 

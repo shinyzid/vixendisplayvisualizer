@@ -72,6 +72,9 @@
     <Compile Include="ViewModels\SetupViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\VisualizerViewModel.cs" />
+    <Compile Include="Views\LightBulb.xaml.cs">
+      <DependentUpon>LightBulb.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ViewManager.cs" />
     <Compile Include="WPF\BooleanToCollapsedConverter.cs" />
     <Compile Include="Model\DisplayItem.cs" />
@@ -95,6 +98,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DisplayItemEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LightBulb.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

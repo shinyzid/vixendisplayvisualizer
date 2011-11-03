@@ -63,7 +63,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             ViewManager.UpdatePreviewExecutionStateValues(stateValues);
         }
 
-        private static void ProgramContextProgramEnded(object sender, EventArgs e)
+        private static void ProgramContextProgramEnded(object sender, ProgramEventArgs e)
         {
             Stop();
         }
@@ -105,9 +105,9 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             _application.AppCommands.Add(rootCommand);
         }
 
-        private void ProgramContextCreated(object sender, EventArgs e)
+        private void ProgramContextCreated(object sender, ProgramContextEventArgs e)
         {
-            var programContext = sender as ProgramContext;
+            var programContext = e.ProgramContext;
             if (programContext != null)
             {
                 _programContexts.Add(programContext);
@@ -115,15 +115,15 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
                 programContext.ProgramEnded += ProgramContextProgramEnded;
             }
         }
-
-        private void ProgramContextProgramStarted(object sender, EventArgs e)
+        
+        private void ProgramContextProgramStarted(object sender, ProgramEventArgs e)
         {
             Start();
         }
 
-        private void ProgramContextReleased(object sender, EventArgs e)
+        private void ProgramContextReleased(object sender, ProgramContextEventArgs e)
         {
-            var programContext = sender as ProgramContext;
+            var programContext = e.ProgramContext;
             if (programContext != null)
             {
                 programContext.ProgramStarted -= ProgramContextProgramStarted;
