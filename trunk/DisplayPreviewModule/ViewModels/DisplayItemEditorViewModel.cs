@@ -10,9 +10,8 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
         private ObservableCollection<ChannelSource> _channelSources;
         private DisplayItem _displayItem;
 
-        public DisplayItemEditorViewModel(DisplayItem displayItem)
+        public DisplayItemEditorViewModel()
         {
-            _displayItem = displayItem;
             var rootNodes = VixenSystem.Nodes.GetRootNodes().Select(x => new ChannelSource(x));
             ChannelSources = new ObservableCollection<ChannelSource>(rootNodes);
         }

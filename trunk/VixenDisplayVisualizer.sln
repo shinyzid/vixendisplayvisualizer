@@ -20,13 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.1", "2.1", "{02CDE400-D07
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VixenDisplayVisualizer-2.1", "VixenDisplayVisualizer\VixenDisplayVisualizer-2.1.csproj", "{F065CDF0-2C6D-4A8C-81D0-C53785E466A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisplayPreviewModule", "DisplayPreviewModule\DisplayPreviewModule.csproj", "{13F15246-D19A-4E00-86F9-1F969919D617}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.0", "3.0", "{36B3A984-C3F2-4381-875D-796770D82679}"
-	ProjectSection(SolutionItems) = preProject
-		3.0\Vixen.dll = 3.0\Vixen.dll
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,16 +50,6 @@ Global
 		{F065CDF0-2C6D-4A8C-81D0-C53785E466A8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F065CDF0-2C6D-4A8C-81D0-C53785E466A8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F065CDF0-2C6D-4A8C-81D0-C53785E466A8}.Release|x86.ActiveCfg = Release|Any CPU
-		{13F15246-D19A-4E00-86F9-1F969919D617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13F15246-D19A-4E00-86F9-1F969919D617}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13F15246-D19A-4E00-86F9-1F969919D617}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{13F15246-D19A-4E00-86F9-1F969919D617}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{13F15246-D19A-4E00-86F9-1F969919D617}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{13F15246-D19A-4E00-86F9-1F969919D617}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13F15246-D19A-4E00-86F9-1F969919D617}.Release|Any CPU.Build.0 = Release|Any CPU
-		{13F15246-D19A-4E00-86F9-1F969919D617}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{13F15246-D19A-4E00-86F9-1F969919D617}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{13F15246-D19A-4E00-86F9-1F969919D617}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -74,6 +57,5 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A23EB4DF-AFEC-4EE6-A857-21762D0A2028} = {A216F22F-261A-449C-ABA7-3A6868DDA65A}
 		{02CDE400-D07A-4148-A699-1118ABC93982} = {A216F22F-261A-449C-ABA7-3A6868DDA65A}
-		{36B3A984-C3F2-4381-875D-796770D82679} = {A216F22F-261A-449C-ABA7-3A6868DDA65A}
 	EndGlobalSection
 EndGlobal

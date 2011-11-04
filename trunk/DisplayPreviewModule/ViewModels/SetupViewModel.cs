@@ -29,7 +29,6 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
             SetBackgroundCommand = new RelayCommand(x => SetBackground());
             MoveUpCommand = new RelayCommand(x => MoveUp(), x => CanMoveUp());
             MoveDownCommand = new RelayCommand(x => MoveDown(), x => CanMoveDown());
-            DisplayElements = dataModel.DisplayItems;
         }
 
         public double Opacity
@@ -88,7 +87,18 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 
         public ICommand DeleteElementCommand { get; private set; }
 
-        public ObservableCollection<DisplayItem> DisplayElements { get; set; }
+        public ObservableCollection<DisplayItem> DisplayItems
+        {
+            get
+            {
+                return _dataModel.DisplayItems;
+            }
+            set
+            {
+                _dataModel.DisplayItems = value;
+                OnPropertyChanged("DisplayItems");
+            }
+        }
 
         public int DisplayHeight
         {
@@ -132,11 +142,12 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
         private void AddElement()
         {
             var displayElement = new DisplayItem(100, 100, 0, 0, new ObservableCollection<ChannelLocation>(), true) { Name = "My New Element" };
-            var viewModel = new DisplayItemEditorViewModel(displayElement);
+            var viewModel = new DisplayItemEditorViewModel();
+            viewModel.DisplayItem = displayElement;
             var editor = new DisplayItemEditorView();
             editor.DataContext = viewModel;
             editor.ShowDialog();
-            DisplayElements.Add(displayElement);
+            DisplayItems.Add(displayElement);
             CurrentDisplayElement = displayElement;
         }
 
@@ -153,13 +164,13 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
         private bool CanMoveDown()
         {
             var currentDisplayElement = CurrentDisplayElement;
-            return currentDisplayElement != null && DisplayElements.IndexOf(currentDisplayElement) != DisplayElements.Count - 1;
+            return currentDisplayElement != null && DisplayItems.IndexOf(currentDisplayElement) != DisplayItems.Count - 1;
         }
 
         private bool CanMoveUp()
         {
             var currentDisplayElement = CurrentDisplayElement;
-            return currentDisplayElement != null && DisplayElements.IndexOf(currentDisplayElement) != 0;
+            return currentDisplayElement != null && DisplayItems.IndexOf(currentDisplayElement) != 0;
         }
 
         private void DeleteDisplayElement()
@@ -181,7 +192,7 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
                                 MessageBoxResult.No)
                 == MessageBoxResult.Yes)
             {
-                DisplayElements.Remove(displayElement);
+                DisplayItems.Remove(displayElement);
                 CurrentDisplayElement = null;
             }
         }
@@ -194,7 +205,8 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
                 return;
             }
 
-            var viewModel = new DisplayItemEditorViewModel(displayElement);
+            var viewModel = new DisplayItemEditorViewModel();
+            viewModel.DisplayItem = displayElement;
             var editor = new DisplayItemEditorView();
             editor.DataContext = viewModel;
             editor.ShowDialog();
@@ -203,15 +215,15 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
         private void MoveDown()
         {
             var currentDisplayElement = CurrentDisplayElement;
-            var index = DisplayElements.IndexOf(currentDisplayElement);
-            DisplayElements.Move(index, index + 1);
+            var index = DisplayItems.IndexOf(currentDisplayElement);
+            DisplayItems.Move(index, index + 1);
         }
 
         private void MoveUp()
         {
             var currentDisplayElement = CurrentDisplayElement;
-            var index = DisplayElements.IndexOf(currentDisplayElement);
-            DisplayElements.Move(index, index - 1);
+            var index = DisplayItems.IndexOf(currentDisplayElement);
+            DisplayItems.Move(index, index - 1);
         }
 
         private void SetBackground()
