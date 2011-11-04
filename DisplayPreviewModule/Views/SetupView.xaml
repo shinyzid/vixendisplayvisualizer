@@ -94,7 +94,7 @@
 			</GroupBox>
 			<GroupBox Header="Display Elements"
 			          Grid.Row="1">
-				<ListView ItemsSource="{Binding DisplayElements}"
+				<ListView ItemsSource="{Binding DisplayItems}"
 				          SelectedItem="{Binding CurrentDisplayElement}"
 				          ItemContainerStyle="{StaticResource MyStyle}"
 				          HorizontalContentAlignment="Stretch"
@@ -190,6 +190,7 @@
 					          Padding="2"
 					          HorizontalContentAlignment="Stretch">
 						<Slider Value="{Binding Opacity, Mode=TwoWay}"
+                                Width="100"
 						        Minimum="0"
 						        Maximum="1" />
 					</GroupBox>
@@ -212,7 +213,7 @@
 						<ItemsControl Background="Black"
 						              Width="{Binding DisplayWidth}"
 						              Height="{Binding DisplayHeight}"
-						              ItemsSource="{Binding DisplayElements}">
+						              ItemsSource="{Binding DisplayItems}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
 									<WPF:DragCanvas ClipToBounds="True"

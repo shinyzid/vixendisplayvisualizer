@@ -6,9 +6,12 @@
         xmlns:Behaviors="clr-namespace:Vixen.Modules.DisplayPreviewModule.Behaviors"
         xmlns:Model="clr-namespace:Vixen.Modules.DisplayPreviewModule.Model"
         xmlns:WPF="clr-namespace:Vixen.Modules.DisplayPreviewModule.WPF"
+        xmlns:ViewModels="clr-namespace:Vixen.Modules.DisplayPreviewModule.ViewModels"
         mc:Ignorable="d"
-        d:DesignHeight="300"
-        d:DesignWidth="300">
+        SizeToContent="WidthAndHeight">
+	<d:DesignProperties.DataContext>
+		<d:DesignInstanceExtension Type="{x:Type ViewModels:DisplayItemEditorViewModel}" />
+	</d:DesignProperties.DataContext>
 	<Grid>
 		<Grid>
 			<Grid.ColumnDefinitions>
@@ -61,34 +64,65 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
-				<ContentControl Content="{Binding DisplayItem}">
-					<ContentControl.ContentTemplate>
-						<DataTemplate DataType="{x:Type Model:DisplayItem}">
-							<Border CornerRadius="5"
-							        Margin="2"
-							        Padding="2">
-								<StackPanel Orientation="Horizontal">
-									<GroupBox Header="Name"
-									          Padding="2"
-									          HorizontalContentAlignment="Stretch">
-										<TextBox Text="{Binding Name, Mode=TwoWay}" />
-									</GroupBox>
-									<GroupBox Header="Width"
-									          Padding="2"
-									          HorizontalContentAlignment="Stretch">
-										<TextBox Text="{Binding Width, Mode=TwoWay}" />
-									</GroupBox>
-									<GroupBox Header="Height"
-									          Padding="2"
-									          HorizontalContentAlignment="Stretch">
-										<TextBox Text="{Binding Height, Mode=TwoWay}" />
-									</GroupBox>
+				<StackPanel Orientation="Horizontal">
+					<ContentControl Content="{Binding DisplayItem}">
+						<ContentControl.ContentTemplate>
+							<DataTemplate DataType="{x:Type Model:DisplayItem}">
+								<GroupBox Header="Display Item Settings"
+								          Margin="2"
+								          Padding="2">
+									<StackPanel Orientation="Horizontal">
+										<GroupBox Header="Name"
+										          Padding="2"
+										          HorizontalContentAlignment="Stretch">
+											<TextBox Text="{Binding Name, Mode=TwoWay}" />
+										</GroupBox>
+										<GroupBox Header="Width"
+										          Padding="2"
+										          HorizontalContentAlignment="Stretch">
+											<TextBox Text="{Binding Width, Mode=TwoWay}" />
+										</GroupBox>
+										<GroupBox Header="Height"
+										          Padding="2"
+										          HorizontalContentAlignment="Stretch">
+											<TextBox Text="{Binding Height, Mode=TwoWay}" />
+										</GroupBox>
 
-								</StackPanel>
-							</Border>
-						</DataTemplate>
-					</ContentControl.ContentTemplate>
-				</ContentControl>
+									</StackPanel>
+								</GroupBox>
+							</DataTemplate>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+					<ContentControl x:Name="channelLocation"
+					                Content="{Binding ElementName=DisplayItem, Path=SelectedChannelLocation}">
+						<ContentControl.ContentTemplate>
+							<DataTemplate DataType="{x:Type ListViewItem}">
+								<ContentControl Content="{Binding Content}">
+									<ContentControl.ContentTemplate>
+										<DataTemplate DataType="{x:Type Model:ChannelLocation}">
+											<GroupBox Header="Channel Settings"
+											          Margin="2"
+											          Padding="2">
+												<StackPanel Orientation="Horizontal">
+													<GroupBox Header="Width"
+													          Padding="2"
+													          HorizontalContentAlignment="Stretch">
+														<TextBox Text="{Binding Width, Mode=TwoWay}" />
+													</GroupBox>
+													<GroupBox Header="Height"
+													          Padding="2"
+													          HorizontalContentAlignment="Stretch">
+														<TextBox Text="{Binding Height, Mode=TwoWay}" />
+													</GroupBox>
+												</StackPanel>
+											</GroupBox>
+										</DataTemplate>
+									</ContentControl.ContentTemplate>
+								</ContentControl>
+							</DataTemplate>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+				</StackPanel>
 				<GroupBox Header="Display Item"
 				          Grid.Row="1">
 					<ContentControl Content="{Binding DisplayItem}"
@@ -102,13 +136,16 @@
 								        CornerRadius="5"
 								        Padding="2"
 								        BorderThickness="2">
-									<ItemsControl ItemsSource="{Binding ChannelLocations}"
-									              Behaviors:DropTargetBehaviour.DropTarget="{Binding Target}"
-									              Width="{Binding Width}"
-									              Height="{Binding Height}"
-									              Background="#33000000"
-									              AllowDrop="True">
-										<ItemsControl.ItemsPanel>
+									<ListBox ItemsSource="{Binding ChannelLocations}"
+									          SelectedItem="{Binding SelectedChannelLocation}"
+									          Behaviors:DropTargetBehaviour.DropTarget="{Binding Target}"
+									          Width="{Binding Width}"
+									          Height="{Binding Height}"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden"
+									          Background="#33000000"
+									          AllowDrop="True">
+										<ListBox.ItemsPanel>
 											<ItemsPanelTemplate>
 												<WPF:DragCanvas ClipToBounds="True"
 												                HorizontalAlignment="Left"
@@ -120,29 +157,31 @@
 												                Height="{Binding Height}">
 												</WPF:DragCanvas>
 											</ItemsPanelTemplate>
-										</ItemsControl.ItemsPanel>
-										<ItemsControl.ItemTemplate>
+										</ListBox.ItemsPanel>
+										<ListBox.ItemTemplate>
 											<DataTemplate DataType="{x:Type Model:ChannelLocation}">
 												<Border BorderBrush="Green"
 												        BorderThickness=".5"
+												        Width="{Binding Width}"
+												        Height="{Binding Height}"
 												        VerticalAlignment="Stretch"
 												        HorizontalAlignment="Stretch"
-                                                        ToolTip="{Binding ChannelName}"
-												        Background="#11000000">                                                        
+												        ToolTip="{Binding ChannelName}"
+												        Background="#11000000">
 													<TextBlock Foreground="SkyBlue"
 													           Text="C" />
 												</Border>
 											</DataTemplate>
-										</ItemsControl.ItemTemplate>
-										<ItemsControl.ItemContainerStyle>
-											<Style TargetType="ContentPresenter">
+										</ListBox.ItemTemplate>
+										<ListBox.ItemContainerStyle>
+											<Style TargetType="ContentControl">
 												<Setter Property="Canvas.Left"
 												        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
 												<Setter Property="Canvas.Top"
 												        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
 											</Style>
-										</ItemsControl.ItemContainerStyle>
-									</ItemsControl>
+										</ListBox.ItemContainerStyle>
+									</ListBox>
 								</Border>
 							</DataTemplate>
 						</ContentControl.ContentTemplate>

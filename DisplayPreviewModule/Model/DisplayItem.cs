@@ -15,6 +15,7 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         private bool _isUnlocked;
         private int _leftOffset;
         private string _name;
+        private ChannelLocation _selectedChannelLocation;
         private IDropTarget _target;
         private int _topOffset;
         private int _width;
@@ -92,6 +93,20 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             {
                 _name = value;
                 PropertyChanged.NotifyPropertyChanged("Name", this);
+            }
+        }
+
+        public ChannelLocation SelectedChannelLocation
+        {
+            get
+            {
+                return _selectedChannelLocation;
+            }
+
+            set
+            {
+                _selectedChannelLocation = value;
+                PropertyChanged.NotifyPropertyChanged("SelectedChannelLocation", this);
             }
         }
 

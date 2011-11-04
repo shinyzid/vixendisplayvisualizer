@@ -3,12 +3,20 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
     using System;
     using System.Linq;
     using System.Runtime.Serialization;
+    using System.Windows.Media;
     using Vixen.Sys;
 
     [DataContract]
     public class ChannelLocation
     {
         private string _channelName;
+
+        public ChannelLocation()
+        {
+            Width = 10;
+            Height = 10;
+            ChannelColor = Colors.Yellow;
+        }
 
         [DataMember]
         public double TopOffset { get; set; }
@@ -18,6 +26,14 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
 
         [DataMember]
         public Guid ChannelId { get; set; }
+
+        [DataMember]
+        public int Width { get; set; }
+
+        [DataMember]
+        public int Height { get; set; }
+
+        public Color ChannelColor { get; set; }
 
         public string ChannelName
         {
