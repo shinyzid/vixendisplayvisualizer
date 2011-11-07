@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisplayPreviewModule", "Dis
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.0", "3.0", "{36B3A984-C3F2-4381-875D-796770D82679}"
 	ProjectSection(SolutionItems) = preProject
+		3.0\RGB.dll = 3.0\RGB.dll
 		3.0\Vixen.dll = 3.0\Vixen.dll
 	EndProjectSection
 EndProject

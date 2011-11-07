@@ -4,6 +4,7 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
     using System.Collections.ObjectModel;
     using Vixen.Modules.DisplayPreviewModule.Model;
     using Vixen.Sys;
+    using VixenModules.Property.RGB;
 
     public class VisualizerViewModel : ViewModelBase
     {
@@ -11,7 +12,7 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 
         public VisualizerViewModel(DisplayPreviewModuleDataModel displayPreviewModuleDataModel)
         {
-            DisplayElements = displayPreviewModuleDataModel.DisplayItems;
+            DisplayItems = displayPreviewModuleDataModel.DisplayItems;
             BackgroundImage = displayPreviewModuleDataModel.BackgroundImage;
             DisplayWidth = displayPreviewModuleDataModel.DisplayWidth;
             DisplayHeight = displayPreviewModuleDataModel.DisplayHeight;
@@ -31,7 +32,7 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
             }
         }
 
-        public ObservableCollection<DisplayItem> DisplayElements { get; set; }
+        public ObservableCollection<DisplayItem> DisplayItems { get; set; }
 
         public int DisplayHeight { get; set; }
 
@@ -39,10 +40,10 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 
         public void UpdateExecutionStateValues(ExecutionStateValues stateValues)
         {
-            foreach (var executionStateValue in stateValues)
+            var colorsByChannel = RGBModule.MapChannelCommandsToColors(stateValues).ToMediaColor();
+            foreach (var displayItem in DisplayItems)
             {
-                Console.WriteLine(executionStateValue.Key.Id);
-                Console.WriteLine(executionStateValue.Value.GetParameterValue(0));
+                displayItem.UpdateChannelColors(colorsByChannel);
             }
         }
     }

@@ -1,10 +1,13 @@
 namespace Vixen.Modules.DisplayPreviewModule.Model
 {
+    using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
     using System.Runtime.Serialization;
     using System.Windows;
+    using System.Windows.Media;
     using Vixen.Modules.DisplayPreviewModule.Behaviors;
     using Vixen.Sys;
 
@@ -173,6 +176,19 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             }
 
             return DragDropEffects.Move;
+        }
+
+        public void UpdateChannelColors(Dictionary<ChannelNode,Color> colorsByChannel)
+        {
+            foreach (var colorByChannel in colorsByChannel)
+            {
+                var channelId = colorByChannel.Key.Id;
+                var channelLocation = ChannelLocations.FirstOrDefault(x => x.ChannelId == channelId);
+                if (channelLocation != null)
+                {
+                    channelLocation.ChannelColor = colorByChannel.Value;
+                }
+            }
         }
     }
 }
