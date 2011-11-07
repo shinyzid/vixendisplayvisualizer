@@ -1,7 +1,9 @@
 ﻿namespace Vixen.Modules.DisplayPreviewModule.Model
 {
     using System;
+    using System.Collections.Generic;
     using Vixen.Module.App;
+    using VixenModules.Property.RGB;
 
     public class DisplayPreviewModuleDescriptor : AppModuleDescriptorBase
     {
@@ -58,6 +60,15 @@
             get
             {
                 return "0.1";
+            }
+        }
+
+        public override Guid[] Dependencies
+        {
+            get
+            {
+                var deps = new List<Guid>(base.Dependencies) { RGBDescriptor.ModuleID };
+                return deps.ToArray();
             }
         }
     }

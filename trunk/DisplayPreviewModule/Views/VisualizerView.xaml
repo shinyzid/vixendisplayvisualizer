@@ -78,7 +78,7 @@
 					              Width="{Binding DisplayWidth}"
 					              MinHeight="{Binding DisplayHeight}"
 					              MaxHeight="{Binding DisplayHeight}"
-					              ItemsSource="{Binding DisplayElements}">
+					              ItemsSource="{Binding DisplayItems}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<Canvas IsItemsHost="True"
@@ -108,6 +108,5 @@
 				</ScrollViewer>
 			</Border>
 		</GroupBox>
-
 	</Grid>
 </Window>
