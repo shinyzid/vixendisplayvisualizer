@@ -2,6 +2,8 @@ namespace Vixen.Modules.DisplayPreviewModule.ViewModels
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Linq;
+    using Vixen.Commands;
     using Vixen.Modules.DisplayPreviewModule.Model;
     using Vixen.Sys;
     using VixenModules.Property.RGB;

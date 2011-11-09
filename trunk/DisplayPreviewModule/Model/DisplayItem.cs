@@ -1,6 +1,5 @@
 namespace Vixen.Modules.DisplayPreviewModule.Model
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -108,7 +107,17 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
 
             set
             {
+                if (_selectedChannelLocation != null)
+                {
+                    _selectedChannelLocation.IsSelected = false;
+                }
+
                 _selectedChannelLocation = value;
+                if (_selectedChannelLocation != null)
+                {
+                    _selectedChannelLocation.IsSelected = true;
+                }
+
                 PropertyChanged.NotifyPropertyChanged("SelectedChannelLocation", this);
             }
         }
@@ -162,9 +171,28 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
                 IsUnlocked);
         }
 
+        public void UpdateChannelColors(Dictionary<ChannelNode, Color> colorsByChannel)
+        {
+            foreach (var colorByChannel in colorsByChannel)
+            {
+                var channelId = colorByChannel.Key.Id;
+                var channelLocation = ChannelLocations.FirstOrDefault(x => x.ChannelId == channelId);
+                if (channelLocation != null)
+                {
+                    channelLocation.ChannelColor = colorByChannel.Value;
+                }
+            }
+        }
+
         private void Drop(ChannelNode channelNode, Point point)
         {
-            var channelLocation = new ChannelLocation { LeftOffset = point.X, TopOffset = point.Y, ChannelId = channelNode.Id };
+            var channel = channelNode.Parents.FirstOrDefault(x => x.IsRgbNode());
+            if (channel == null)
+            {
+                channel = channelNode;
+            }
+
+            var channelLocation = new ChannelLocation { LeftOffset = point.X, TopOffset = point.Y, ChannelId = channel.Id };
             ChannelLocations.Add(channelLocation);
         }
 
@@ -176,19 +204,6 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             }
 
             return DragDropEffects.Move;
-        }
-
-        public void UpdateChannelColors(Dictionary<ChannelNode,Color> colorsByChannel)
-        {
-            foreach (var colorByChannel in colorsByChannel)
-            {
-                var channelId = colorByChannel.Key.Id;
-                var channelLocation = ChannelLocations.FirstOrDefault(x => x.ChannelId == channelId);
-                if (channelLocation != null)
-                {
-                    channelLocation.ChannelColor = colorByChannel.Value;
-                }
-            }
         }
     }
 }

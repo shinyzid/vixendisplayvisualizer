@@ -22,7 +22,7 @@
 			<WPF:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
             
             <DataTemplate DataType="{x:Type Model:ChannelLocation}">
-                <Ellipse Fill="#55FF0000" Width="10" Height="10" />
+                <Ellipse Fill="#55FF0000" Width="{Binding Width}" Height="{Binding Height}" />
             </DataTemplate>
             
 			<DataTemplate DataType="{x:Type Model:DisplayItem}">

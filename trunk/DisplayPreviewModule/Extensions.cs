@@ -5,6 +5,7 @@ namespace Vixen.Modules.DisplayPreviewModule
     using System.Linq;
     using System.Windows.Media;
     using Vixen.Sys;
+    using VixenModules.Property.RGB;
 
     public static class Extensions
     {
@@ -30,6 +31,11 @@ namespace Vixen.Modules.DisplayPreviewModule
                                                                                                                                  x.
                                                                                                                                      Value);
             return newValues;
+        }
+
+        public static bool IsRgbNode(this ChannelNode channelNode)
+        {
+            return channelNode != null && channelNode.Properties.Any(x => x is RGBModule);
         }
     }
 }

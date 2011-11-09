@@ -13,182 +13,220 @@
 		<d:DesignInstanceExtension Type="{x:Type ViewModels:DisplayItemEditorViewModel}" />
 	</d:DesignProperties.DataContext>
 	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
 		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-				<GroupBox Header="Available Channels">
-					<TreeView ItemsSource="{Binding ChannelSources}"
-					          HorizontalContentAlignment="Stretch"
-					          VerticalContentAlignment="Stretch">
-						<TreeView.ItemContainerStyle>
-							<Style TargetType="{x:Type TreeViewItem}">
-								<Setter Property="FontWeight"
-								        Value="Normal" />
-								<Style.Triggers>
-									<Trigger Property="IsSelected"
-									         Value="True">
-										<Setter Property="FontWeight"
-										        Value="Bold" />
-										<Setter Property="Foreground"
-										        Value="DarkGreen" />
-										<Setter Property="Background"
-										        Value="LightBlue" />
-									</Trigger>
-								</Style.Triggers>
-							</Style>
-						</TreeView.ItemContainerStyle>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<GroupBox Header="Available Channels">
+				<TreeView ItemsSource="{Binding ChannelSources}"
+				          HorizontalContentAlignment="Stretch"
+				          VerticalContentAlignment="Stretch">
+					<TreeView.ItemContainerStyle>
+						<Style TargetType="{x:Type TreeViewItem}">
+							<Setter Property="FontWeight"
+							        Value="Normal" />
+							<Style.Triggers>
+								<Trigger Property="IsSelected"
+								         Value="True">
+									<Setter Property="FontWeight"
+									        Value="Bold" />
+									<Setter Property="Foreground"
+									        Value="DarkGreen" />
+									<Setter Property="Background"
+									        Value="LightBlue" />
+								</Trigger>
+							</Style.Triggers>
+						</Style>
+					</TreeView.ItemContainerStyle>
 
-						<TreeView.ItemTemplate>
-							<HierarchicalDataTemplate ItemsSource="{Binding Children}"
-							                          DataType="{x:Type Model:ChannelSource}">
-								<TextBlock Text="{Binding ChannelNodeName}"
-								           Behaviors:DragSourceBehaviour.DragSource="{Binding Source}"
-								           HorizontalAlignment="Stretch" />
-							</HierarchicalDataTemplate>
-						</TreeView.ItemTemplate>
-					</TreeView>
-				</GroupBox>
-				<Button Grid.Row="1"
-				        Content="Close"
-				        Click="CloseButtonClick" />
-			</Grid>
-			<Grid Grid.Column="1">
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="*" />
-				</Grid.RowDefinitions>
-				<StackPanel Orientation="Horizontal">
-					<ContentControl Content="{Binding DisplayItem}">
-						<ContentControl.ContentTemplate>
-							<DataTemplate DataType="{x:Type Model:DisplayItem}">
-								<GroupBox Header="Display Item Settings"
-								          Margin="2"
-								          Padding="2">
-									<StackPanel Orientation="Horizontal">
-										<GroupBox Header="Name"
-										          Padding="2"
-										          HorizontalContentAlignment="Stretch">
-											<TextBox Text="{Binding Name, Mode=TwoWay}" />
-										</GroupBox>
-										<GroupBox Header="Width"
-										          Padding="2"
-										          HorizontalContentAlignment="Stretch">
-											<TextBox Text="{Binding Width, Mode=TwoWay}" />
-										</GroupBox>
-										<GroupBox Header="Height"
-										          Padding="2"
-										          HorizontalContentAlignment="Stretch">
-											<TextBox Text="{Binding Height, Mode=TwoWay}" />
-										</GroupBox>
-
-									</StackPanel>
-								</GroupBox>
-							</DataTemplate>
-						</ContentControl.ContentTemplate>
-					</ContentControl>
-					<ContentControl x:Name="channelLocation"
-					                Content="{Binding ElementName=DisplayItem, Path=SelectedChannelLocation}">
-						<ContentControl.ContentTemplate>
-							<DataTemplate DataType="{x:Type ListViewItem}">
-								<ContentControl Content="{Binding Content}">
-									<ContentControl.ContentTemplate>
-										<DataTemplate DataType="{x:Type Model:ChannelLocation}">
-											<GroupBox Header="Channel Settings"
-											          Margin="2"
-											          Padding="2">
-												<StackPanel Orientation="Horizontal">
-													<GroupBox Header="Width"
-													          Padding="2"
-													          HorizontalContentAlignment="Stretch">
-														<TextBox Text="{Binding Width, Mode=TwoWay}" />
-													</GroupBox>
-													<GroupBox Header="Height"
-													          Padding="2"
-													          HorizontalContentAlignment="Stretch">
-														<TextBox Text="{Binding Height, Mode=TwoWay}" />
-													</GroupBox>
-												</StackPanel>
-											</GroupBox>
-										</DataTemplate>
-									</ContentControl.ContentTemplate>
-								</ContentControl>
-							</DataTemplate>
-						</ContentControl.ContentTemplate>
-					</ContentControl>
-				</StackPanel>
-				<GroupBox Header="Display Item"
-				          Grid.Row="1">
-					<ContentControl Content="{Binding DisplayItem}"
-					                HorizontalAlignment="Left"
-					                VerticalAlignment="Top"
-					                AllowDrop="True"
-					                x:Name="theDisplayItem">
-						<ContentControl.ContentTemplate>
-							<DataTemplate DataType="{x:Type Model:DisplayItem}">
-								<Border BorderBrush="Black"
-								        CornerRadius="5"
-								        Padding="2"
-								        BorderThickness="2">
-									<ListBox ItemsSource="{Binding ChannelLocations}"
-									          SelectedItem="{Binding SelectedChannelLocation}"
-									          Behaviors:DropTargetBehaviour.DropTarget="{Binding Target}"
-									          Width="{Binding Width}"
-									          Height="{Binding Height}"
-                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                              ScrollViewer.VerticalScrollBarVisibility="Hidden"
-									          Background="#33000000"
-									          AllowDrop="True">
-										<ListBox.ItemsPanel>
-											<ItemsPanelTemplate>
-												<WPF:DragCanvas ClipToBounds="True"
-												                HorizontalAlignment="Left"
-												                MaxWidth="{Binding Width}"
-												                MaxHeight="{Binding Height}"
-												                MinWidth="{Binding Width}"
-												                MinHeight="{Binding Height}"
-												                Width="{Binding Width}"
-												                Height="{Binding Height}">
-												</WPF:DragCanvas>
-											</ItemsPanelTemplate>
-										</ListBox.ItemsPanel>
-										<ListBox.ItemTemplate>
-											<DataTemplate DataType="{x:Type Model:ChannelLocation}">
-												<Border BorderBrush="Green"
-												        BorderThickness=".5"
-												        Width="{Binding Width}"
-												        Height="{Binding Height}"
-												        VerticalAlignment="Stretch"
-												        HorizontalAlignment="Stretch"
-												        ToolTip="{Binding ChannelName}"
-												        Background="#11000000">
-													<TextBlock Foreground="SkyBlue"
-													           Text="C" />
-												</Border>
-											</DataTemplate>
-										</ListBox.ItemTemplate>
-										<ListBox.ItemContainerStyle>
-											<Style TargetType="ContentControl">
-												<Setter Property="Canvas.Left"
-												        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
-												<Setter Property="Canvas.Top"
-												        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
-											</Style>
-										</ListBox.ItemContainerStyle>
-									</ListBox>
-								</Border>
-							</DataTemplate>
-						</ContentControl.ContentTemplate>
-					</ContentControl>
-				</GroupBox>
-			</Grid>
+					<TreeView.ItemTemplate>
+						<HierarchicalDataTemplate ItemsSource="{Binding Children}"
+						                          DataType="{x:Type Model:ChannelSource}">
+							<TextBlock Text="{Binding ChannelNodeName}"
+							           Behaviors:DragSourceBehaviour.DragSource="{Binding Source}"
+							           HorizontalAlignment="Stretch" />
+						</HierarchicalDataTemplate>
+					</TreeView.ItemTemplate>
+				</TreeView>
+			</GroupBox>
+			<Button Content="Close"
+			        Click="CloseButtonClick"
+			        Grid.Row="1" />
 		</Grid>
+		<Grid Grid.Column="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<StackPanel Orientation="Horizontal">
+				<ContentControl Content="{Binding DisplayItem}">
+					<ContentControl.ContentTemplate>
+						<DataTemplate DataType="{x:Type Model:DisplayItem}">
+							<GroupBox Header="Display Item Settings"
+							          Margin="2"
+							          Padding="2">
+								<StackPanel Orientation="Horizontal">
+									<GroupBox Header="Name"
+									          Padding="2"
+									          HorizontalContentAlignment="Stretch">
+										<TextBox Text="{Binding Name, Mode=TwoWay}" />
+									</GroupBox>
+									<GroupBox Header="Width"
+									          Padding="2"
+									          HorizontalContentAlignment="Stretch">
+										<TextBox Text="{Binding Width, Mode=TwoWay}" />
+									</GroupBox>
+									<GroupBox Header="Height"
+									          Padding="2"
+									          HorizontalContentAlignment="Stretch">
+										<TextBox Text="{Binding Height, Mode=TwoWay}" />
+									</GroupBox>
 
+								</StackPanel>
+							</GroupBox>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+				<ContentControl x:Name="channelLocation"
+				                Content="{Binding DisplayItem}">
+					<ContentControl.ContentTemplate>
+						<DataTemplate DataType="{x:Type Model:DisplayItem}">
+							<ContentControl Content="{Binding SelectedChannelLocation}">
+								<ContentControl.ContentTemplate>
+									<DataTemplate DataType="{x:Type Model:ChannelLocation}">
+										<GroupBox Header="Channel Settings"
+										          Margin="2"
+										          Padding="2">
+											<StackPanel Orientation="Horizontal">
+												<GroupBox Header="Width"
+												          Padding="2"
+												          HorizontalContentAlignment="Stretch">
+													<TextBox Text="{Binding Width, Mode=TwoWay}" />
+												</GroupBox>
+												<GroupBox Header="Height"
+												          Padding="2"
+												          HorizontalContentAlignment="Stretch">
+													<TextBox Text="{Binding Height, Mode=TwoWay}" />
+												</GroupBox>
+											</StackPanel>
+										</GroupBox>
+									</DataTemplate>
+								</ContentControl.ContentTemplate>
+							</ContentControl>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			</StackPanel>
+			<GroupBox Header="Display Item"
+			          Grid.Row="1">
+				<ContentControl Content="{Binding DisplayItem}"
+				                HorizontalAlignment="Left"
+				                VerticalAlignment="Top"
+				                AllowDrop="True"
+				                x:Name="theDisplayItem">
+					<ContentControl.ContentTemplate>
+						<DataTemplate DataType="{x:Type Model:DisplayItem}">
+							<Border BorderBrush="Black"
+							        CornerRadius="5"
+							        Padding="2"
+							        BorderThickness="2">
+								<ItemsControl ItemsSource="{Binding ChannelLocations}"
+								              Behaviors:DropTargetBehaviour.DropTarget="{Binding Target}"
+								              Width="{Binding Width}"
+								              Height="{Binding Height}"
+								              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+								              ScrollViewer.VerticalScrollBarVisibility="Hidden"
+								              Background="#33000000"
+								              AllowDrop="True">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<WPF:DragCanvas ClipToBounds="True"
+											                HorizontalAlignment="Left"
+											                MaxWidth="{Binding Width}"
+											                MaxHeight="{Binding Height}"
+											                MinWidth="{Binding Width}"
+											                MinHeight="{Binding Height}"
+											                Width="{Binding Width}"
+											                Height="{Binding Height}">
+											</WPF:DragCanvas>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate DataType="{x:Type Model:ChannelLocation}">
+											<Border BorderBrush="Green"
+											        x:Name="border"
+											        BorderThickness=".5"
+											        Width="{Binding Width}"
+											        Height="{Binding Height}"
+											        VerticalAlignment="Stretch"
+											        HorizontalAlignment="Stretch"
+											        ToolTip="{Binding ChannelName}"
+											        Background="#11000000">
+												<TextBlock Foreground="SkyBlue"
+												           Text="C" />
+											</Border>
+											<DataTemplate.Triggers>
+												<DataTrigger Binding="{Binding IsSelected}"
+												             Value="true">
+													<Setter TargetName="border"
+													        Property="BorderBrush"
+													        Value="HotPink" />
+												</DataTrigger>
+												<DataTrigger Binding="{Binding IsSelected}"
+												             Value="false">
+													<Setter TargetName="border"
+													        Property="BorderBrush"
+													        Value="Green" />
+												</DataTrigger>
+											</DataTemplate.Triggers>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+									<ItemsControl.ItemContainerStyle>
+										<Style TargetType="ContentPresenter">
+											<Setter Property="Canvas.Left"
+											        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
+											<Setter Property="Canvas.Top"
+											        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
+										</Style>
+									</ItemsControl.ItemContainerStyle>
+								</ItemsControl>
+							</Border>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			</GroupBox>
+		</Grid>
+		<Grid Grid.Column="2">
+			<ContentControl Content="{Binding DisplayItem}">
+				<ContentControl.ContentTemplate>
+					<DataTemplate DataType="{x:Type Model:DisplayItem}">
+						<GroupBox Header="Channels">
+							<ListView ItemsSource="{Binding ChannelLocations}"
+							          SelectedItem="{Binding SelectedChannelLocation}">
+								<ListView.Resources>
+									<Style TargetType="{x:Type ListViewItem}">
+										<Setter Property="IsSelected"
+										        Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+									</Style>
+								</ListView.Resources>
+								<ListView.ItemTemplate>
+									<DataTemplate DataType="{x:Type Model:ChannelLocation}">
+										<TextBlock Text="{Binding ChannelName}" />
+									</DataTemplate>
+								</ListView.ItemTemplate>
+							</ListView>
+
+						</GroupBox>
+					</DataTemplate>
+				</ContentControl.ContentTemplate>
+			</ContentControl>
+		</Grid>
 	</Grid>
+
 </Window>
