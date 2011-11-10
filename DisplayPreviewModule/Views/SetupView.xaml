@@ -20,11 +20,14 @@
 
 			<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 			<WPF:BooleanToCollapsedConverter x:Key="BooleanToCollapsedConverter" />
-            
-            <DataTemplate DataType="{x:Type Model:ChannelLocation}">
-                <Ellipse Fill="#55FF0000" Width="{Binding Width}" Height="{Binding Height}" />
-            </DataTemplate>
-            
+
+			<DataTemplate DataType="{x:Type Model:ChannelLocation}">
+                <Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
+                         ToolTip="{Binding ChannelName}"
+				         Width="{Binding Width}"
+				         Height="{Binding Height}" />
+			</DataTemplate>
+
 			<DataTemplate DataType="{x:Type Model:DisplayItem}">
 				<Border BorderBrush="Gray"
 				        Background="Transparent"
@@ -34,27 +37,27 @@
 					<ItemsControl ItemsSource="{Binding ChannelLocations}"
 					              HorizontalContentAlignment="Stretch"
 					              VerticalContentAlignment="Stretch">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas ClipToBounds="True"
-									                HorizontalAlignment="Left"
-									                MaxWidth="{Binding Width}"
-									                MaxHeight="{Binding Height}"
-									                MinWidth="{Binding Width}"
-									                MinHeight="{Binding Height}"
-									                Width="{Binding Width}"
-									                Height="{Binding Height}">
-                                </Canvas>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left"
-									        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
-                                <Setter Property="Canvas.Top"
-									        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<Canvas ClipToBounds="True"
+								        HorizontalAlignment="Left"
+								        MaxWidth="{Binding Width}"
+								        MaxHeight="{Binding Height}"
+								        MinWidth="{Binding Width}"
+								        MinHeight="{Binding Height}"
+								        Width="{Binding Width}"
+								        Height="{Binding Height}">
+								</Canvas>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemContainerStyle>
+							<Style TargetType="ContentPresenter">
+								<Setter Property="Canvas.Left"
+								        Value="{Binding Path=LeftOffset, Mode=TwoWay}" />
+								<Setter Property="Canvas.Top"
+								        Value="{Binding Path=TopOffset, Mode=TwoWay}" />
+							</Style>
+						</ItemsControl.ItemContainerStyle>
 					</ItemsControl>
 				</Border>
 			</DataTemplate>
@@ -70,7 +73,7 @@
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 			<GroupBox Header="Commands">
 				<StackPanel>
@@ -161,11 +164,11 @@
 					</ListView.ItemTemplate>
 				</ListView>
 			</GroupBox>
-            <Button Content="Close Setup" 
-                    Grid.Row="2"
-                    Click="CloseButtonClick"
-                    Margin="2" >
-            </Button>
+			<Button Content="Close Setup"
+			        Grid.Row="2"
+			        Click="CloseButtonClick"
+			        Margin="2">
+			</Button>
 		</Grid>
 		<Grid Grid.Column="1">
 			<Grid.RowDefinitions>
@@ -190,7 +193,7 @@
 					          Padding="2"
 					          HorizontalContentAlignment="Stretch">
 						<Slider Value="{Binding Opacity, Mode=TwoWay}"
-                                Width="100"
+						        Width="100"
 						        Minimum="0"
 						        Maximum="1" />
 					</GroupBox>

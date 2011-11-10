@@ -159,30 +159,29 @@
 									</ItemsControl.ItemsPanel>
 									<ItemsControl.ItemTemplate>
 										<DataTemplate DataType="{x:Type Model:ChannelLocation}">
-											<Border BorderBrush="Green"
-											        x:Name="border"
-											        BorderThickness=".5"
-											        Width="{Binding Width}"
-											        Height="{Binding Height}"
-											        VerticalAlignment="Stretch"
-											        HorizontalAlignment="Stretch"
-											        ToolTip="{Binding ChannelName}"
-											        Background="#11000000">
-												<TextBlock Foreground="SkyBlue"
-												           Text="C" />
-											</Border>
+                                            <Ellipse Fill="{Binding DisplayColor, Mode=OneWay}"
+                                                     x:Name="channel"
+                                                     Width="{Binding Width}"
+                                                     Height="{Binding Height}"
+                                                     ToolTip="{Binding ChannelName}" />
 											<DataTemplate.Triggers>
 												<DataTrigger Binding="{Binding IsSelected}"
 												             Value="true">
-													<Setter TargetName="border"
-													        Property="BorderBrush"
-													        Value="HotPink" />
+													<Setter TargetName="channel"
+													        Property="Stroke"
+													        Value="Red" />
+                                                    <Setter TargetName="channel"
+                                                            Property="StrokeThickness"
+                                                            Value="4" />
 												</DataTrigger>
 												<DataTrigger Binding="{Binding IsSelected}"
 												             Value="false">
-													<Setter TargetName="border"
-													        Property="BorderBrush"
-													        Value="Green" />
+													<Setter TargetName="channel"
+													        Property="Stroke"
+													        Value="LightGray" />
+                                                    <Setter TargetName="channel"
+                                                            Property="StrokeThickness"
+                                                            Value="1" />
 												</DataTrigger>
 											</DataTemplate.Triggers>
 										</DataTemplate>

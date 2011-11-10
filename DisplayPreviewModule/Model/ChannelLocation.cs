@@ -14,6 +14,8 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         private string _channelName;
         private int _height;
         private bool _isSelected;
+        private double _leftOffset;
+        private double _topOffset;
         private int _width;
 
         public ChannelLocation()
@@ -67,6 +69,23 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
             }
         }
 
+        public Brush DisplayColor
+        {
+            get
+            {
+                if (Channel.IsRgbNode())
+                {
+                    var brush = new LinearGradientBrush();
+                    brush.GradientStops.Add(new GradientStop(Colors.Red, 0));
+                    brush.GradientStops.Add(new GradientStop(Colors.Green, .5));
+                    brush.GradientStops.Add(new GradientStop(Colors.Blue, 1));
+                    return brush;
+                }
+
+                return new SolidColorBrush(Colors.Aqua);
+            }
+        }
+
         [DataMember]
         public int Height
         {
@@ -97,10 +116,34 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
         }
 
         [DataMember]
-        public double LeftOffset { get; set; }
+        public double LeftOffset
+        {
+            get
+            {
+                return _leftOffset;
+            }
+
+            set
+            {
+                _leftOffset = value;
+                PropertyChanged.NotifyPropertyChanged("LeftOffset", this);
+            }
+        }
 
         [DataMember]
-        public double TopOffset { get; set; }
+        public double TopOffset
+        {
+            get
+            {
+                return _topOffset;
+            }
+
+            set
+            {
+                _topOffset = value;
+                PropertyChanged.NotifyPropertyChanged("TopOffset", this);
+            }
+        }
 
         [DataMember]
         public int Width
