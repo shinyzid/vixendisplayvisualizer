@@ -1,5 +1,6 @@
 namespace VixenModules.App.DisplayPreview.Model
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Runtime.Serialization;
@@ -37,6 +38,9 @@ namespace VixenModules.App.DisplayPreview.Model
 
         [DataMember]
         public double Opacity { get; set; }
+
+        [DataMember]
+        public Preferences Prefernces { get; set; }
 
         public override IModuleDataModel Clone()
         {
