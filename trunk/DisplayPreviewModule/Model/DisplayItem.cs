@@ -179,7 +179,8 @@ namespace Vixen.Modules.DisplayPreviewModule.Model
                 var channelLocation = ChannelLocations.FirstOrDefault(x => x.ChannelId == channelId);
                 if (channelLocation != null)
                 {
-                    channelLocation.ChannelColor = colorByChannel.Value;
+                    var color = colorByChannel.Value;
+                    channelLocation.ChannelColor = color == Colors.Black ? Colors.Transparent : color;
                 }
             }
         }
