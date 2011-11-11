@@ -8,16 +8,15 @@ namespace VixenModules.App.DisplayPreview.Model
 
     public class ChannelSource
     {
+        private readonly ChannelNode _channelNode;
         private IDragSource _source;
 
         public ChannelSource(ChannelNode channelNode)
         {
-            ChannelNode = channelNode;
-            Children = ChannelNode.Children.Select(x => new ChannelSource(x));
+            _channelNode = channelNode;
+            Children = _channelNode.Children.Select(x => new ChannelSource(x));
             ChannelNodeName = channelNode.Name;
         }
-
-        public ChannelNode ChannelNode { get; private set; }
 
         public string ChannelNodeName { get; private set; }
 
@@ -31,14 +30,14 @@ namespace VixenModules.App.DisplayPreview.Model
             }
         }
 
-        private object GetData(ChannelSource channelSource)
+        private static object GetData(ChannelSource channelSource)
         {
-            return channelSource.ChannelNode;
+            return channelSource._channelNode;
         }
 
         private DragDropEffects GetDragEffects(ChannelSource channelSource)
         {
-            return ChannelNode != null ? DragDropEffects.Move : DragDropEffects.None;
+            return _channelNode != null ? DragDropEffects.Move : DragDropEffects.None;
         }
     }
 }

@@ -12,7 +12,12 @@ namespace VixenModules.App.DisplayPreview.Views
 
         private static VisualizerViewModel _visualizerViewModel;
 
-        public static bool IsVisualizerRunning { get; private set; }
+        public static void DisplayPreferences(DisplayPreviewModuleDataModel dataModel)
+        {
+            var viewModel = new PreferencesViewModel(dataModel);
+            var view = new PreferencesView { DataContext = viewModel };
+            view.ShowDialog();
+        }
 
         public static void DisplaySetupView(DisplayPreviewModuleDataModel dataModel)
         {
@@ -31,7 +36,7 @@ namespace VixenModules.App.DisplayPreview.Views
 
         public static void StartVisualizer(DisplayPreviewModuleDataModel dataModel)
         {
-            if (IsVisualizerRunning)
+            if (_view != null)
             {
                 _view.Focus();
             }
@@ -41,7 +46,6 @@ namespace VixenModules.App.DisplayPreview.Views
                 _view = new VisualizerView { DataContext = _visualizerViewModel };
                 _view.Closed += VisualizerViewClosed;
                 _view.Show();
-                IsVisualizerRunning = true;
             }
         }
 
@@ -61,8 +65,6 @@ namespace VixenModules.App.DisplayPreview.Views
                 _view = null;
                 _visualizerViewModel = null;
             }
-
-            IsVisualizerRunning = false;
         }
     }
 }

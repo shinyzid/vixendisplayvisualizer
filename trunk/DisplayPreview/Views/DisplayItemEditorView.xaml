@@ -8,6 +8,7 @@
         xmlns:WPF1="clr-namespace:VixenModules.App.DisplayPreview.WPF"
         xmlns:Behaviors1="clr-namespace:VixenModules.App.DisplayPreview.Behaviors"
         mc:Ignorable="d"
+        Title="Display Item and Channel Editor"
         SizeToContent="WidthAndHeight">
 	<d:DesignProperties.DataContext>
 		<d:DesignInstanceExtension Type="{x:Type ViewModels1:DisplayItemEditorViewModel}" />
@@ -24,36 +25,48 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 			<GroupBox Header="Available Channels">
-				<TreeView ItemsSource="{Binding ChannelSources}"
-				          HorizontalContentAlignment="Stretch"
-				          VerticalContentAlignment="Stretch">
-					<TreeView.ItemContainerStyle>
-						<Style TargetType="{x:Type TreeViewItem}">
-							<Setter Property="FontWeight"
-							        Value="Normal" />
-							<Style.Triggers>
-								<Trigger Property="IsSelected"
-								         Value="True">
-									<Setter Property="FontWeight"
-									        Value="Bold" />
-									<Setter Property="Foreground"
-									        Value="DarkGreen" />
-									<Setter Property="Background"
-									        Value="LightBlue" />
-								</Trigger>
-							</Style.Triggers>
-						</Style>
-					</TreeView.ItemContainerStyle>
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+					<TreeView ItemsSource="{Binding ChannelSources}"
+					          x:Name="treeview"
+					          HorizontalContentAlignment="Stretch"
+					          VerticalContentAlignment="Stretch">
+						<TreeView.ItemContainerStyle>
+							<Style TargetType="{x:Type TreeViewItem}">
+								<Setter Property="FontWeight"
+								        Value="Normal" />
+								<Style.Triggers>
+									<Trigger Property="IsSelected"
+									         Value="True">
+										<Setter Property="FontWeight"
+										        Value="Bold" />
+										<Setter Property="Foreground"
+										        Value="DarkGreen" />
+										<Setter Property="Background"
+										        Value="LightBlue" />
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TreeView.ItemContainerStyle>
 
-					<TreeView.ItemTemplate>
-						<HierarchicalDataTemplate ItemsSource="{Binding Children}"
-						                          DataType="{x:Type Model1:ChannelSource}">
-							<TextBlock Text="{Binding ChannelNodeName}"
-							           Behaviors1:DragSourceBehaviour.DragSource="{Binding Source}"
-							           HorizontalAlignment="Stretch" />
-						</HierarchicalDataTemplate>
-					</TreeView.ItemTemplate>
-				</TreeView>
+						<TreeView.ItemTemplate>
+							<HierarchicalDataTemplate ItemsSource="{Binding Children}"
+							                          DataType="{x:Type Model1:ChannelSource}">
+								<TextBlock Text="{Binding ChannelNodeName}"
+								           Behaviors1:DragSourceBehaviour.DragSource="{Binding Source}"
+								           HorizontalAlignment="Stretch" />
+							</HierarchicalDataTemplate>
+						</TreeView.ItemTemplate>
+					</TreeView>
+					<TextBlock Grid.Row="1"
+					           TextWrapping="WrapWithOverflow"
+					           Width="{Binding ElementName=treeview, Path=ActualWidth}">
+						Drag a group or channel to the Display Item Canvas
+					</TextBlock>
+				</Grid>
 			</GroupBox>
 			<Button Content="Close"
 			        Click="CloseButtonClick"
@@ -116,7 +129,7 @@
 					</ContentControl.ContentTemplate>
 				</ContentControl>
 			</StackPanel>
-			<GroupBox Header="Display Item"
+			<GroupBox Header="Display Item Canvas"
 			          Grid.Row="1">
 				<ContentControl Content="{Binding DisplayItem}"
 				                HorizontalAlignment="Left"
@@ -199,7 +212,13 @@
 				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
-			<GroupBox Header="Channels">
+			<GroupBox>
+				<GroupBox.Header>
+					<StackPanel>
+						<TextBlock>Channels in use</TextBlock>
+						<TextBlock>by the display item</TextBlock>
+					</StackPanel>
+				</GroupBox.Header>
 
 				<ListView ItemsSource="{Binding ChannelLocations}"
 				          SelectedItem="{Binding SelectedChannelLocation}">
