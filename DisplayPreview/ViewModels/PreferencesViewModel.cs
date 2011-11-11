@@ -15,12 +15,12 @@ namespace VixenModules.App.DisplayPreview.ViewModels
         {
             get
             {
-                return _dataModel.Prefernces;
+                return _dataModel.Preferences;
             }
 
             set
             {
-                _dataModel.Prefernces = value;
+                _dataModel.Preferences = value;
                 OnPropertyChanged("Preferences");
             }
         }

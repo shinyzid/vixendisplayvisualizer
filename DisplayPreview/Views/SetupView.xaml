@@ -6,6 +6,7 @@
         xmlns:Model1="clr-namespace:VixenModules.App.DisplayPreview.Model"
         xmlns:WPF1="clr-namespace:VixenModules.App.DisplayPreview.WPF"
         mc:Ignorable="d"
+        Title="Display Preview Setup"
         SizeToContent="WidthAndHeight"
         x:Name="Instance">
 	<Window.Resources>
