@@ -176,7 +176,7 @@ namespace Vixen.PlugIns.VixenDisplayVisualizer
 #if VIXEN_2_1
         public List<Form> Startup()
 #else
-        public void Startup()
+            public void Startup()
 #endif
         {
             if (this._channels.Any())

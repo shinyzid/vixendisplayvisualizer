@@ -34,7 +34,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RGB">
-      <HintPath>..\3.0\RGB.dll</HintPath>
+      <HintPath>..\References\3.0\RGB.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,7 +42,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xaml" />
     <Reference Include="Vixen">
-      <HintPath>..\3.0\Vixen.dll</HintPath>
+      <HintPath>..\References\3.0\Vixen.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
