@@ -46,7 +46,7 @@
     <Reference Include="Vixen, Version=2.5.0.7, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <ExecutableExtension>.exe</ExecutableExtension>
-      <HintPath>..\2.1\Vixen.exe</HintPath>
+      <HintPath>..\References\2.1\Vixen.exe</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
