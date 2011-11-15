@@ -52,8 +52,7 @@ namespace VixenModules.Controller.E131
     using System.Text;
     using System.Windows.Forms;
     using System.Xml;
-    using E131_VixenPlugin;
-    using global::E131;
+
     using J1Sys;
     using Vixen.Commands;
     using Vixen.Module.Output;
@@ -280,7 +279,7 @@ namespace VixenModules.Controller.E131
 				// find how many active universes we have
 				foreach (UniverseEntry uE in _universeTable)
 				{
-					if (uE.active) if (uE.unicast != null || uE.multicast != null) activeCnt++;
+					if (uE.Active) if (uE.Unicast != null || uE.Multicast != null) activeCnt++;
 				}
 
 				// create a HardwareMap array to match active count
@@ -292,22 +291,22 @@ namespace VixenModules.Controller.E131
 				// build the table for each active universe
 				foreach (UniverseEntry uE in _universeTable)
 				{
-					if (uE.active)
+					if (uE.Active)
 					{
 						// unicast is pretty straight forward
-						if (uE.unicast != null)
+						if (uE.Unicast != null)
 						{
-							hardwareMap[activeCnt++] = new HardwareMap("Universes (E1.31) Unicast >> " + uE.unicast, uE.universe);
+							hardwareMap[activeCnt++] = new HardwareMap("Universes (E1.31) Unicast >> " + uE.Unicast, uE.Universe);
 						}
 
 						// multicast has to check for valid nic Id in case hardware has changed
-						else if (uE.multicast != null)
+						else if (uE.Multicast != null)
 						{
 							string	nicName = "<<< invalid nic id >>>";
 
-							if (_nicTable.ContainsKey(uE.multicast)) nicName = _nicTable[uE.multicast].Name;
+							if (_nicTable.ContainsKey(uE.Multicast)) nicName = _nicTable[uE.Multicast].Name;
 
-							hardwareMap[activeCnt++] = new HardwareMap("Universes (E1.31) Multicast >> " + nicName, uE.universe);
+							hardwareMap[activeCnt++] = new HardwareMap("Universes (E1.31) Multicast >> " + nicName, uE.Universe);
 						}
 					}
 				}
@@ -331,22 +330,22 @@ namespace VixenModules.Controller.E131
 
 			foreach (UniverseEntry uE in _universeTable)
 			{
-				if (uE.active)
+				if (uE.Active)
 				{
 					if (_eventRepeatCount > 0)
 					{
-						if (uE.eventRepeatCount-- > 0)
+						if (uE.EventRepeatCount-- > 0)
 						{
-							if (E131Pkt.CompareSlots(uE.phyBuffer, channelValues, uE.start, uE.size)) continue;
+							if (E131Packet.CompareSlots(uE.PhyBuffer, channelValues, uE.Start, uE.Size)) continue;
 						}
 					}
 
-					E131Pkt.CopySeqNumSlots(uE.phyBuffer, channelValues, uE.start, uE.size, _seqNum++); 
-					uE.socket.SendTo(uE.phyBuffer, uE.destIPEndPoint);
-					uE.eventRepeatCount = _eventRepeatCount;
+					E131Packet.CopySeqNumSlots(uE.PhyBuffer, channelValues, uE.Start, uE.Size, _seqNum++); 
+					uE.Socket.SendTo(uE.PhyBuffer, uE.DestIpEndPoint);
+					uE.EventRepeatCount = _eventRepeatCount;
 
-					uE.pktCount++;
-					uE.slotCount += uE.size;
+					uE.PktCount++;
+					uE.SlotCount += uE.Size;
 				}
 			}
 
@@ -379,7 +378,7 @@ namespace VixenModules.Controller.E131
                 // for each universe add it to setup form
                 foreach (UniverseEntry uE in _universeTable)
                 {
-                    setupForm.UniverseAdd(uE.active, uE.universe, uE.start + 1, uE.size, uE.unicast, uE.multicast, uE.ttl);
+                    setupForm.UniverseAdd(uE.Active, uE.Universe, uE.Start + 1, uE.Size, uE.Unicast, uE.Multicast, uE.Ttl);
                 }
 
                 setupForm.WarningsOption	= _warningsOption;
@@ -455,24 +454,24 @@ namespace VixenModules.Controller.E131
 			foreach (UniverseEntry uE in _universeTable)
 			{
 				// assume multicast
-				string	id = uE.multicast;
+				string	id = uE.Multicast;
 
 				// if unicast use psuedo id
-				if (uE.unicast != null) id = "unicast";
+				if (uE.Unicast != null) id = "unicast";
 
 				// if active
-				if (uE.active)
+				if (uE.Active)
 				{
 					// and a usable socket
-					if (uE.socket != null)
+					if (uE.Socket != null)
 					{
 						// if not already done
 						if (!idList.ContainsKey(id))
 						{
 							// record it & shut it down
 							idList.Add(id, 1);
-							uE.socket.Shutdown(SocketShutdown.Both);
-							uE.socket.Close();
+							uE.Socket.Shutdown(SocketShutdown.Both);
+							uE.Socket.Close();
 						}
 					}
 				}
@@ -487,7 +486,7 @@ namespace VixenModules.Controller.E131
 
 				foreach (UniverseEntry uE in _universeTable)
 				{
-					if (uE.active)
+					if (uE.Active)
 					{
 						_messageTexts.AppendLine();
 						_messageTexts.Append(uE.StatsToText);
@@ -543,7 +542,7 @@ namespace VixenModules.Controller.E131
 			{
 				foreach (UniverseEntry uE in _universeTable)
 				{
-					uE.active = false;
+					uE.Active = false;
 				}
 
 				_messageTexts.AppendLine("Plugin Channels From/To Configuration Error!!");
@@ -553,28 +552,28 @@ namespace VixenModules.Controller.E131
 			foreach (UniverseEntry uE in _universeTable)
 			{
 				// active? - check universeentry start and size
-				if (uE.active)
+				if (uE.Active)
 				{
 					// is start out of range?
-					if (_pluginChannelsFrom + uE.start > _pluginChannelsTo)
+					if (_pluginChannelsFrom + uE.Start > _pluginChannelsTo)
 					{
 						_messageTexts.AppendLine("Start Error - " + uE.InfoToText);
-						uE.active = false;
+						uE.Active = false;
 					}
 
 					// is size (end) out of range?
-					if (_pluginChannelsFrom + uE.start + uE.size - 1 > _pluginChannelsTo)
+					if (_pluginChannelsFrom + uE.Start + uE.Size - 1 > _pluginChannelsTo)
 					{
 						_messageTexts.AppendLine("Start/Size Error - " + uE.InfoToText);
-						uE.active = false;
+						uE.Active = false;
 					}
 				}
 
 				// if it's still active we'll look into making a socket for it
-				if (uE.active)
+				if (uE.Active)
 				{
 					// if it's unicast it's fairly easy to do
-					if (uE.unicast != null)
+					if (uE.Unicast != null)
 					{
 						// is this the first unicast universe?
 						if (unicastSocket == null)
@@ -584,67 +583,67 @@ namespace VixenModules.Controller.E131
 						}
 
 						// use the common unicastsocket
-						uE.socket = unicastSocket;
+						uE.Socket = unicastSocket;
 
 						// try to parse our ip address
-						if (!IPAddress.TryParse(uE.unicast, out ipAddress))
+						if (!IPAddress.TryParse(uE.Unicast, out ipAddress))
 						{
 							// oops - bad ip, fuss and deactivate
-							uE.active = false;
-							uE.socket = null;
-							_messageTexts.AppendLine("Invalid Unicast IP: " + uE.unicast + " - " + uE.RowUnivToText);
+							uE.Active = false;
+							uE.Socket = null;
+							_messageTexts.AppendLine("Invalid Unicast IP: " + uE.Unicast + " - " + uE.RowUnivToText);
 						}
 
 						else
 						{
 							// if good, make our destination endpoint
-							uE.destIPEndPoint = new IPEndPoint(ipAddress, 5568);
+							uE.DestIpEndPoint = new IPEndPoint(ipAddress, 5568);
 						}
 					}
 
 					// if it's multicast roll up your sleeves we've got work to do
-					if (uE.multicast != null)
+					if (uE.Multicast != null)
 					{
 						// create an ipaddress object based on multicast universe ip rules
-						IPAddress multicastIPAddress = new IPAddress(new byte[] { 239,255,(byte) (uE.universe >> 8), (byte) (uE.universe & 0xff) });
+						IPAddress multicastIPAddress = new IPAddress(new byte[] { 239,255,(byte) (uE.Universe >> 8), (byte) (uE.Universe & 0xff) });
 						// create an ipendpoint object based on multicast universe ip/port rules
 						IPEndPoint multicastIPEndPoint = new IPEndPoint(multicastIPAddress, 5568);
 	
 						// first check for multicast id in nictable
-						if (!_nicTable.ContainsKey(uE.multicast))
+						if (!_nicTable.ContainsKey(uE.Multicast))
 						{
 							// no - deactivate and scream & yell!!
-							uE.active = false;
-							_messageTexts.AppendLine("Invalid Multicast NIC ID: " + uE.multicast + " - " + uE.RowUnivToText);
+							uE.Active = false;
+							_messageTexts.AppendLine("Invalid Multicast NIC ID: " + uE.Multicast + " - " + uE.RowUnivToText);
 						}
 
 						else
 						{
 							// yes - let's get a working networkinterface object
-							networkInterface = _nicTable[uE.multicast];
+							networkInterface = _nicTable[uE.Multicast];
 
 							// have we done this multicast id before?
-							if (nicSockets.ContainsKey(uE.multicast))
+							if (nicSockets.ContainsKey(uE.Multicast))
 							{
 								// yes - easy to do - use existing socket
-								uE.socket = nicSockets[uE.multicast];
+								uE.Socket = nicSockets[uE.Multicast];
 
 								// setup destipendpoint based on multicast universe ip rules
-								uE.destIPEndPoint = multicastIPEndPoint;
+								uE.DestIpEndPoint = multicastIPEndPoint;
 							}
 
 							// is the interface up?
 							else if (networkInterface.OperationalStatus != OperationalStatus.Up)
 							{
 								// no - deactivate and scream & yell!!
-								uE.active = false;
+								uE.Active = false;
 								_messageTexts.AppendLine("Multicast Interface Down: " + networkInterface.Name + " - " + uE.RowUnivToText);
 							}
 
 							else
 							{
 								// new interface in 'up' status - let's make a new udp socket
-								uE.socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+								uE.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
 								// get a working copy of ipproperties
 								IPInterfaceProperties	ipProperties = networkInterface.GetIPProperties();
@@ -673,26 +672,26 @@ namespace VixenModules.Controller.E131
 								else
 								{
 									// set the multicastinterface option
-									uE.socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastInterface, ipAddress.GetAddressBytes());
+									uE.Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastInterface, ipAddress.GetAddressBytes());
 									// set the multicasttimetolive option
-									uE.socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, uE.ttl);
+									uE.Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, uE.Ttl);
 
 									// setup destipendpoint based on multicast universe ip rules
-									uE.destIPEndPoint = multicastIPEndPoint;
+									uE.DestIpEndPoint = multicastIPEndPoint;
 
 									// add this socket to the socket table for reuse
-									nicSockets.Add(uE.multicast, uE.socket);
+									nicSockets.Add(uE.Multicast, uE.Socket);
 								}
 							}
 						}
 					}
 
 					// if still active we need to create an empty packet
-					if (uE.active)
+					if (uE.Active)
 					{
-						byte[]	zeroBfr = new byte[uE.size];
-						E131Pkt	e131Pkt = new E131Pkt(_guid, "", 0, (ushort) uE.universe, zeroBfr, 0, uE.size);
-						uE.phyBuffer = e131Pkt.PhyBuffer;
+						byte[]	zeroBfr = new byte[uE.Size];
+						E131Packet	e131Packet = new E131Packet(_guid, "", 0, (ushort) uE.Universe, zeroBfr, 0, uE.Size);
+						uE.PhyBuffer = e131Packet.PhyBuffer;
 					}
 				}
 			}

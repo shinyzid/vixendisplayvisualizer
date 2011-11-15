@@ -1,118 +1,116 @@
-﻿namespace E131
+﻿namespace VixenModules.Controller.E131
 {
-    using System;
-    using VixenModules.Controller.E131;
-
     /// <summary>
-    /// E1.31 Framing Layer.
+    ///   E1.31 Framing Layer.
     /// </summary>
     public class E131Framing : E131Base
     {
-        public UInt16	flagsLength;		// PDU Flags/Length
-        public UInt32	vector;				// Vector (0x00000002)
-        public string	sourceName;			// Source Name
-        public byte		priority;			// Data Priority
-        public UInt16	_reserved;			// reserved (0)
-        public byte		sequenceNumber;		// Packet Sequence Number
-        public byte		options;			// Options Flags
-        public UInt16	universe;			// Universe Number
+        public const int PHYBUFFER_SIZE = 77;
 
-        public bool		malformed = true;	// malformed packet (length error)
+        public const int SEQUENCENUMBER_OFFSET = 73;
 
-        public const int	PHYBUFFER_SIZE		= 77;
-        public const int	PDU_SIZE			= PHYBUFFER_SIZE;
+        private const int FLAGSLENGTH_OFFSET = 0;
 
-        // note offsets are byte locations within the layer - not within the packet
-	
-        public const int	FLAGSLENGTH_OFFSET		=   0;
-        public const int	VECTOR_OFFSET			=   2;
-        public const int	SOURCENAME_OFFSET		=   6;
-        public const int	SOURCENAME_SIZE			=  64;
-        public const int	PRIORITY_OFFSET			=  70;
-        public const int	_RESERVED_OFFSET		=  71;
-        public const int	SEQUENCENUMBER_OFFSET	=  73;
-        public const int	OPTIONS_OFFSET			=  74;
-        public const int	UNIVERSE_OFFSET			=  75;
+        private const int OPTIONS_OFFSET = 74;
 
-        public E131Framing()
+        private const int PRIORITY_OFFSET = 70;
+
+        private const int RESERVED_OFFSET = 71;
+
+        private const int SOURCENAME_OFFSET = 6;
+
+        private const int SOURCENAME_SIZE = 64;
+
+        private const int UNIVERSE_OFFSET = 75;
+
+        private const int VECTOR_OFFSET = 2;
+
+        public E131Framing(ushort length, string source, byte sequence, ushort univ)
         {
-        }
-
-        public E131Framing(UInt16 length, string source, byte sequence, UInt16 univ)
-        {
-            flagsLength		= (UInt16) (0x7000 | length);
-            vector			= 0x00000002;
-            sourceName		= source;
-            priority		= 100;
-            _reserved		= 0;
-            sequenceNumber	= sequence;
-            options			= 0;
-            universe		= univ;
+            this.FlagsLength = (ushort)(0x7000 | length);
+            this.Vector = 0x00000002;
+            this.SourceName = source;
+            this.Priority = 100;
+            this.Reserved = 0;
+            this.SequenceNumber = sequence;
+            this.Options = 0;
+            this.Universe = univ;
         }
 
         public E131Framing(byte[] bfr, int offset)
         {
-            FromBfr(bfr, offset);
+            this.FromBfr(bfr, offset);
         }
 
-        public UInt16	Length
+        public ushort Length
         {
             get
             {
-                return (UInt16) (flagsLength & 0x0fff);
-            }
-
-            set
-            {
-                flagsLength = (UInt16) (0x7000 | value);
+                return (ushort)(this.FlagsLength & 0x0fff);
             }
         }
-	
-        override public byte[] PhyBuffer
+
+        public override byte[] PhyBuffer
         {
             get
             {
-                byte[]	bfr = new byte[PHYBUFFER_SIZE];
+                var bfr = new byte[PHYBUFFER_SIZE];
 
-                ToBfr(bfr, 0);
+                this.ToBfr(bfr, 0);
 
                 return bfr;
             }
 
             set
             {
-                FromBfr(value, 0);
+                this.FromBfr(value, 0);
             }
         }
 
-        public void FromBfr(byte[] bfr, int offset)
-        {
-            flagsLength		= Extensions.BfrToUInt16Swapped(bfr, offset + FLAGSLENGTH_OFFSET);
-            vector			= Extensions.BfrToUInt32Swapped(bfr, offset + VECTOR_OFFSET);
-            sourceName		= Extensions.BfrToString(bfr, offset + SOURCENAME_OFFSET, SOURCENAME_SIZE);
-            priority		= bfr[offset + PRIORITY_OFFSET];
-            _reserved		= Extensions.BfrToUInt16Swapped(bfr, offset + _RESERVED_OFFSET);
-            sequenceNumber	= bfr[offset + SEQUENCENUMBER_OFFSET];
-            options			= bfr[offset + OPTIONS_OFFSET];
-            universe		= Extensions.BfrToUInt16Swapped(bfr, offset + UNIVERSE_OFFSET);
+        /// <summary>
+        ///   Gets or sets the Vector (0x00000002)
+        /// </summary>
+        private uint Vector { get; set; }
 
-            malformed = true;
+        /// <summary>
+        ///   Gets or sets the PDU Flags/Length
+        /// </summary>
+        private ushort FlagsLength { get; set; }
 
-            if (Length != bfr.Length - E131Root.PHYBUFFER_SIZE) return;
+        private byte Options { get; set; }
 
-            malformed = false;
-        }
+        private byte Priority { get; set; }
+
+        private ushort Reserved { get; set; }
+
+        private byte SequenceNumber { get; set; }
+
+        private string SourceName { get; set; }
+
+        private ushort Universe { get; set; }
 
         public void ToBfr(byte[] bfr, int offset)
         {
-            Extensions.UInt16ToBfrSwapped(flagsLength, bfr, offset + FLAGSLENGTH_OFFSET);
-            Extensions.UInt32ToBfrSwapped(vector, bfr, offset + VECTOR_OFFSET);
-            Extensions.StringToBfr(sourceName, bfr, offset + SOURCENAME_OFFSET, SOURCENAME_SIZE);
-            bfr[offset + PRIORITY_OFFSET] = priority;
-            Extensions.UInt16ToBfrSwapped(_reserved, bfr, offset + _RESERVED_OFFSET);
-            bfr[offset + SEQUENCENUMBER_OFFSET] = sequenceNumber;
-            bfr[offset + OPTIONS_OFFSET] = options;
-            Extensions.UInt16ToBfrSwapped(universe, bfr, offset + UNIVERSE_OFFSET);
+            Extensions.UInt16ToBfrSwapped(this.FlagsLength, bfr, offset + FLAGSLENGTH_OFFSET);
+            Extensions.UInt32ToBfrSwapped(this.Vector, bfr, offset + VECTOR_OFFSET);
+            Extensions.StringToBfr(this.SourceName, bfr, offset + SOURCENAME_OFFSET, SOURCENAME_SIZE);
+            bfr[offset + PRIORITY_OFFSET] = this.Priority;
+            Extensions.UInt16ToBfrSwapped(this.Reserved, bfr, offset + RESERVED_OFFSET);
+            bfr[offset + SEQUENCENUMBER_OFFSET] = this.SequenceNumber;
+            bfr[offset + OPTIONS_OFFSET] = this.Options;
+            Extensions.UInt16ToBfrSwapped(this.Universe, bfr, offset + UNIVERSE_OFFSET);
+        }
+
+        private void FromBfr(byte[] bfr, int offset)
+        {
+            this.FlagsLength = Extensions.BfrToUInt16Swapped(bfr, offset + FLAGSLENGTH_OFFSET);
+            this.Vector = Extensions.BfrToUInt32Swapped(bfr, offset + VECTOR_OFFSET);
+            this.SourceName = Extensions.BfrToString(bfr, offset + SOURCENAME_OFFSET, SOURCENAME_SIZE);
+            this.Priority = bfr[offset + PRIORITY_OFFSET];
+            this.Reserved = Extensions.BfrToUInt16Swapped(bfr, offset + RESERVED_OFFSET);
+            this.SequenceNumber = bfr[offset + SEQUENCENUMBER_OFFSET];
+            this.Options = bfr[offset + OPTIONS_OFFSET];
+            this.Universe = Extensions.BfrToUInt16Swapped(bfr, offset + UNIVERSE_OFFSET);
         }
     }
 }

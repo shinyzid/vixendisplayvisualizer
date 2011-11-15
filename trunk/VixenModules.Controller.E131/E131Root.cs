@@ -114,7 +114,7 @@
 
             IsMalformed = true;
 
-            if (Length != buffer.Length - FLAGSLENGTH_OFFSET)
+            if (buffer == null || Length != buffer.Length - FLAGSLENGTH_OFFSET)
             {
                 return;
             }
