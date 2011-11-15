@@ -1,9 +1,9 @@
-﻿//=====================================================================
-//	SetupForm.cs - the setup dialog form
-//		version 1.0.0.1 - 2 june 2010
-//=====================================================================
+﻿// =====================================================================
+// SetupForm.cs - the setup dialog form
+// version 1.0.0.1 - 2 june 2010
+// =====================================================================
 
-//=====================================================================
+// =====================================================================
 // Copyright (c) 2010 Joshua 1 Systems Inc. All rights reserved.
 // Redistribution and use in source and binary forms, with or without modification, are
 // permitted provided that the following conditions are met:
@@ -24,9 +24,9 @@
 // The views and conclusions contained in the software and documentation are those of the
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of Joshua 1 Systems Inc.
-//=====================================================================
+// =====================================================================
 
-namespace E131_VixenPlugin
+namespace VixenModules.Controller.E131
 {
     using System;
     using System.Collections.Generic;
@@ -36,64 +36,43 @@ namespace E131_VixenPlugin
     using System.Net.NetworkInformation;
     using System.Text;
     using System.Windows.Forms;
-    using J1Sys;
-    using VixenModules.Controller.E131;
-    using Help = VixenModules.Controller.E131.Help;
 
-    public class SetupForm : Form
+    using J1Sys;
+
+    using VixenModules.Controller.E131.Controls;
+
+    public partial class SetupForm : Form
     {
         // column indexes - must be changed if column addrange code is changed
         // could refactor to a variable and initialize it at column add time
         // but then it wouldn't work well with switch/case code
         private const int ACTIVE_COLUMN = 0;
+
         private const int DESTINATION_COLUMN = 4;
+
         private const int SIZE_COLUMN = 3;
+
         private const int START_COLUMN = 2;
+
         private const int TTL_COLUMN = 5;
+
         private const int UNIVERSE_COLUMN = 1;
 
         // plugin channel count as set by vixen
         private readonly SortedList<string, int> badIDs = new SortedList<string, int>();
+
         private readonly SortedList<string, int> multicasts = new SortedList<string, int>();
+
         private readonly SortedDictionary<string, string> nicIDs = new SortedDictionary<string, string>();
+
         private readonly SortedDictionary<string, string> nicNames = new SortedDictionary<string, string>();
+
         private readonly SortedList<string, int> unicasts = new SortedList<string, int>();
 
-        // datagridview columns
-        private DataGridViewCheckBoxColumn activeColumn;
-        private Button cancelButton;
-        private IContainer components;
-        private DataGridViewComboBoxColumn destinationColumn;
-        private ContextMenuStrip destinationContextMenuStrip;
-        private ToolTip destinationToolTip;
-
-        // other entry controls
-        private TextBox eventRepeatCountTextBox;
-
-        // our buttons
-        private Button okButton;
-        private int pluginChannelCount;
-
-        // common contextmenustrip for row manipulation - added to most of the columns
-        private ContextMenuStrip rowManipulationContextMenuStrip = new ContextMenuStrip();
-        private DataGridViewTextBoxColumn sizeColumn;
-        private DataGridViewTextBoxColumn startColumn;
-        private CheckBox statisticsCheckBox;
-        private DataGridViewTextBoxColumn ttlColumn;
-        private DataGridViewNumbered univDGVN;
-
-        // universe datagridview cell event arguments to track mouse entry
-        private DataGridViewCellEventArgs univDGVNCellEventArgs;
-        private DataGridViewTextBoxColumn universeColumn;
-        private CheckBox warningsCheckBox;
-
-        // destination column tooltip and contextmenustrip (to make right-click work)
-
-        // -------------------------------------------------------------
-        // 	SetupForm() - our constructor
-        // 		build some nic tables and initialize the component
-        // -------------------------------------------------------------
-
+        /// <summary>
+        ///   Initializes a new instance of the <see cref = "SetupForm" /> class. 
+        ///   Build some nic tables and initialize the component
+        /// </summary>
         public SetupForm()
         {
             // first build some sorted lists and dictionaries for the nics
@@ -117,13 +96,13 @@ namespace E131_VixenPlugin
                             if (nic.SupportsMulticast)
                             {
                                 // then add it to multicasts table by name
-                                multicasts.Add(nic.Name, 0);
+                                this.multicasts.Add(nic.Name, 0);
 
                                 // add it to available nicIDs table
-                                nicIDs.Add(nic.Id, nic.Name);
+                                this.nicIDs.Add(nic.Id, nic.Name);
 
                                 // add ot to available nicNames table
-                                nicNames.Add(nic.Name, nic.Id);
+                                this.nicNames.Add(nic.Name, nic.Id);
                             }
                         }
                     }
@@ -131,7 +110,7 @@ namespace E131_VixenPlugin
             }
 
             // finally initialize the form
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         public int EventRepeatCount
@@ -140,7 +119,7 @@ namespace E131_VixenPlugin
             {
                 int count;
 
-                if (!Int32.TryParse(eventRepeatCountTextBox.Text, out count))
+                if (!int.TryParse(this.eventRepeatCountTextBox.Text, out count))
                 {
                     count = 0;
                 }
@@ -150,22 +129,15 @@ namespace E131_VixenPlugin
 
             set
             {
-                eventRepeatCountTextBox.Text = value.ToString();
+                this.eventRepeatCountTextBox.Text = value.ToString();
             }
         }
 
-        // -------------------------------------------------------------
-        // 	Dispose() - our dispose
-        // -------------------------------------------------------------
-
-        // -------------------------------------------------------------
-        // 	PluginChannelCount - property to expose channel count
-        // -------------------------------------------------------------
         public int PluginChannelCount
         {
             set
             {
-                pluginChannelCount = value;
+                this.pluginChannelCount = value;
             }
         }
 
@@ -173,23 +145,20 @@ namespace E131_VixenPlugin
         {
             get
             {
-                return statisticsCheckBox.Checked;
+                return this.statisticsCheckBox.Checked;
             }
 
             set
             {
-                statisticsCheckBox.Checked = value;
+                this.statisticsCheckBox.Checked = value;
             }
         }
 
-        // -------------------------------------------------------------
-        // 	UniverseCount - property to expose universe count
-        // -------------------------------------------------------------
         public int UniverseCount
         {
             get
             {
-                return univDGVN.Rows.Count;
+                return this.univDGVN.Rows.Count;
             }
         }
 
@@ -197,38 +166,29 @@ namespace E131_VixenPlugin
         {
             get
             {
-                return warningsCheckBox.Checked;
+                return this.warningsCheckBox.Checked;
             }
 
             set
             {
-                warningsCheckBox.Checked = value;
+                this.warningsCheckBox.Checked = value;
             }
         }
 
-        // -------------------------------------------------------------
-        // 	UniverseClear() - clear the rows in the datagridview
-        // 		probably never needed
-        // -------------------------------------------------------------
-
-        // -------------------------------------------------------------
-        // 	UniverseAdd() - add a row from config to rows and tables
-        // -------------------------------------------------------------
-
-        public bool UniverseAdd(bool active, int universe, int start, int size, string unicast, string multicast, int ttl)
+        public bool UniverseAdd(
+            bool active, int universe, int start, int size, string unicast, string multicast, int ttl)
         {
             string destination = null;
 
             // if it is unicast we add the destination to the
             // drop down list if it isn't already there
             // and we 'reformat' to text for display
-
             if (unicast != null)
             {
-                if (!unicasts.ContainsKey(unicast))
+                if (!this.unicasts.ContainsKey(unicast))
                 {
-                    unicasts.Add(unicast, 0);
-                    destinationColumn.Items.Add("Unicast " + unicast);
+                    this.unicasts.Add(unicast, 0);
+                    this.destinationColumn.Items.Add("Unicast " + unicast);
                 }
 
                 destination = "Unicast " + unicast;
@@ -237,44 +197,39 @@ namespace E131_VixenPlugin
             // if it is multicast we check for the id to match
             // a nic. if it doesn't we warn of interface changes
             // and store in bad id's so we only warn once
-
             if (multicast != null)
             {
-                if (nicIDs.ContainsKey(multicast))
+                if (this.nicIDs.ContainsKey(multicast))
                 {
-                    destination = "Multicast " + nicIDs[multicast];
+                    destination = "Multicast " + this.nicIDs[multicast];
                 }
                 else
                 {
-                    if (!badIDs.ContainsKey(multicast))
+                    if (!this.badIDs.ContainsKey(multicast))
                     {
-                        badIDs.Add(multicast, 0);
+                        this.badIDs.Add(multicast, 0);
                         MessageBox.Show(
-                                        "Warning - Interface IDs have changed. Please reselect all empty destinations.", 
-                                        "Network Interface Mapping", 
-                                        MessageBoxButtons.OK, 
-                                        MessageBoxIcon.Warning);
+                            "Warning - Interface IDs have changed. Please reselect all empty destinations.", 
+                            "Network Interface Mapping", 
+                            MessageBoxButtons.OK, 
+                            MessageBoxIcon.Warning);
                     }
                 }
             }
 
             // all set, add the row - convert int's to strings ourselves
-            univDGVN.Rows.Add(
-                              new object[]
-                              {
-                                 active, universe.ToString(), start.ToString(), size.ToString(), destination, ttl.ToString() 
-                              });
+            this.univDGVN.Rows.Add(
+                new object[]
+                    {
+                       active, universe.ToString(), start.ToString(), size.ToString(), destination, ttl.ToString() 
+                    });
             return true;
         }
 
         public void UniverseClear()
         {
-            univDGVN.Rows.Clear();
+            this.univDGVN.Rows.Clear();
         }
-
-        // -------------------------------------------------------------
-        // 	UniverseGet() - allow referenced retrieval of the data
-        // -------------------------------------------------------------
 
         public bool UniverseGet(
             int index, 
@@ -286,7 +241,7 @@ namespace E131_VixenPlugin
             ref string multicast, 
             ref int ttl)
         {
-            var row = univDGVN.Rows[index];
+            var row = this.univDGVN.Rows[index];
 
             if (row.IsNewRow)
             {
@@ -303,76 +258,60 @@ namespace E131_VixenPlugin
             }
 
             // all numeric columns are stored as strings
-            universe = Extensions.TryParseInt32((string)row.Cells[UNIVERSE_COLUMN].Value, 1);
-            start = Extensions.TryParseInt32((string)row.Cells[START_COLUMN].Value, 1);
-            size = Extensions.TryParseInt32((string)row.Cells[SIZE_COLUMN].Value, 1);
-            ttl = Extensions.TryParseInt32((string)row.Cells[TTL_COLUMN].Value, 1);
+            universe = ((string)row.Cells[UNIVERSE_COLUMN].Value).TryParseInt32(1);
+            start = ((string)row.Cells[START_COLUMN].Value).TryParseInt32(1);
+            size = ((string)row.Cells[SIZE_COLUMN].Value).TryParseInt32(1);
+            ttl = ((string)row.Cells[TTL_COLUMN].Value).TryParseInt32(1);
 
             // first set both unicast and multicast results to null
             unicast = null;
             multicast = null;
 
             // then set the selected unicast/multicast destination
-
             if (row.Cells[DESTINATION_COLUMN].Value != null)
             {
                 var destination = (string)row.Cells[DESTINATION_COLUMN].Value;
-
                 if (destination.StartsWith("Unicast "))
                 {
                     unicast = destination.Substring(8);
                 }
                 else if (destination.StartsWith("Multicast "))
                 {
-                    multicast = nicNames[destination.Substring(10)];
+                    multicast = this.nicNames[destination.Substring(10)];
                 }
             }
 
             return true;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-
-            base.Dispose(disposing);
-        }
-
-        private void AddUnicastIP()
+        private void AddUnicastIp()
         {
             var unicastForm = new UnicastForm();
 
-            if (univDGVN.CurrentCell != null)
+            if (this.univDGVN.CurrentCell != null)
             {
-                if (univDGVN.CurrentCell.IsInEditMode)
+                if (this.univDGVN.CurrentCell.IsInEditMode)
                 {
-                    univDGVN.EndEdit();
+                    this.univDGVN.EndEdit();
                 }
             }
 
-            if (unicastForm.ShowDialog()
-                == DialogResult.OK)
+            if (unicastForm.ShowDialog() == DialogResult.OK)
             {
                 IPAddress ipAddress;
-                bool valid;
 
-                valid = IPAddress.TryParse(unicastForm.IPAddrText, out ipAddress);
+                bool valid = IPAddress.TryParse(unicastForm.IPAddrText, out ipAddress);
 
                 if (valid)
                 {
                     var ipBytes = ipAddress.GetAddressBytes();
 
-                    if (ipBytes[0] == 0 && ipBytes[1] == 0 && ipBytes[2] == 0
-                        && ipBytes[3] == 0)
+                    if (ipBytes[0] == 0 && ipBytes[1] == 0 && ipBytes[2] == 0 && ipBytes[3] == 0)
                     {
                         valid = false;
                     }
 
-                    if (ipBytes[0] == 255 && ipBytes[1] == 255 && ipBytes[2] == 255
-                        && ipBytes[3] == 255)
+                    if (ipBytes[0] == 255 && ipBytes[1] == 255 && ipBytes[2] == 255 && ipBytes[3] == 255)
                     {
                         valid = false;
                     }
@@ -380,224 +319,48 @@ namespace E131_VixenPlugin
 
                 if (!valid)
                 {
-                    MessageBox.Show("Error - Invalid IP Address", "IP Address Validation", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Error - Invalid IP Address", 
+                        "IP Address Validation", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Error);
                 }
                 else
                 {
                     var ipAddressText = ipAddress.ToString();
 
-                    if (unicasts.ContainsKey(ipAddressText))
+                    if (this.unicasts.ContainsKey(ipAddressText))
                     {
                         MessageBox.Show(
-                                        "Error - Duplicate IP Address", 
-                                        "IP Address Validation", 
-                                        MessageBoxButtons.OK, 
-                                        MessageBoxIcon.Error);
+                            "Error - Duplicate IP Address", 
+                            "IP Address Validation", 
+                            MessageBoxButtons.OK, 
+                            MessageBoxIcon.Error);
                     }
                     else
                     {
-                        unicasts.Add(ipAddressText, 0);
-                        SetDestinations();
+                        this.unicasts.Add(ipAddressText, 0);
+                        this.SetDestinations();
                     }
                 }
             }
         }
 
-        private void InitializeComponent()
-        {
-            MainMenu mainMenu;
-            MenuItem mIHelp, mIHelpAbout, mIHelpShowSys;
-            Label label;
-
-            components = new Container();
-            AutoScaleMode = AutoScaleMode.Font;
-            Text = "J1Sys E1.31 Setup Form";
-            StartPosition = FormStartPosition.CenterParent;
-            Size = new Size(800, 450);
-
-            SuspendLayout();
-
-            rowManipulationContextMenuStrip = new ContextMenuStrip();
-            rowManipulationContextMenuStrip.Opening += rowManipulationContextMenuStrip_Opening;
-            rowManipulationContextMenuStrip.Items.Add("Insert Row", null, univDGVN_InsertRow);
-            rowManipulationContextMenuStrip.Items.Add("Delete Row", null, univDGVN_DeleteRow);
-            rowManipulationContextMenuStrip.Items.Add("-");
-            rowManipulationContextMenuStrip.Items.Add("Move Row Up", null, univDGVN_MoveRowUp);
-            rowManipulationContextMenuStrip.Items.Add("Move Row Down", null, univDGVN_MoveRowDown);
-
-            mIHelpAbout = new MenuItem("&About J1Sys E1.31...", Help.AboutClick);
-            mIHelpShowSys = new MenuItem("&Show System Info", Help.ShowSysClick);
-            mIHelp = new MenuItem("&Help", new[] { mIHelpAbout, mIHelpShowSys });
-
-            mainMenu = new MainMenu(new[] { mIHelp });
-
-            Menu = mainMenu;
-
-            univDGVN = new DataGridViewNumbered();
-            univDGVN.Name = "UniverseDGV";
-            univDGVN.Location = new Point(10, 10);
-            univDGVN.Size = new Size(600, 230);
-            univDGVN.BackgroundColor = BackColor;
-            univDGVN.BorderStyle = BorderStyle.None;
-            univDGVN.RowHeadersVisible = true;
-            univDGVN.SelectionMode = DataGridViewSelectionMode.CellSelect;
-            univDGVN.AllowUserToAddRows = true;
-            univDGVN.AllowUserToDeleteRows = false;
-            univDGVN.AutoSize = false;
-            univDGVN.TabIndex = 1;
-            univDGVN.CellMouseEnter += univDGVN_CellMouseEnter;
-            univDGVN.CellMouseClick += univDGVN_CellMouseClick;
-            univDGVN.CellValidating += univDGVN_CellValidating;
-            univDGVN.CellEndEdit += univDGVN_CellEndEdit;
-            univDGVN.CellEnter += univDGVN_CellEnter;
-            univDGVN.DefaultValuesNeeded += univDGVN_DefaultValuesNeeded;
-            univDGVN.EditingControlShowing += univDGVN_EditingControlShowing;
-
-            activeColumn = new DataGridViewCheckBoxColumn();
-            activeColumn.Width = 25;
-            activeColumn.HeaderText = "Act";
-            activeColumn.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            activeColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            activeColumn.ReadOnly = false;
-            activeColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            activeColumn.Resizable = DataGridViewTriState.False;
-            activeColumn.ContextMenuStrip = rowManipulationContextMenuStrip;
-
-            universeColumn = new DataGridViewTextBoxColumn();
-            universeColumn.Width = 60;
-            universeColumn.HeaderText = "Universe";
-            universeColumn.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
-            universeColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            universeColumn.ReadOnly = false;
-            universeColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            universeColumn.HeaderCell.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
-            universeColumn.Resizable = DataGridViewTriState.False;
-            universeColumn.ContextMenuStrip = rowManipulationContextMenuStrip;
-            universeColumn.MaxInputLength = 5;
-
-            startColumn = new DataGridViewTextBoxColumn();
-            startColumn.Width = 60;
-            startColumn.HeaderText = "Start";
-            startColumn.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
-            startColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            startColumn.ReadOnly = false;
-            startColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            startColumn.HeaderCell.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
-            startColumn.Resizable = DataGridViewTriState.False;
-            startColumn.ContextMenuStrip = rowManipulationContextMenuStrip;
-            startColumn.MaxInputLength = 5;
-
-            sizeColumn = new DataGridViewTextBoxColumn();
-            sizeColumn.Width = 60;
-            sizeColumn.HeaderText = "Size";
-            sizeColumn.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
-            sizeColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            sizeColumn.ReadOnly = false;
-            sizeColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            sizeColumn.HeaderCell.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
-            sizeColumn.Resizable = DataGridViewTriState.False;
-            sizeColumn.ContextMenuStrip = rowManipulationContextMenuStrip;
-            sizeColumn.MaxInputLength = 3;
-
-            destinationColumn = new DataGridViewComboBoxColumn();
-            destinationColumn.Width = 300;
-            destinationColumn.HeaderText = "Destination";
-            destinationColumn.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            destinationColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            destinationColumn.ReadOnly = false;
-            destinationColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            destinationColumn.HeaderCell.ToolTipText = "Sort (LeftClick = Ascending, RightClick = Descending)";
-            destinationColumn.Resizable = DataGridViewTriState.False;
-            destinationColumn.CellTemplate.ToolTipText = "RightClick to add a new Unicast IP Address";
-            SetDestinations();
-
-            ttlColumn = new DataGridViewTextBoxColumn();
-            ttlColumn.Width = 30;
-            ttlColumn.HeaderText = "TTL";
-            ttlColumn.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
-            ttlColumn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            ttlColumn.ReadOnly = false;
-            ttlColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
-            ttlColumn.Resizable = DataGridViewTriState.False;
-            ttlColumn.ContextMenuStrip = rowManipulationContextMenuStrip;
-            ttlColumn.MaxInputLength = 2;
-
-            univDGVN.Columns.AddRange(
-                                      new DataGridViewColumn[]
-                                      {
-                                         activeColumn, universeColumn, startColumn, sizeColumn, destinationColumn, ttlColumn 
-                                      });
-
-            Controls.Add(univDGVN);
-
-            warningsCheckBox = new CheckBox();
-            warningsCheckBox.Location = new Point(10, 260);
-            warningsCheckBox.AutoSize = true;
-            warningsCheckBox.Text = "Display ALL Warnings/Errors and wait For OK";
-            Controls.Add(warningsCheckBox);
-
-            statisticsCheckBox = new CheckBox();
-            statisticsCheckBox.Location = new Point(10, 284);
-            statisticsCheckBox.AutoSize = true;
-            statisticsCheckBox.Text = "Gather statistics and display at end of session";
-            Controls.Add(statisticsCheckBox);
-
-            eventRepeatCountTextBox = new TextBox();
-            eventRepeatCountTextBox.Location = new Point(10, 308);
-            eventRepeatCountTextBox.Width = 30;
-            eventRepeatCountTextBox.TextAlign = HorizontalAlignment.Right;
-            eventRepeatCountTextBox.MaxLength = 2;
-            eventRepeatCountTextBox.KeyPress += NumTextBox_KeyPress;
-            eventRepeatCountTextBox.Validating += eventRepeatCountTextBox_Validating;
-            Controls.Add(eventRepeatCountTextBox);
-
-            label = new Label();
-            label.Location = new Point(60, 308);
-            label.AutoSize = true;
-            label.Text =
-                "Event Repeat Count: Set to 0 to send all events to each universe,\r\nset to > 0 to skip 'x' events if data is unchanged on a per universe basis.";
-            Controls.Add(label);
-
-            // add our buttons centered at the bottom
-            okButton = new Button();
-            okButton.Name = "okButton";
-            okButton.AutoSize = true;
-            okButton.TabIndex = 101;
-            okButton.Text = "&OK";
-            okButton.Location = new Point(ClientSize.Width / 2 - okButton.Width - 10, ClientSize.Height - okButton.Height - 25);
-            okButton.Click += okButton_Click;
-            Controls.Add(okButton);
-
-            cancelButton = new Button();
-            cancelButton.DialogResult = DialogResult.Cancel;
-            cancelButton.Name = "cancelButton";
-            cancelButton.AutoSize = true;
-            cancelButton.TabIndex = 102;
-            cancelButton.Text = "&Cancel";
-            cancelButton.Location = new Point(ClientSize.Width / 2 + 10, ClientSize.Height - cancelButton.Height - 25);
-            Controls.Add(cancelButton);
-            CancelButton = cancelButton;
-
-            ResumeLayout(true);
-            Application.DoEvents();
-        }
-
-        // -------------------------------------------------------------
-        // 	NumTextBox_KeyPress() - event handler for a numeric textbox
-        // 		this handler is used by the univDVGN editing control
-        // 		for the numeric columns and by a simple textbox control
-        // 		for numeric only input controls
-        // -------------------------------------------------------------
+        /// <summary>
+        ///   event handler for a numeric textbox this handler is used by the univDVGN editing control for the numeric columns and by a simple textbox control for numeric only input controls
+        /// </summary>
+        /// <param name = "sender"></param>
+        /// <param name = "e"></param>
         private void NumTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = true;
 
-            if (Char.IsControl(e.KeyChar))
+            if (char.IsControl(e.KeyChar))
             {
                 e.Handled = false;
             }
 
-            if (Char.IsDigit(e.KeyChar))
+            if (char.IsDigit(e.KeyChar))
             {
                 e.Handled = false;
             }
@@ -610,37 +373,35 @@ namespace E131_VixenPlugin
 
         private void SetDestinations()
         {
-            destinationColumn.Items.Clear();
+            this.destinationColumn.Items.Clear();
 
-            foreach (var destination in multicasts.Keys)
+            foreach (var destination in this.multicasts.Keys)
             {
-                destinationColumn.Items.Add("Multicast " + destination);
+                this.destinationColumn.Items.Add("Multicast " + destination);
             }
 
-            foreach (var ipAddr in unicasts.Keys)
+            foreach (var ipAddr in this.unicasts.Keys)
             {
-                destinationColumn.Items.Add("Unicast " + ipAddr);
+                this.destinationColumn.Items.Add("Unicast " + ipAddr);
             }
         }
 
-        private void destinationContextMenuStrip_Opening(object sender, CancelEventArgs e)
+        private void DestinationContextMenuStripOpening(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
-
-            AddUnicastIP();
+            this.AddUnicastIp();
         }
 
         private void eventRepeatCountTextBox_Validating(object sender, CancelEventArgs e)
         {
-            var count = 0;
+            int count;
 
-            if (!Int32.TryParse(((TextBox)sender).Text, out count))
+            if (!int.TryParse(((TextBox)sender).Text, out count))
             {
                 count = 0;
             }
 
-            if (count < 0
-                || 99 < count)
+            if (count < 0 || 99 < count)
             {
                 e.Cancel = true;
             }
@@ -651,15 +412,14 @@ namespace E131_VixenPlugin
             }
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        private void OkButtonClick(object sender, EventArgs e)
         {
             var valid = true;
             var errorList = new StringBuilder();
             var universeDestinations = new SortedList<string, int>();
 
             // first buid a table of active universe/destination combos
-
-            foreach (DataGridViewRow row in univDGVN.Rows)
+            foreach (DataGridViewRow row in this.univDGVN.Rows)
             {
                 if (row.IsNewRow)
                 {
@@ -688,8 +448,7 @@ namespace E131_VixenPlugin
             }
 
             // now scan for empty destinations, duplicate universe/destination combos, channels errors, etc.
-
-            foreach (DataGridViewRow row in univDGVN.Rows)
+            foreach (DataGridViewRow row in this.univDGVN.Rows)
             {
                 if (row.IsNewRow)
                 {
@@ -735,10 +494,10 @@ namespace E131_VixenPlugin
                         }
 
                         // only test for range if more than 0 channels, otherwise wait for runtime
-                        if (pluginChannelCount > 0)
+                        if (this.pluginChannelCount > 0)
                         {
                             // now test for valid channel start
-                            if (Extensions.TryParseInt32((string)row.Cells[START_COLUMN].Value, 1) > pluginChannelCount)
+                            if (((string)row.Cells[START_COLUMN].Value).TryParseInt32(1) > this.pluginChannelCount)
                             {
                                 if (!valid)
                                 {
@@ -752,8 +511,8 @@ namespace E131_VixenPlugin
                             }
 
                             // now test for valid channel size
-                            if (Extensions.TryParseInt32((string)row.Cells[START_COLUMN].Value, 1)
-                                + Extensions.TryParseInt32((string)row.Cells[SIZE_COLUMN].Value, 1) - 1 > pluginChannelCount)
+                            if (((string)row.Cells[START_COLUMN].Value).TryParseInt32(1)
+                                + ((string)row.Cells[SIZE_COLUMN].Value).TryParseInt32(1) - 1 > this.pluginChannelCount)
                             {
                                 if (!valid)
                                 {
@@ -768,7 +527,7 @@ namespace E131_VixenPlugin
                         }
 
                         // now test for ttl value
-                        if (Extensions.TryParseInt32((string)row.Cells[TTL_COLUMN].Value, 1) == 0)
+                        if (((string)row.Cells[TTL_COLUMN].Value).TryParseInt32(1) == 0)
                         {
                             if (!valid)
                             {
@@ -788,12 +547,11 @@ namespace E131_VixenPlugin
             {
                 if (
                     J1MsgBox.ShowMsg(
-                                     "Your configurations contains active entries that may cause run time errors.\r\n\r\nHit OK to continue and save your configuration. Hit Cancel to re-edit before saving.", 
-                                     errorList.ToString(), 
-                                     "Configuration Validation", 
-                                     MessageBoxButtons.OKCancel, 
-                                     MessageBoxIcon.Error)
-                    == DialogResult.OK)
+                        "Your configurations contains active entries that may cause run time errors.\r\n\r\nHit OK to continue and save your configuration. Hit Cancel to re-edit before saving.", 
+                        errorList.ToString(), 
+                        "Configuration Validation", 
+                        MessageBoxButtons.OKCancel, 
+                        MessageBoxIcon.Error) == DialogResult.OK)
                 {
                     valid = true;
                 }
@@ -801,31 +559,25 @@ namespace E131_VixenPlugin
 
             if (valid)
             {
-                DialogResult = DialogResult.OK;
-                Close();
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
         }
-
-        // -------------------------------------------------------------
-        // 	univDGCN_DefaultValuesNeeded()
-        // 		initialize an empty row
-        // -------------------------------------------------------------
 
         // -------------------------------------------------------------
         // 	rowManipulationContextMenuStrip_Opening()
         // 		we need to gray out a few items based on row, or if
         // 		it is the 'adding' row cancel the menu
         // -------------------------------------------------------------
-
-        private void rowManipulationContextMenuStrip_Opening(object sender, CancelEventArgs e)
+        private void RowManipulationContextMenuStripOpening(object sender, CancelEventArgs e)
         {
             var contextMenuStrip = sender as ContextMenuStrip;
 
             if (contextMenuStrip != null)
             {
-                if (univDGVNCellEventArgs != null)
+                if (this.univDGVNCellEventArgs != null)
                 {
-                    var row = univDGVN.Rows[univDGVNCellEventArgs.RowIndex];
+                    var row = this.univDGVN.Rows[this.univDGVNCellEventArgs.RowIndex];
 
                     if (row.IsNewRow)
                     {
@@ -838,11 +590,11 @@ namespace E131_VixenPlugin
 
                         // disable move row down
                         contextMenuStrip.Items[4].Enabled = false;
+                        
                         // enable move row down if able
-                        if (row.Index
-                            < univDGVN.Rows.Count - 1)
+                        if (row.Index < this.univDGVN.Rows.Count - 1)
                         {
-                            if (!univDGVN.Rows[row.Index + 1].IsNewRow)
+                            if (!this.univDGVN.Rows[row.Index + 1].IsNewRow)
                             {
                                 contextMenuStrip.Items[4].Enabled = true;
                             }
@@ -853,55 +605,39 @@ namespace E131_VixenPlugin
         }
 
         // -------------------------------------------------------------
-        // 	univDGN_CellEnter() - cell enter event
-        // 		we just use this for destination column to issue
-        // 		a BeginEdit(). we feel this makes combobox more
-        // 		user friendly.
-        // -------------------------------------------------------------
-
-        // -------------------------------------------------------------
         // 	univDGVN_CellEndEdit() - clear the errortext
         // -------------------------------------------------------------
-        private void univDGVN_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private void UnivDgvnCellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            univDGVN.Rows[e.RowIndex].ErrorText = String.Empty;
+            this.univDGVN.Rows[e.RowIndex].ErrorText = string.Empty;
         }
 
-        private void univDGVN_CellEnter(object sender, DataGridViewCellEventArgs e)
+        private void UnivDgvnCellEnter(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == DESTINATION_COLUMN)
             {
-                univDGVN.BeginEdit(false);
+                this.univDGVN.BeginEdit(false);
             }
         }
 
         // -------------------------------------------------------------
-        // 	univDGVN_CellValidating() - validate the cell
-        // -------------------------------------------------------------
-
-        // -------------------------------------------------------------
         // 	univDGVN_CellMouseClick() - cell mouse click event
         // -------------------------------------------------------------
-
-        private void univDGVN_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void UnivDgvnCellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             // if it's the headers - sort 'em
-
-            if (e.RowIndex
-                == -1)
+            if (e.RowIndex == -1)
             {
-                if (0 < e.ColumnIndex
-                    && e.ColumnIndex < 5)
+                if (0 < e.ColumnIndex && e.ColumnIndex < 5)
                 {
                     var lsd = ListSortDirection.Ascending;
 
-                    if (e.Button
-                        == MouseButtons.Right)
+                    if (e.Button == MouseButtons.Right)
                     {
                         lsd = ListSortDirection.Descending;
                     }
 
-                    univDGVN.Sort(univDGVN.Columns[e.ColumnIndex], lsd);
+                    this.univDGVN.Sort(this.univDGVN.Columns[e.ColumnIndex], lsd);
                 }
             }
 
@@ -909,13 +645,12 @@ namespace E131_VixenPlugin
             else
             {
                 // if it's the right button
-                if (e.Button
-                    == MouseButtons.Right)
+                if (e.Button == MouseButtons.Right)
                 {
                     // if it's the destination column - they want to add a unicast ip
                     if (e.ColumnIndex == DESTINATION_COLUMN)
                     {
-                        AddUnicastIP();
+                        this.AddUnicastIp();
                     }
                 }
             }
@@ -923,7 +658,7 @@ namespace E131_VixenPlugin
 
         private void univDGVN_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
-            univDGVNCellEventArgs = e;
+            this.univDGVNCellEventArgs = e;
         }
 
         private void univDGVN_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
@@ -934,7 +669,7 @@ namespace E131_VixenPlugin
 
             if (cellValueText != null)
             {
-                if (!Int32.TryParse(cellValueText, out cellValueInt))
+                if (!int.TryParse(cellValueText, out cellValueInt))
                 {
                     cellValueInt = 0;
                 }
@@ -947,15 +682,14 @@ namespace E131_VixenPlugin
                     {
                         e.Cancel = true;
                     }
-                    else if (cellValueInt < 1
-                             || 64000 < cellValueInt)
+                    else if (cellValueInt < 1 || 64000 < cellValueInt)
                     {
                         e.Cancel = true;
                     }
 
                     if (e.Cancel)
                     {
-                        univDGVN.Rows[e.RowIndex].ErrorText = "Universe must be between 1 and 64000 inclusive";
+                        this.univDGVN.Rows[e.RowIndex].ErrorText = "Universe must be between 1 and 64000 inclusive";
                     }
 
                     break;
@@ -965,15 +699,14 @@ namespace E131_VixenPlugin
                     {
                         e.Cancel = true;
                     }
-                    else if (cellValueInt < 1
-                             || 99999 < cellValueInt)
+                    else if (cellValueInt < 1 || 99999 < cellValueInt)
                     {
                         e.Cancel = true;
                     }
 
                     if (e.Cancel)
                     {
-                        univDGVN.Rows[e.RowIndex].ErrorText = "Start must be between 1 and 99999 inclusive";
+                        this.univDGVN.Rows[e.RowIndex].ErrorText = "Start must be between 1 and 99999 inclusive";
                     }
 
                     break;
@@ -983,15 +716,14 @@ namespace E131_VixenPlugin
                     {
                         e.Cancel = true;
                     }
-                    else if (cellValueInt < 1
-                             || 512 < cellValueInt)
+                    else if (cellValueInt < 1 || 512 < cellValueInt)
                     {
                         e.Cancel = true;
                     }
 
                     if (e.Cancel)
                     {
-                        univDGVN.Rows[e.RowIndex].ErrorText = "Size must be between 1 and 512 inclusive";
+                        this.univDGVN.Rows[e.RowIndex].ErrorText = "Size must be between 1 and 512 inclusive";
                     }
 
                     break;
@@ -1001,15 +733,14 @@ namespace E131_VixenPlugin
                     {
                         e.Cancel = true;
                     }
-                    else if (cellValueInt < 0
-                             || 99 < cellValueInt)
+                    else if (cellValueInt < 0 || 99 < cellValueInt)
                     {
                         e.Cancel = true;
                     }
 
                     if (e.Cancel)
                     {
-                        univDGVN.Rows[e.RowIndex].ErrorText = "TTL must be between 0 and 99 inclusive";
+                        this.univDGVN.Rows[e.RowIndex].ErrorText = "TTL must be between 0 and 99 inclusive";
                     }
 
                     break;
@@ -1018,10 +749,10 @@ namespace E131_VixenPlugin
             if (e.Cancel)
             {
                 MessageBox.Show(
-                                univDGVN.Rows[e.RowIndex].ErrorText, 
-                                "Cell Validation", 
-                                MessageBoxButtons.OK, 
-                                MessageBoxIcon.Exclamation);
+                    this.univDGVN.Rows[e.RowIndex].ErrorText, 
+                    "Cell Validation", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Exclamation);
             }
         }
 
@@ -1036,29 +767,29 @@ namespace E131_VixenPlugin
 
         private void univDGVN_DeleteRow(object sender, EventArgs e)
         {
-            if (univDGVNCellEventArgs != null)
+            if (this.univDGVNCellEventArgs != null)
             {
-                var row = univDGVN.Rows[univDGVNCellEventArgs.RowIndex];
+                var row = this.univDGVN.Rows[this.univDGVNCellEventArgs.RowIndex];
 
                 if (!row.IsNewRow)
                 {
-                    univDGVN.Rows.RemoveAt(row.Index);
+                    this.univDGVN.Rows.RemoveAt(row.Index);
                 }
             }
         }
 
         private void univDGVN_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            var columnIndex = univDGVN.CurrentCell.ColumnIndex;
+            var columnIndex = this.univDGVN.CurrentCell.ColumnIndex;
 
             if (columnIndex == UNIVERSE_COLUMN || columnIndex == START_COLUMN || columnIndex == SIZE_COLUMN
                 || columnIndex == TTL_COLUMN)
             {
                 // first remove the event handler (if previously added)
-                e.Control.KeyPress -= NumTextBox_KeyPress;
+                e.Control.KeyPress -= this.NumTextBox_KeyPress;
 
                 // now add our event handler
-                e.Control.KeyPress += NumTextBox_KeyPress;
+                e.Control.KeyPress += this.NumTextBox_KeyPress;
             }
 
             if (columnIndex == DESTINATION_COLUMN)
@@ -1067,52 +798,52 @@ namespace E131_VixenPlugin
 
                 if (control != null)
                 {
-                    if (destinationToolTip == null)
+                    if (this.destinationToolTip == null)
                     {
-                        destinationToolTip = new ToolTip();
+                        this.destinationToolTip = new ToolTip();
                     }
 
-                    destinationToolTip.SetToolTip(e.Control, "RightClick to add a new Unicast IP Address");
+                    this.destinationToolTip.SetToolTip(e.Control, "RightClick to add a new Unicast IP Address");
 
-                    if (destinationContextMenuStrip == null)
+                    if (this.destinationContextMenuStrip == null)
                     {
-                        destinationContextMenuStrip = new ContextMenuStrip();
-                        destinationContextMenuStrip.Opening += destinationContextMenuStrip_Opening;
+                        this.destinationContextMenuStrip = new ContextMenuStrip();
+                        this.destinationContextMenuStrip.Opening += this.DestinationContextMenuStripOpening;
                     }
 
-                    control.ContextMenuStrip = destinationContextMenuStrip;
+                    control.ContextMenuStrip = this.destinationContextMenuStrip;
                 }
             }
         }
 
         private void univDGVN_InsertRow(object sender, EventArgs e)
         {
-            if (univDGVNCellEventArgs != null)
+            if (this.univDGVNCellEventArgs != null)
             {
-                var row = univDGVN.Rows[univDGVNCellEventArgs.RowIndex];
+                var row = this.univDGVN.Rows[this.univDGVNCellEventArgs.RowIndex];
 
                 if (!row.IsNewRow)
                 {
-                    univDGVN.Rows.Insert(row.Index, new object[] { false, "1", "1", "1", null, "1" });
+                    this.univDGVN.Rows.Insert(row.Index, new object[] { false, "1", "1", "1", null, "1" });
                 }
             }
         }
 
         private void univDGVN_MoveRowDown(object sender, EventArgs e)
         {
-            if (univDGVNCellEventArgs != null)
+            if (this.univDGVNCellEventArgs != null)
             {
-                var row = univDGVN.Rows[univDGVNCellEventArgs.RowIndex];
+                var row = this.univDGVN.Rows[this.univDGVNCellEventArgs.RowIndex];
                 var rowIndex = row.Index;
 
                 if (!row.IsNewRow)
                 {
-                    if (rowIndex < univDGVN.Rows.Count - 1)
+                    if (rowIndex < this.univDGVN.Rows.Count - 1)
                     {
-                        if (!univDGVN.Rows[rowIndex + 1].IsNewRow)
+                        if (!this.univDGVN.Rows[rowIndex + 1].IsNewRow)
                         {
-                            univDGVN.Rows.RemoveAt(rowIndex);
-                            univDGVN.Rows.Insert(rowIndex + 1, row);
+                            this.univDGVN.Rows.RemoveAt(rowIndex);
+                            this.univDGVN.Rows.Insert(rowIndex + 1, row);
                         }
                     }
                 }
@@ -1121,16 +852,15 @@ namespace E131_VixenPlugin
 
         private void univDGVN_MoveRowUp(object sender, EventArgs e)
         {
-            if (univDGVNCellEventArgs != null)
+            if (this.univDGVNCellEventArgs != null)
             {
-                var row = univDGVN.Rows[univDGVNCellEventArgs.RowIndex];
+                var row = this.univDGVN.Rows[this.univDGVNCellEventArgs.RowIndex];
                 var rowIndex = row.Index;
 
-                if (!row.IsNewRow
-                    && rowIndex > 0)
+                if (!row.IsNewRow && rowIndex > 0)
                 {
-                    univDGVN.Rows.RemoveAt(rowIndex);
-                    univDGVN.Rows.Insert(rowIndex - 1, row);
+                    this.univDGVN.Rows.RemoveAt(rowIndex);
+                    this.univDGVN.Rows.Insert(rowIndex - 1, row);
                 }
             }
         }
@@ -1148,32 +878,34 @@ namespace E131_VixenPlugin
             private Button cancelButton;
 
             private IContainer components;
-            private IPTextBox ipTextBox;
+
+            private IpTextBox ipTextBox;
+
             private Button okButton;
 
             public UnicastForm()
             {
-                InitializeComponent();
+                this.InitializeComponent();
             }
 
             public string IPAddrText
             {
                 get
                 {
-                    return ipTextBox.Text;
+                    return this.ipTextBox.Text;
                 }
 
                 set
                 {
-                    ipTextBox.Text = value;
+                    this.ipTextBox.Text = value;
                 }
             }
 
             protected override void Dispose(bool disposing)
             {
-                if (disposing && (components != null))
+                if (disposing && (this.components != null))
                 {
-                    components.Dispose();
+                    this.components.Dispose();
                 }
 
                 base.Dispose(disposing);
@@ -1181,39 +913,40 @@ namespace E131_VixenPlugin
 
             private void InitializeComponent()
             {
-                components = new Container();
-                AutoScaleMode = AutoScaleMode.Font;
-                Text = "Unicast IP Address Form";
-                StartPosition = FormStartPosition.CenterParent;
-                Size = new Size(300, 150);
+                this.components = new Container();
+                this.AutoScaleMode = AutoScaleMode.Font;
+                this.Text = "Unicast IP Address Form";
+                this.StartPosition = FormStartPosition.CenterParent;
+                this.Size = new Size(300, 150);
 
-                SuspendLayout();
+                this.SuspendLayout();
 
-                ipTextBox = new IPTextBox();
-                ipTextBox.Location = new Point(10, 10);
-                ipTextBox.Font = Font;
-                ipTextBox.Text = string.Empty;
-                Controls.Add(ipTextBox);
-
-                okButton = new Button();
-                okButton.DialogResult = DialogResult.OK;
-                okButton.Name = "okButton";
-                okButton.AutoSize = true;
-                okButton.TabIndex = 101;
-                okButton.Text = "&OK";
-                okButton.Location = new Point(ClientSize.Width / 2 - okButton.Width - 10, ClientSize.Height - okButton.Height - 25);
-                Controls.Add(okButton);
-
-                cancelButton = new Button();
-                cancelButton.DialogResult = DialogResult.Cancel;
-                cancelButton.Name = "cancelButton";
-                cancelButton.AutoSize = true;
-                cancelButton.TabIndex = 102;
-                cancelButton.Text = "&Cancel";
-                cancelButton.Location = new Point(ClientSize.Width / 2 + 10, ClientSize.Height - cancelButton.Height - 25);
-                Controls.Add(cancelButton);
-                CancelButton = cancelButton;
-                ResumeLayout(true);
+                this.ipTextBox = new IpTextBox();
+                this.ipTextBox.Location = new Point(10, 10);
+                this.ipTextBox.Font = this.Font;
+                this.ipTextBox.Text = string.Empty;
+                this.Controls.Add(this.ipTextBox);
+                this.okButton = new Button();
+                this.okButton.DialogResult = DialogResult.OK;
+                this.okButton.Name = "okButton";
+                this.okButton.AutoSize = true;
+                this.okButton.TabIndex = 101;
+                this.okButton.Text = "&OK";
+                this.okButton.Location = new Point(
+                    this.ClientSize.Width / 2 - this.okButton.Width - 10, 
+                    this.ClientSize.Height - this.okButton.Height - 25);
+                this.Controls.Add(this.okButton);
+                this.cancelButton = new Button();
+                this.cancelButton.DialogResult = DialogResult.Cancel;
+                this.cancelButton.Name = "cancelButton";
+                this.cancelButton.AutoSize = true;
+                this.cancelButton.TabIndex = 102;
+                this.cancelButton.Text = "&Cancel";
+                this.cancelButton.Location = new Point(
+                    this.ClientSize.Width / 2 + 10, this.ClientSize.Height - this.cancelButton.Height - 25);
+                this.Controls.Add(this.cancelButton);
+                this.CancelButton = this.cancelButton;
+                this.ResumeLayout(true);
                 Application.DoEvents();
             }
         }

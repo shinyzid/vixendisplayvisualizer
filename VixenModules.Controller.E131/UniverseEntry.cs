@@ -1,118 +1,164 @@
 ﻿//-----------------------------------------------------------------
 //
-//	UniverseEntry - a class to keep all in memory info together
+// UniverseEntry - a class to keep all in memory info together
 //
 //-----------------------------------------------------------------
 namespace VixenModules.Controller.E131
 {
-    using System;
     using System.Net;
     using System.Net.Sockets;
     using System.Text;
 
     public class UniverseEntry
     {
-        // our row # (1-x) for message texts
-
-        public	int		rowNum;				// row # (1-x)
-
-        // these are the fields from the configuration
-
-        public	bool	active;				// is it active
-        public	int		universe;			// universe number
-        public	int		start;				// starting slot within events (zero based!!!)
-        public	int		size;				// slot count
-        public	string	unicast;			// unicast ip addr (if not null)
-        public	string	multicast;			// multicast nic id (if not null)
-        public	int		ttl;				// time to live
-
-        // these are dynamic fields for processing events
-
-        public	Socket		socket;				// socket to use
-        public	IPEndPoint	destIPEndPoint;		// destination end point
-        public	byte[]		phyBuffer;			// physical buffer
-        public	int			eventRepeatCount;	// how many identical pkts to skip (0 = none)
-
-        // these are the per universe statistics
-
-        public	int			pktCount;			// packet count
-        public	Int64		slotCount;			// slot count
-
-        public UniverseEntry(int rowNum, bool active, int universe, int start, int size, string unicast, string multicast, int ttl)
+        public UniverseEntry(
+            int rowNum, bool active, int universe, int start, int size, string unicast, string multicast, int ttl)
         {
-            this.rowNum		= rowNum;
-            this.active		= active;
-            this.universe	= universe;
-            this.start		= start;
-            this.size		= size;
-            this.unicast	= unicast;
-            this.multicast	= multicast;
-            this.ttl		= ttl;
+            this.RowNum = rowNum;
+            this.Active = active;
+            this.Universe = universe;
+            this.Start = start;
+            this.Size = size;
+            this.Unicast = unicast;
+            this.Multicast = multicast;
+            this.Ttl = ttl;
 
-            this.socket				= null;
-            this.destIPEndPoint		= null;
-            this.phyBuffer			= null;
-            this.eventRepeatCount	= 0;
+            this.Socket = null;
+            this.DestIpEndPoint = null;
+            this.PhyBuffer = null;
+            this.EventRepeatCount = 0;
 
-            this.pktCount			= 0;
-            this.slotCount			= 0;
+            this.PktCount = 0;
+            this.SlotCount = 0;
         }
 
-        public string RowUnivToText
-        {
-            get
-            {
-                StringBuilder	text = new StringBuilder();
+        /// <summary>
+        ///   Gets or sets a value indicating whether the universe is active.
+        /// </summary>
+        public bool Active { get; set; }
 
-                text.Append("Row ");
-                text.Append(rowNum.ToString());
-                text.Append(":");
-                text.Append(" Univ=");
-                text.Append(universe.ToString());
-                return text.ToString();
-            }
-        }
+        /// <summary>
+        ///   Gets or sets the destination end point
+        /// </summary>
+        public IPEndPoint DestIpEndPoint { get; set; }
+
+        /// <summary>
+        ///   Gets or sets how many identical pkts to skip (0 = none)
+        /// </summary>
+        public int EventRepeatCount { get; set; }
 
         public string InfoToText
         {
             get
             {
-                StringBuilder	text = new StringBuilder();
-
+                var text = new StringBuilder();
                 text.Append("Row ");
-                text.Append(rowNum.ToString());
+                text.Append(this.RowNum.ToString());
                 text.Append(":");
                 text.Append(" Univ=");
-                text.Append(universe.ToString());
+                text.Append(this.Universe.ToString());
                 text.Append(" Start=");
-                text.Append((start+1).ToString());
+                text.Append((this.Start + 1).ToString());
                 text.Append(" Size=");
-                text.Append(size.ToString());
-                if (unicast != null) text.Append(" Unicast");
-                if (multicast != null) text.Append(" Multicast");
+                text.Append(this.Size.ToString());
+                if (this.Unicast != null)
+                {
+                    text.Append(" Unicast");
+                }
+
+                if (this.Multicast != null)
+                {
+                    text.Append(" Multicast");
+                }
+
                 text.Append(" TTL=");
-                text.Append(ttl.ToString());
+                text.Append(this.Ttl.ToString());
                 return text.ToString();
             }
         }
+
+        /// <summary>
+        ///   Gets the Multicast NIC ID (if not null)
+        /// </summary>
+        public string Multicast { get; private set; }
+
+        /// <summary>
+        ///   Gets or sets the Physical buffer
+        /// </summary>
+        public byte[] PhyBuffer { get; set; }
+
+        /// <summary>
+        ///   Gets or sets the packet count per universe
+        /// </summary>
+        public int PktCount { get; set; }
+
+        public string RowUnivToText
+        {
+            get
+            {
+                var text = new StringBuilder();
+                text.Append("Row ");
+                text.Append(this.RowNum.ToString());
+                text.Append(":");
+                text.Append(" Univ=");
+                text.Append(this.Universe.ToString());
+                return text.ToString();
+            }
+        }
+
+        /// <summary>
+        ///   Gets or set the number of slots
+        /// </summary>
+        public int Size { get; private set; }
+
+        /// <summary>
+        ///   Gets or sets the slot count per universe
+        /// </summary>
+        public long SlotCount { get; set; }
+
+        public Socket Socket { get; set; }
+
+        /// <summary>
+        ///   Gets the zero based starting slot.
+        /// </summary>
+        public int Start { get; private set; }
 
         public string StatsToText
         {
             get
             {
-                StringBuilder	text = new StringBuilder();
-
+                var text = new StringBuilder();
                 text.Append("Row ");
-                text.Append(rowNum.ToString());
+                text.Append(this.RowNum.ToString());
                 text.Append(":");
                 text.Append(" Univ=");
-                text.Append(universe.ToString());
+                text.Append(this.Universe.ToString());
                 text.Append("  Packets=");
-                text.Append(pktCount.ToString());
+                text.Append(this.PktCount.ToString());
                 text.Append("  Slots=");
-                text.Append(slotCount.ToString());
+                text.Append(this.SlotCount.ToString());
                 return text.ToString();
             }
         }
+
+        /// <summary>
+        ///   Gets the time to live
+        /// </summary>
+        public int Ttl { get; private set; }
+
+        /// <summary>
+        ///   Gets the Unicast IP Address
+        /// </summary>
+        public string Unicast { get; private set; }
+
+        /// <summary>
+        ///   Gets the Universe Number
+        /// </summary>
+        public int Universe { get; private set; }
+
+        /// <summary>
+        ///   Gets or sets the row number (1-x)
+        /// </summary>
+        private int RowNum { get; set; }
     }
 }

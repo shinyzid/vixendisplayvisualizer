@@ -29,7 +29,6 @@
 
 namespace VixenModules.Controller.E131
 {
-    using System;
     using System.IO;
     using System.Reflection;
     using System.Windows.Forms;
@@ -41,7 +40,7 @@ namespace VixenModules.Controller.E131
             InitializeComponent();
             SetText();
             labelProductName.Text = AssemblyProduct;
-            labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
+            labelVersion.Text = string.Format("Version {0}", AssemblyVersion);
             textBoxDescription.Text = AssemblyDescription;
         }
 
@@ -130,7 +129,7 @@ namespace VixenModules.Controller.E131
 
         private void SetText()
         {
-            Text = String.Format("About {0}", AssemblyProduct);
+            Text = string.Format("About {0}", AssemblyProduct);
         }
     }
 }

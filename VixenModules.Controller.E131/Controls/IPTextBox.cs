@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-
-namespace E131_VixenPlugin
+﻿namespace VixenModules.Controller.E131.Controls
 {
-	//-------------------------------------------------------------
-	//
-	//	IPTextBox - a private class for editing IP addresses
-	//
-	//-------------------------------------------------------------
+    using System.Windows.Forms;
 
-	public class IPTextBox : TextBox
-	{
-		protected override CreateParams	CreateParams
-		{
-			get
-			{
-				CreateParams cp	= base.CreateParams;
-				cp.ClassName = "SysIPAddress32";
-				cp.Height =	23;
-				return cp;
-			}
-		}
-	}
+    public class IpTextBox : TextBox
+    {
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var createParams = base.CreateParams;
+                createParams.ClassName = "SysIPAddress32";
+                createParams.Height = 23;
+                return createParams;
+            }
+        }
+    }
 }

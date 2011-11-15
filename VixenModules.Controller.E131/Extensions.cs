@@ -8,7 +8,7 @@ namespace VixenModules.Controller.E131
         public static int TryParseInt32(this string value, int defaultInt32)
         {
             int converted;
-            if (!Int32.TryParse(value, out converted))
+            if (!int.TryParse(value, out converted))
             {
                 converted = defaultInt32;
             }
@@ -19,19 +19,15 @@ namespace VixenModules.Controller.E131
         internal static Guid BufferToGuid(byte[] bfr, int offset)
         {
             var valBytes = new byte[16];
-            Guid val;
-
             Array.Copy(bfr, offset, valBytes, 0, valBytes.Length);
 
-            val = new Guid(valBytes);
-
+            var val = new Guid(valBytes);
             return val;
         }
 
         internal static string BfrToString(byte[] bfr, int offset, int length)
         {
             var val = new UTF8Encoding();
-
             return val.GetString(bfr, offset, length);
         }
 
@@ -42,23 +38,21 @@ namespace VixenModules.Controller.E131
 
         internal static uint BfrToUInt32Swapped(byte[] bfr, int offset)
         {
-            return (((UInt32)bfr[offset]) << 24) | (((UInt32)bfr[offset + 1]) << 16) | (((UInt32)bfr[offset + 2]) << 8)
-                   | (bfr[offset + 3]);
+            return (((uint)bfr[offset]) << 24) | (((uint)bfr[offset + 1]) << 16) | (((uint)bfr[offset + 2]) << 8)
+                   | bfr[offset + 3];
         }
 
         internal static void GuidToBfr(Guid value, byte[] bfr, int offset)
         {
             var valBytes = value.ToByteArray();
-
             Array.Copy(valBytes, 0, bfr, offset, valBytes.Length);
         }
 
         internal static void StringToBfr(string value, byte[] bfr, int offset, int length)
         {
             var val = new UTF8Encoding();
-            byte[] valBytes;
 
-            valBytes = val.GetBytes(value);
+            byte[] valBytes = val.GetBytes(value);
 
             if (valBytes.Length >= length)
             {

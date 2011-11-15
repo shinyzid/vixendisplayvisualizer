@@ -67,7 +67,9 @@ namespace VixenModules.Controller.E131
         {
             var txt = string.Empty;
             var buffer = PhyBuffer;
-            return buffer.Aggregate(txt, (current, val) => current + (val.ToString("X2") + ' '));
+            return buffer == null
+                       ? string.Empty
+                       : buffer.Aggregate(txt, (current, val) => current + (val.ToString("X2") + ' '));
         }
     }
 }
