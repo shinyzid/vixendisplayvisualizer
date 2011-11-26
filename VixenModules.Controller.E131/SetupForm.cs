@@ -31,15 +31,12 @@ namespace VixenModules.Controller.E131
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Drawing;
     using System.Net;
     using System.Net.NetworkInformation;
     using System.Text;
     using System.Windows.Forms;
 
-    using J1Sys;
-
-    using VixenModules.Controller.E131.Controls;
+    using VixenModules.Controller.E131.J1Sys;
 
     public partial class SetupForm : Form
     {
@@ -284,6 +281,15 @@ namespace VixenModules.Controller.E131
             return true;
         }
 
+        private static void UnivDgvnDefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
+        {
+            e.Row.Cells[ACTIVE_COLUMN].Value = false;
+            e.Row.Cells[UNIVERSE_COLUMN].Value = "1";
+            e.Row.Cells[START_COLUMN].Value = "1";
+            e.Row.Cells[SIZE_COLUMN].Value = "1";
+            e.Row.Cells[TTL_COLUMN].Value = "1";
+        }
+
         private void AddUnicastIp()
         {
             var unicastForm = new UnicastForm();
@@ -299,8 +305,7 @@ namespace VixenModules.Controller.E131
             if (unicastForm.ShowDialog() == DialogResult.OK)
             {
                 IPAddress ipAddress;
-
-                bool valid = IPAddress.TryParse(unicastForm.IPAddrText, out ipAddress);
+                bool valid = IPAddress.TryParse(unicastForm.IpAddrText, out ipAddress);
 
                 if (valid)
                 {
@@ -346,53 +351,13 @@ namespace VixenModules.Controller.E131
             }
         }
 
-        /// <summary>
-        ///   event handler for a numeric textbox this handler is used by the univDVGN editing control for the numeric columns and by a simple textbox control for numeric only input controls
-        /// </summary>
-        /// <param name = "sender"></param>
-        /// <param name = "e"></param>
-        private void NumTextBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = true;
-
-            if (char.IsControl(e.KeyChar))
-            {
-                e.Handled = false;
-            }
-
-            if (char.IsDigit(e.KeyChar))
-            {
-                e.Handled = false;
-            }
-
-            if (e.Handled)
-            {
-                MessageBeepClass.MessageBeep(MessageBeepClass.BeepType.SimpleBeep);
-            }
-        }
-
-        private void SetDestinations()
-        {
-            this.destinationColumn.Items.Clear();
-
-            foreach (var destination in this.multicasts.Keys)
-            {
-                this.destinationColumn.Items.Add("Multicast " + destination);
-            }
-
-            foreach (var ipAddr in this.unicasts.Keys)
-            {
-                this.destinationColumn.Items.Add("Unicast " + ipAddr);
-            }
-        }
-
         private void DestinationContextMenuStripOpening(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
             this.AddUnicastIp();
         }
 
-        private void eventRepeatCountTextBox_Validating(object sender, CancelEventArgs e)
+        private void EventRepeatCountTextBoxValidating(object sender, CancelEventArgs e)
         {
             int count;
 
@@ -407,6 +372,31 @@ namespace VixenModules.Controller.E131
             }
 
             if (e.Cancel)
+            {
+                MessageBeepClass.MessageBeep(MessageBeepClass.BeepType.SimpleBeep);
+            }
+        }
+
+        /// <summary>
+        ///   event handler for a numeric textbox this handler is used by the univDVGN editing control for the numeric columns and by a simple textbox control for numeric only input controls
+        /// </summary>
+        /// <param name = "sender"></param>
+        /// <param name = "e"></param>
+        private void NumTextBoxKeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
+
+            if (char.IsControl(e.KeyChar))
+            {
+                e.Handled = false;
+            }
+
+            if (char.IsDigit(e.KeyChar))
+            {
+                e.Handled = false;
+            }
+
+            if (e.Handled)
             {
                 MessageBeepClass.MessageBeep(MessageBeepClass.BeepType.SimpleBeep);
             }
@@ -565,9 +555,9 @@ namespace VixenModules.Controller.E131
         }
 
         // -------------------------------------------------------------
-        // 	rowManipulationContextMenuStrip_Opening()
-        // 		we need to gray out a few items based on row, or if
-        // 		it is the 'adding' row cancel the menu
+        // rowManipulationContextMenuStrip_Opening()
+        // we need to gray out a few items based on row, or if
+        // it is the 'adding' row cancel the menu
         // -------------------------------------------------------------
         private void RowManipulationContextMenuStripOpening(object sender, CancelEventArgs e)
         {
@@ -590,7 +580,7 @@ namespace VixenModules.Controller.E131
 
                         // disable move row down
                         contextMenuStrip.Items[4].Enabled = false;
-                        
+
                         // enable move row down if able
                         if (row.Index < this.univDGVN.Rows.Count - 1)
                         {
@@ -604,8 +594,23 @@ namespace VixenModules.Controller.E131
             }
         }
 
+        private void SetDestinations()
+        {
+            this.destinationColumn.Items.Clear();
+
+            foreach (var destination in this.multicasts.Keys)
+            {
+                this.destinationColumn.Items.Add("Multicast " + destination);
+            }
+
+            foreach (var ipAddr in this.unicasts.Keys)
+            {
+                this.destinationColumn.Items.Add("Unicast " + ipAddr);
+            }
+        }
+
         // -------------------------------------------------------------
-        // 	univDGVN_CellEndEdit() - clear the errortext
+        // univDGVN_CellEndEdit() - clear the errortext
         // -------------------------------------------------------------
         private void UnivDgvnCellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
@@ -621,7 +626,7 @@ namespace VixenModules.Controller.E131
         }
 
         // -------------------------------------------------------------
-        // 	univDGVN_CellMouseClick() - cell mouse click event
+        // univDGVN_CellMouseClick() - cell mouse click event
         // -------------------------------------------------------------
         private void UnivDgvnCellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
@@ -656,12 +661,12 @@ namespace VixenModules.Controller.E131
             }
         }
 
-        private void univDGVN_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+        private void UnivDgvnCellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
             this.univDGVNCellEventArgs = e;
         }
 
-        private void univDGVN_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        private void UnivDgvnCellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             var cellValue = e.FormattedValue;
             var cellValueText = cellValue as string;
@@ -756,16 +761,7 @@ namespace VixenModules.Controller.E131
             }
         }
 
-        private void univDGVN_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
-        {
-            e.Row.Cells[ACTIVE_COLUMN].Value = false;
-            e.Row.Cells[UNIVERSE_COLUMN].Value = "1";
-            e.Row.Cells[START_COLUMN].Value = "1";
-            e.Row.Cells[SIZE_COLUMN].Value = "1";
-            e.Row.Cells[TTL_COLUMN].Value = "1";
-        }
-
-        private void univDGVN_DeleteRow(object sender, EventArgs e)
+        private void UnivDgvnDeleteRow(object sender, EventArgs e)
         {
             if (this.univDGVNCellEventArgs != null)
             {
@@ -778,7 +774,7 @@ namespace VixenModules.Controller.E131
             }
         }
 
-        private void univDGVN_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        private void UnivDgvnEditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             var columnIndex = this.univDGVN.CurrentCell.ColumnIndex;
 
@@ -786,10 +782,10 @@ namespace VixenModules.Controller.E131
                 || columnIndex == TTL_COLUMN)
             {
                 // first remove the event handler (if previously added)
-                e.Control.KeyPress -= this.NumTextBox_KeyPress;
+                e.Control.KeyPress -= this.NumTextBoxKeyPress;
 
                 // now add our event handler
-                e.Control.KeyPress += this.NumTextBox_KeyPress;
+                e.Control.KeyPress += this.NumTextBoxKeyPress;
             }
 
             if (columnIndex == DESTINATION_COLUMN)
@@ -816,7 +812,7 @@ namespace VixenModules.Controller.E131
             }
         }
 
-        private void univDGVN_InsertRow(object sender, EventArgs e)
+        private void UnivDgvnInsertRow(object sender, EventArgs e)
         {
             if (this.univDGVNCellEventArgs != null)
             {
@@ -829,7 +825,7 @@ namespace VixenModules.Controller.E131
             }
         }
 
-        private void univDGVN_MoveRowDown(object sender, EventArgs e)
+        private void UnivDgvnMoveRowDown(object sender, EventArgs e)
         {
             if (this.univDGVNCellEventArgs != null)
             {
@@ -850,7 +846,7 @@ namespace VixenModules.Controller.E131
             }
         }
 
-        private void univDGVN_MoveRowUp(object sender, EventArgs e)
+        private void UnivDgvnMoveRowUp(object sender, EventArgs e)
         {
             if (this.univDGVNCellEventArgs != null)
             {
@@ -862,92 +858,6 @@ namespace VixenModules.Controller.E131
                     this.univDGVN.Rows.RemoveAt(rowIndex);
                     this.univDGVN.Rows.Insert(rowIndex - 1, row);
                 }
-            }
-        }
-
-        // -------------------------------------------------------------
-        // 	AddUnicastIP()
-        // -------------------------------------------------------------
-
-        // -------------------------------------------------------------
-        // 	UnicastForm() - form to get a new unicast ip address
-        // -------------------------------------------------------------
-
-        private class UnicastForm : Form
-        {
-            private Button cancelButton;
-
-            private IContainer components;
-
-            private IpTextBox ipTextBox;
-
-            private Button okButton;
-
-            public UnicastForm()
-            {
-                this.InitializeComponent();
-            }
-
-            public string IPAddrText
-            {
-                get
-                {
-                    return this.ipTextBox.Text;
-                }
-
-                set
-                {
-                    this.ipTextBox.Text = value;
-                }
-            }
-
-            protected override void Dispose(bool disposing)
-            {
-                if (disposing && (this.components != null))
-                {
-                    this.components.Dispose();
-                }
-
-                base.Dispose(disposing);
-            }
-
-            private void InitializeComponent()
-            {
-                this.components = new Container();
-                this.AutoScaleMode = AutoScaleMode.Font;
-                this.Text = "Unicast IP Address Form";
-                this.StartPosition = FormStartPosition.CenterParent;
-                this.Size = new Size(300, 150);
-
-                this.SuspendLayout();
-
-                this.ipTextBox = new IpTextBox();
-                this.ipTextBox.Location = new Point(10, 10);
-                this.ipTextBox.Font = this.Font;
-                this.ipTextBox.Text = string.Empty;
-                this.Controls.Add(this.ipTextBox);
-                this.okButton = new Button();
-                this.okButton.DialogResult = DialogResult.OK;
-                this.okButton.Name = "okButton";
-                this.okButton.AutoSize = true;
-                this.okButton.TabIndex = 101;
-                this.okButton.Text = "&OK";
-                this.okButton.Location = new Point(
-                    this.ClientSize.Width / 2 - this.okButton.Width - 10, 
-                    this.ClientSize.Height - this.okButton.Height - 25);
-                this.Controls.Add(this.okButton);
-                this.cancelButton = new Button();
-                this.cancelButton.DialogResult = DialogResult.Cancel;
-                this.cancelButton.Name = "cancelButton";
-                this.cancelButton.AutoSize = true;
-                this.cancelButton.TabIndex = 102;
-                this.cancelButton.Text = "&Cancel";
-                this.cancelButton.Location = new Point(
-                    this.ClientSize.Width / 2 + 10, this.ClientSize.Height - this.cancelButton.Height - 25);
-                this.Controls.Add(this.cancelButton);
-                this.CancelButton = this.cancelButton;
-                this.ResumeLayout(true);
-                Application.DoEvents();
             }
         }
     }
