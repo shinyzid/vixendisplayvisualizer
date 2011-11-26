@@ -47,343 +47,104 @@ namespace VixenModules.Controller.E131
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Net;
-    using System.Net.Sockets;
     using System.Net.NetworkInformation;
+    using System.Net.Sockets;
     using System.Text;
     using System.Windows.Forms;
     using System.Xml;
 
-    using J1Sys;
     using Vixen.Commands;
     using Vixen.Module.Output;
 
-    //-----------------------------------------------------------------
-	//
-	//	OutputPlugin - the output plugin class for vixen
-	//
-	//-----------------------------------------------------------------
+    using VixenModules.Controller.E131.J1Sys;
+
+    // -----------------------------------------------------------------
+    // 
+    // OutputPlugin - the output plugin class for vixen
+    // 
+    // -----------------------------------------------------------------
     public class E131OutputPlugin : OutputModuleInstanceBase
-	{
-		// our option settings
-        private bool _warningsOption;
-        private bool _statisticsOption;
+    {
+        // our option settings
+        private int _eventCnt;
+
         private int _eventRepeatCount;
 
-		// a stringbuilder to store warnings, errors, and statistics
-        private StringBuilder _messageTexts;
-
-		// a table of UniverseEntry objects to hold all universes
-        private List<UniverseEntry> _universeTable;
-
-		// a sorted list of NetworkInterface object to use for sockets
-        private SortedList<string, NetworkInterface> _nicTable;
-
-		// plugin wide statistics
-        private int _eventCnt;
-        private long _totalTicks;
-
-		// packet sequence # for E1.31
-        private byte _seqNum;				// should this be changed to per universe?
-
-		// our guid - should it be Empty, Generated, or ESTA supplied?
         private Guid _guid;
 
-		// the xml nodes supplied by vixen
-        private E131ModuleDataModel _setupData;
-        private XmlNode _setupNode;
+        // a stringbuilder to store warnings, errors, and statistics
+        private StringBuilder _messageTexts;
 
-		// plugin information supplied by vixen (by xml)
+        // a table of UniverseEntry objects to hold all universes
+
+        // a sorted list of NetworkInterface object to use for sockets
+        private SortedList<string, NetworkInterface> _nicTable;
+
+        // plugin wide statistics
+
+        // plugin information supplied by vixen (by xml)
         private int _pluginChannelsFrom;
+
         private int _pluginChannelsTo;
 
-		//-------------------------------------------------------------
-		//
-		//	ToString() - vixen expects that a plugin will provide a
-		//				 ToString() override returning the Name member
-		//
-		//-------------------------------------------------------------
-		public override string ToString()
-		{
-		    return Descriptor.Description;
-		}
+        private byte _seqNum; // should this be changed to per universe?
 
-        //-------------------------------------------------------------
-		//
-		//	LoadSetupNodeInfo() - transfer the xml dom to tables
-		//
-		//-------------------------------------------------------------
-		private void LoadSetupNodeInfo()
-		{
-			int		rowNum = 1;
+        private bool _statisticsOption;
 
-			_universeTable = new List<UniverseEntry>();
+        private long _totalTicks;
 
-			// init from/to to indicate not setup
-			_pluginChannelsFrom	= 0;
-			_pluginChannelsTo	= 0;
+        private List<UniverseEntry> _universeTable;
 
-			// get the attribute collection and the from/to attributes if available
-			XmlAttributeCollection	setupNodeAttributes = _setupNode.Attributes;
-			XmlNode					fromAttribute		= setupNodeAttributes.GetNamedItem("from");
-			XmlNode					toAttribute			= setupNodeAttributes.GetNamedItem("to");
+        private bool _warningsOption;
 
-			// if we got both attributes, try and parse them
-			if (fromAttribute != null && toAttribute != null)
-			{
-				// try to parse both attributes
-				_pluginChannelsFrom = Extensions.TryParseInt32(fromAttribute.Value, 0);
-				_pluginChannelsTo   = Extensions.TryParseInt32(toAttribute.Value  , 0);
-				
-				// if either is zero, make both zero to indicate not setup
-				if (_pluginChannelsFrom == 0 || _pluginChannelsTo == 0)
-				{
-					_pluginChannelsFrom = 0;
-					_pluginChannelsTo   = 0;
-				}
-			}
-
-			_warningsOption		= true;
-			_statisticsOption	= true;
-			_eventRepeatCount	= 0;
-
-			_guid = Guid.Empty;
-
-			foreach (XmlNode child in _setupNode.ChildNodes)
-			{
-				XmlAttributeCollection	attributes = child.Attributes;
-				XmlNode					attribute;
-
-				if (child.Name == "Guid")
-				{
-					if ((attribute = attributes.GetNamedItem("id")) != null)
-					{
-						try
-						{
-							_guid = new Guid(attribute.Value);
-						}
-
-						catch
-						{
-							_guid = Guid.Empty;
-						}
-					}
-				}
-
-				if (child.Name == "Options")
-				{
-					_warningsOption = false;
-					if ((attribute = attributes.GetNamedItem("warnings")) != null)
-						if (attribute.Value == "True") _warningsOption = true;
-
-					_statisticsOption = false;
-					if ((attribute = attributes.GetNamedItem("statistics")) != null)
-						if (attribute.Value == "True") _statisticsOption = true;
-
-					_eventRepeatCount = 0;
-					if ((attribute = attributes.GetNamedItem("eventRepeatCount")) != null)
-						_eventRepeatCount = Extensions.TryParseInt32(attribute.Value, 0);
-				}
-
-				if (child.Name == "Universe")
-				{
-					bool	active		= false;
-					int		universe	= 1;
-					int		start		= 1;
-					int		size		= 1;
-					string	unicast		= null;
-					string	multicast	= null;
-					int		ttl			= 1;
-
-					if ((attribute = attributes.GetNamedItem("active")) != null)
-						if (attribute.Value == "True") active = true;
-
-					if ((attribute = attributes.GetNamedItem("number")) != null)
-						universe = Extensions.TryParseInt32(attribute.Value, 1);
-
-					if ((attribute = attributes.GetNamedItem("start")) != null)
-						start = Extensions.TryParseInt32(attribute.Value, 1);
-
-					if ((attribute = attributes.GetNamedItem("size")) != null)
-						size = Extensions.TryParseInt32(attribute.Value, 1);
-
-					if ((attribute = attributes.GetNamedItem("unicast")) != null)
-						unicast = attribute.Value;
-
-					if ((attribute = attributes.GetNamedItem("multicast")) != null)
-						multicast = attribute.Value;
-
-					if ((attribute = attributes.GetNamedItem("ttl")) != null)
-						ttl = Extensions.TryParseInt32(attribute.Value, 1);
-
-					_universeTable.Add(new UniverseEntry(rowNum++, active, universe, start - 1, size, unicast, multicast, ttl));
-				}
-			}
-
-			if (_guid == Guid.Empty) _guid = Guid.NewGuid();
-		}
-
-		//-------------------------------------------------------------
-		//
-		//	Initialize() - called anytime vixen needs to make sure the
-		//				   plugin's setup or initialization is up to
-		//				   date. Initialize is called before the plugin
-		//				   is setup, before sequence execution, and
-		//				   other times. It's called from multiple
-		//				   places at any time, therefore the plugin
-		//				   can make no assumptions about the state
-		//				   of the program or sequence due to a call
-		//				   to initialize.
-		//
-		//-------------------------------------------------------------
-		public void Initialize(IExecutable executableObject, SetupData setupData, XmlNode setupNode)
-		{
-			// save a local copy of the setup objects
-
-			this._setupData = setupData;
-			this._setupNode = setupNode;
-
-			// load all of our xml into working objects
-
-			LoadSetupNodeInfo();
-
-			// find all of the network interfaces & build a sorted list indexed by Id
-
-			_nicTable = new SortedList<string,NetworkInterface>();
-			
-			NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
-
-            if (nics != null)
-                if (nics.Length > 0)
-                    foreach (NetworkInterface nic in nics)
-                    {
-                        if (nic.NetworkInterfaceType.CompareTo(NetworkInterfaceType.Tunnel) != 0)
-						{
-							_nicTable.Add(nic.Id, nic);
-						}
-					}
-		}
-
-        //-------------------------------------------------------------
-		//
-		//	HardwareMap member - tell vixen what hardware we use
-		//
-		//-------------------------------------------------------------
-		public HardwareMap[] HardwareMap
-		{
-			get
-			{
-				// define objects
-				HardwareMap[]	hardwareMap;
-				int	activeCnt = 0;
-
-				// find how many active universes we have
-				foreach (UniverseEntry uE in _universeTable)
-				{
-					if (uE.Active) if (uE.Unicast != null || uE.Multicast != null) activeCnt++;
-				}
-
-				// create a HardwareMap array to match active count
-				hardwareMap = new HardwareMap[activeCnt];
-
-				// reset count to use as an index
-				activeCnt = 0;
-
-				// build the table for each active universe
-				foreach (UniverseEntry uE in _universeTable)
-				{
-					if (uE.Active)
-					{
-						// unicast is pretty straight forward
-						if (uE.Unicast != null)
-						{
-							hardwareMap[activeCnt++] = new HardwareMap("Universes (E1.31) Unicast >> " + uE.Unicast, uE.Universe);
-						}
-
-						// multicast has to check for valid nic Id in case hardware has changed
-						else if (uE.Multicast != null)
-						{
-							string	nicName = "<<< invalid nic id >>>";
-
-							if (_nicTable.ContainsKey(uE.Multicast)) nicName = _nicTable[uE.Multicast].Name;
-
-							hardwareMap[activeCnt++] = new HardwareMap("Universes (E1.31) Multicast >> " + nicName, uE.Universe);
-						}
-					}
-				}
-
-				return hardwareMap;
-			}
-		}
-
-        protected override void _SetOutputCount(int outputCount)
+        public void Initialize(IExecutable executableObject, SetupData setupData, XmlNode setupNode)
         {
-            _setupData.OutputCount = outputCount;
+            // load all of our xml into working objects
+            this.LoadSetupNodeInfo();
+
+            // find all of the network interfaces & build a sorted list indexed by Id
+            this._nicTable = new SortedList<string, NetworkInterface>();
+
+            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+            foreach (var nic in nics)
+            {
+                if (nic.NetworkInterfaceType.CompareTo(NetworkInterfaceType.Tunnel) != 0)
+                {
+                    this._nicTable.Add(nic.Id, nic);
+                }
+            }
         }
 
-        protected override void _UpdateState(Command[] outputStates)
-
-        {
-            Stopwatch stopWatch = Stopwatch.StartNew();
-            int channels = outputStates.Length;
-
-			_eventCnt++;
-
-			foreach (UniverseEntry uE in _universeTable)
-			{
-				if (uE.Active)
-				{
-					if (_eventRepeatCount > 0)
-					{
-						if (uE.EventRepeatCount-- > 0)
-						{
-							if (E131Packet.CompareSlots(uE.PhyBuffer, channelValues, uE.Start, uE.Size)) continue;
-						}
-					}
-
-					E131Packet.CopySeqNumSlots(uE.PhyBuffer, channelValues, uE.Start, uE.Size, _seqNum++); 
-					uE.Socket.SendTo(uE.PhyBuffer, uE.DestIpEndPoint);
-					uE.EventRepeatCount = _eventRepeatCount;
-
-					uE.PktCount++;
-					uE.SlotCount += uE.Size;
-				}
-			}
-
-			stopWatch.Stop();
-
-			_totalTicks += stopWatch.ElapsedTicks;
-            throw new NotImplementedException();
-        }
-
-
-        //-------------------------------------------------------------
-        //
-        //	Setup() - called when the user has requested to setup
-        //			  the plugin instance
-        //
-        //-------------------------------------------------------------
+        // -------------------------------------------------------------
+        // 
+        // 	Setup() - called when the user has requested to setup
+        // 			  the plugin instance
+        // 
+        // -------------------------------------------------------------
         public override bool Setup()
-		{
-			// define/create objects
-			XmlElement	newChild;
-            using (SetupForm setupForm = new SetupForm()) {
-                LoadSetupNodeInfo();
+        {
+            // define/create objects
+            XmlElement newChild;
+            using (var setupForm = new SetupForm())
+            {
+                this.LoadSetupNodeInfo();
 
                 // if our channels from/to are setup then tell the setupForm
-                if (_pluginChannelsFrom != 0 && _pluginChannelsTo != 0)
+                if (this._pluginChannelsFrom != 0 && this._pluginChannelsTo != 0)
                 {
-                    setupForm.PluginChannelCount = _pluginChannelsTo - _pluginChannelsFrom + 1;
-                }
-			
-                // for each universe add it to setup form
-                foreach (UniverseEntry uE in _universeTable)
-                {
-                    setupForm.UniverseAdd(uE.Active, uE.Universe, uE.Start + 1, uE.Size, uE.Unicast, uE.Multicast, uE.Ttl);
+                    setupForm.PluginChannelCount = this._pluginChannelsTo - this._pluginChannelsFrom + 1;
                 }
 
-                setupForm.WarningsOption	= _warningsOption;
-                setupForm.StatisticsOption	= _statisticsOption;
-                setupForm.EventRepeatCount	= _eventRepeatCount;
+                // for each universe add it to setup form
+                foreach (var uE in this._universeTable)
+                {
+                    setupForm.UniverseAdd(
+                        uE.Active, uE.Universe, uE.Start + 1, uE.Size, uE.Unicast, uE.Multicast, uE.Ttl);
+                }
+
+                setupForm.WarningsOption = this._warningsOption;
+                setupForm.StatisticsOption = this._statisticsOption;
+                setupForm.EventRepeatCount = this._eventRepeatCount;
 
                 if (setupForm.ShowDialog() == DialogResult.OK)
                 {
@@ -395,12 +156,12 @@ namespace VixenModules.Controller.E131
 
                     // add the Guid child
                     newChild = _setupNode.OwnerDocument.CreateElement("Guid");
-                    newChild.SetAttribute("id", _guid.ToString());
+                    newChild.SetAttribute("id", this._guid.ToString());
                     _setupNode.AppendChild(newChild);
 
                     // add the Options child
                     newChild = _setupNode.OwnerDocument.CreateElement("Options");
-                    newChild.SetAttribute("warnings"  , setupForm.WarningsOption.ToString());
+                    newChild.SetAttribute("warnings", setupForm.WarningsOption.ToString());
                     newChild.SetAttribute("statistics", setupForm.StatisticsOption.ToString());
                     newChild.SetAttribute("eventRepeatCount", setupForm.EventRepeatCount.ToString());
                     _setupNode.AppendChild(newChild);
@@ -408,311 +169,507 @@ namespace VixenModules.Controller.E131
                     // add each of the universes as a child
                     for (int i = 0; i < setupForm.UniverseCount; i++)
                     {
-                        bool	active = true;
-                        Int32	universe = 0;
-                        Int32	start = 0;
-                        Int32	size = 0;
-                        string	unicast = "";
-                        string	multicast = "";
-                        Int32	ttl = 0;
+                        bool active = true;
+                        int universe = 0;
+                        int start = 0;
+                        int size = 0;
+                        string unicast = string.Empty;
+                        string multicast = string.Empty;
+                        int ttl = 0;
 
-                        if (setupForm.UniverseGet(i, ref active, ref universe, ref start, ref size, ref unicast, ref multicast, ref ttl))
+                        if (setupForm.UniverseGet(
+                            i, ref active, ref universe, ref start, ref size, ref unicast, ref multicast, ref ttl))
                         {
                             newChild = _setupNode.OwnerDocument.CreateElement("Universe");
-	
+
                             newChild.SetAttribute("active", active.ToString());
                             newChild.SetAttribute("number", universe.ToString());
-                            newChild.SetAttribute("start" , start.ToString());
-                            newChild.SetAttribute("size"  , size.ToString());
-                            if (unicast != null) newChild.SetAttribute("unicast", unicast);
-                            else if (multicast != null) newChild.SetAttribute("multicast", multicast);
-                            newChild.SetAttribute("ttl"   , ttl.ToString());
+                            newChild.SetAttribute("start", start.ToString());
+                            newChild.SetAttribute("size", size.ToString());
+                            if (unicast != null)
+                            {
+                                newChild.SetAttribute("unicast", unicast);
+                            }
+                            else if (multicast != null)
+                            {
+                                newChild.SetAttribute("multicast", multicast);
+                            }
+
+                            newChild.SetAttribute("ttl", ttl.ToString());
 
                             _setupNode.AppendChild(newChild);
                         }
                     }
-			
+
                     // update in memory table to match xml
-                    LoadSetupNodeInfo();
+                    this.LoadSetupNodeInfo();
                 }
             }
-		}
+        }
 
-		//-------------------------------------------------------------
-		//
-		//	Shutdown() - called when execution is stopped or the
-		//				 plugin instance is no longer going to be
-		//				 referenced
-		//
-		//-------------------------------------------------------------
-		public void Shutdown()
-		{
-			// keep track of interface ids we have shutdown
-			SortedList<string, int>	idList = new SortedList<string, int>();
+        // -------------------------------------------------------------
+        // 
+        // 	Shutdown() - called when execution is stopped or the
+        // 				 plugin instance is no longer going to be
+        // 				 referenced
+        // 
+        // -------------------------------------------------------------
+        public void Shutdown()
+        {
+            // keep track of interface ids we have shutdown
+            var idList = new SortedList<string, int>();
 
-			// iterate through universetable
-			foreach (UniverseEntry uE in _universeTable)
-			{
-				// assume multicast
-				string	id = uE.Multicast;
+            // iterate through universetable
+            foreach (var uE in this._universeTable)
+            {
+                // assume multicast
+                string id = uE.Multicast;
 
-				// if unicast use psuedo id
-				if (uE.Unicast != null) id = "unicast";
+                // if unicast use psuedo id
+                if (uE.Unicast != null)
+                {
+                    id = "unicast";
+                }
 
-				// if active
-				if (uE.Active)
-				{
-					// and a usable socket
-					if (uE.Socket != null)
-					{
-						// if not already done
-						if (!idList.ContainsKey(id))
-						{
-							// record it & shut it down
-							idList.Add(id, 1);
-							uE.Socket.Shutdown(SocketShutdown.Both);
-							uE.Socket.Close();
-						}
-					}
-				}
-			}
+                // if active
+                if (uE.Active)
+                {
+                    // and a usable socket
+                    if (uE.Socket != null)
+                    {
+                        // if not already done
+                        if (!idList.ContainsKey(id))
+                        {
+                            // record it & shut it down
+                            idList.Add(id, 1);
+                            uE.Socket.Shutdown(SocketShutdown.Both);
+                            uE.Socket.Close();
+                        }
+                    }
+                }
+            }
 
-			if (_statisticsOption)
-			{
-				if (_messageTexts.Length > 0) _messageTexts.AppendLine();
+            if (this._statisticsOption)
+            {
+                if (this._messageTexts.Length > 0)
+                {
+                    this._messageTexts.AppendLine();
+                }
 
-				_messageTexts.AppendLine("Events: " + _eventCnt.ToString());
-				_messageTexts.AppendLine("Total Time: " + _totalTicks.ToString() + " Ticks;  " + TimeSpan.FromTicks(_totalTicks).Milliseconds.ToString() + " ms");
+                this._messageTexts.AppendLine("Events: " + this._eventCnt);
+                this._messageTexts.AppendLine(
+                    "Total Time: " + this._totalTicks + " Ticks;  " + TimeSpan.FromTicks(this._totalTicks).Milliseconds
+                    + " ms");
 
-				foreach (UniverseEntry uE in _universeTable)
-				{
-					if (uE.Active)
-					{
-						_messageTexts.AppendLine();
-						_messageTexts.Append(uE.StatsToText);
-					}
-				}
+                foreach (var uE in this._universeTable)
+                {
+                    if (uE.Active)
+                    {
+                        this._messageTexts.AppendLine();
+                        this._messageTexts.Append(uE.StatsToText);
+                    }
+                }
 
-				J1MsgBox.ShowMsg("Plugin Statistics:", _messageTexts.ToString(), "J1Sys E1.31 Vixen Plugin", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
-		}
+                J1MsgBox.ShowMsg(
+                    "Plugin Statistics:", 
+                    this._messageTexts.ToString(), 
+                    "J1Sys E1.31 Vixen Plugin", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Information);
+            }
+        }
 
-		//-------------------------------------------------------------
-		//
-		//	Startup() - called when a sequence is executed
-		//
-		//
-		//	todo:
-		//
-		//		1) probably add error checking on all 'new' operations
-		//		and system calls
-		//
-		//		2) better error reporting and logging
-		//	
-		//-------------------------------------------------------------
-		public void Startup()
-		{
-			// working copy of networkinterface object
-			NetworkInterface	networkInterface;
+        // -------------------------------------------------------------
+        // 
+        // 	Startup() - called when a sequence is executed
+        // 
+        // 
+        // 	todo:
+        // 
+        // 		1) probably add error checking on all 'new' operations
+        // 		and system calls
+        // 
+        // 		2) better error reporting and logging
+        // 	
+        // -------------------------------------------------------------
+        public void Startup()
+        {
+            // working copy of networkinterface object
+            NetworkInterface networkInterface;
 
-			// a single socket to use for unicast (if needed)
-			Socket	unicastSocket = null;
+            // a single socket to use for unicast (if needed)
+            Socket unicastSocket = null;
 
-			// working ipaddress object
-			IPAddress ipAddress = null;
+            // working ipaddress object
+            IPAddress ipAddress = null;
 
-			// a sortedlist containing the multicast sockets we've already done
-			SortedList<string, Socket>	nicSockets = new SortedList<string,Socket>();
+            // a sortedlist containing the multicast sockets we've already done
+            var nicSockets = new SortedList<string, Socket>();
 
-			// reload all of our xml into working objects
-			LoadSetupNodeInfo();
+            // reload all of our xml into working objects
+            this.LoadSetupNodeInfo();
 
-			// initialize plugin wide stats
-			_eventCnt	= 0;
-			_totalTicks	= 0;
+            // initialize plugin wide stats
+            this._eventCnt = 0;
+            this._totalTicks = 0;
 
-			// initialize sequence # for E1.31 packet (should it be per universe?)
-			_seqNum		= 0;
+            // initialize sequence # for E1.31 packet (should it be per universe?)
+            this._seqNum = 0;
 
-			// initialize messageTexts stringbuilder to hold all warnings/errors
-			_messageTexts = new StringBuilder();
+            // initialize messageTexts stringbuilder to hold all warnings/errors
+            this._messageTexts = new StringBuilder();
 
-			// check for configured from/to
-			if (_pluginChannelsFrom == 0 && _pluginChannelsTo == 0)
-			{
-				foreach (UniverseEntry uE in _universeTable)
-				{
-					uE.Active = false;
-				}
+            // check for configured from/to
+            if (this._pluginChannelsFrom == 0 && this._pluginChannelsTo == 0)
+            {
+                foreach (var uE in this._universeTable)
+                {
+                    uE.Active = false;
+                }
 
-				_messageTexts.AppendLine("Plugin Channels From/To Configuration Error!!");
-			}
+                this._messageTexts.AppendLine("Plugin Channels From/To Configuration Error!!");
+            }
 
-			// now we need to scan the universeTable
-			foreach (UniverseEntry uE in _universeTable)
-			{
-				// active? - check universeentry start and size
-				if (uE.Active)
-				{
-					// is start out of range?
-					if (_pluginChannelsFrom + uE.Start > _pluginChannelsTo)
-					{
-						_messageTexts.AppendLine("Start Error - " + uE.InfoToText);
-						uE.Active = false;
-					}
+            // now we need to scan the universeTable
+            foreach (var uE in this._universeTable)
+            {
+                // active? - check universeentry start and size
+                if (uE.Active)
+                {
+                    // is start out of range?
+                    if (this._pluginChannelsFrom + uE.Start > this._pluginChannelsTo)
+                    {
+                        this._messageTexts.AppendLine("Start Error - " + uE.InfoToText);
+                        uE.Active = false;
+                    }
 
-					// is size (end) out of range?
-					if (_pluginChannelsFrom + uE.Start + uE.Size - 1 > _pluginChannelsTo)
-					{
-						_messageTexts.AppendLine("Start/Size Error - " + uE.InfoToText);
-						uE.Active = false;
-					}
-				}
+                    // is size (end) out of range?
+                    if (this._pluginChannelsFrom + uE.Start + uE.Size - 1 > this._pluginChannelsTo)
+                    {
+                        this._messageTexts.AppendLine("Start/Size Error - " + uE.InfoToText);
+                        uE.Active = false;
+                    }
+                }
 
-				// if it's still active we'll look into making a socket for it
-				if (uE.Active)
-				{
-					// if it's unicast it's fairly easy to do
-					if (uE.Unicast != null)
-					{
-						// is this the first unicast universe?
-						if (unicastSocket == null)
-						{
-							// yes - make a new socket to use for ALL unicasts
-							unicastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-						}
+                // if it's still active we'll look into making a socket for it
+                if (uE.Active)
+                {
+                    // if it's unicast it's fairly easy to do
+                    if (uE.Unicast != null)
+                    {
+                        // is this the first unicast universe?
+                        if (unicastSocket == null)
+                        {
+                            // yes - make a new socket to use for ALL unicasts
+                            unicastSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                        }
 
-						// use the common unicastsocket
-						uE.Socket = unicastSocket;
+                        // use the common unicastsocket
+                        uE.Socket = unicastSocket;
 
-						// try to parse our ip address
-						if (!IPAddress.TryParse(uE.Unicast, out ipAddress))
-						{
-							// oops - bad ip, fuss and deactivate
-							uE.Active = false;
-							uE.Socket = null;
-							_messageTexts.AppendLine("Invalid Unicast IP: " + uE.Unicast + " - " + uE.RowUnivToText);
-						}
+                        // try to parse our ip address
+                        if (!IPAddress.TryParse(uE.Unicast, out ipAddress))
+                        {
+                            // oops - bad ip, fuss and deactivate
+                            uE.Active = false;
+                            uE.Socket = null;
+                            this._messageTexts.AppendLine(
+                                "Invalid Unicast IP: " + uE.Unicast + " - " + uE.RowUnivToText);
+                        }
+                        else
+                        {
+                            // if good, make our destination endpoint
+                            uE.DestIpEndPoint = new IPEndPoint(ipAddress, 5568);
+                        }
+                    }
 
-						else
-						{
-							// if good, make our destination endpoint
-							uE.DestIpEndPoint = new IPEndPoint(ipAddress, 5568);
-						}
-					}
+                    // if it's multicast roll up your sleeves we've got work to do
+                    if (uE.Multicast != null)
+                    {
+                        // create an ipaddress object based on multicast universe ip rules
+                        var multicastIpAddress =
+                            new IPAddress(new byte[] { 239, 255, (byte)(uE.Universe >> 8), (byte)(uE.Universe & 0xff) });
 
-					// if it's multicast roll up your sleeves we've got work to do
-					if (uE.Multicast != null)
-					{
-						// create an ipaddress object based on multicast universe ip rules
-						IPAddress multicastIPAddress = new IPAddress(new byte[] { 239,255,(byte) (uE.Universe >> 8), (byte) (uE.Universe & 0xff) });
-						// create an ipendpoint object based on multicast universe ip/port rules
-						IPEndPoint multicastIPEndPoint = new IPEndPoint(multicastIPAddress, 5568);
-	
-						// first check for multicast id in nictable
-						if (!_nicTable.ContainsKey(uE.Multicast))
-						{
-							// no - deactivate and scream & yell!!
-							uE.Active = false;
-							_messageTexts.AppendLine("Invalid Multicast NIC ID: " + uE.Multicast + " - " + uE.RowUnivToText);
-						}
+                        // create an ipendpoint object based on multicast universe ip/port rules
+                        var multicastIpEndPoint = new IPEndPoint(multicastIpAddress, 5568);
 
-						else
-						{
-							// yes - let's get a working networkinterface object
-							networkInterface = _nicTable[uE.Multicast];
+                        // first check for multicast id in nictable
+                        if (!this._nicTable.ContainsKey(uE.Multicast))
+                        {
+                            // no - deactivate and scream & yell!!
+                            uE.Active = false;
+                            this._messageTexts.AppendLine(
+                                "Invalid Multicast NIC ID: " + uE.Multicast + " - " + uE.RowUnivToText);
+                        }
+                        else
+                        {
+                            // yes - let's get a working networkinterface object
+                            networkInterface = this._nicTable[uE.Multicast];
 
-							// have we done this multicast id before?
-							if (nicSockets.ContainsKey(uE.Multicast))
-							{
-								// yes - easy to do - use existing socket
-								uE.Socket = nicSockets[uE.Multicast];
+                            // have we done this multicast id before?
+                            if (nicSockets.ContainsKey(uE.Multicast))
+                            {
+                                // yes - easy to do - use existing socket
+                                uE.Socket = nicSockets[uE.Multicast];
 
-								// setup destipendpoint based on multicast universe ip rules
-								uE.DestIpEndPoint = multicastIPEndPoint;
-							}
+                                // setup destipendpoint based on multicast universe ip rules
+                                uE.DestIpEndPoint = multicastIpEndPoint;
+                            }
 
-							// is the interface up?
-							else if (networkInterface.OperationalStatus != OperationalStatus.Up)
-							{
-								// no - deactivate and scream & yell!!
-								uE.Active = false;
-								_messageTexts.AppendLine("Multicast Interface Down: " + networkInterface.Name + " - " + uE.RowUnivToText);
-							}
+                                // is the interface up?
+                            else if (networkInterface.OperationalStatus != OperationalStatus.Up)
+                            {
+                                // no - deactivate and scream & yell!!
+                                uE.Active = false;
+                                this._messageTexts.AppendLine(
+                                    "Multicast Interface Down: " + networkInterface.Name + " - " + uE.RowUnivToText);
+                            }
+                            else
+                            {
+                                // new interface in 'up' status - let's make a new udp socket
+                                uE.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-							else
-							{
-								// new interface in 'up' status - let's make a new udp socket
-								uE.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                                // get a working copy of ipproperties
+                                IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
 
-								// get a working copy of ipproperties
-								IPInterfaceProperties	ipProperties = networkInterface.GetIPProperties();
+                                // get a working copy of all unicasts
+                                UnicastIPAddressInformationCollection unicasts = ipProperties.UnicastAddresses;
 
-								// get a working copy of the ipv4interfaceproperties
-								IPv4InterfaceProperties ipv4InterfaceProperties = ipProperties.GetIPv4Properties();
-								
-								// get a working copy of all unicasts
-								UnicastIPAddressInformationCollection unicasts = ipProperties.UnicastAddresses;
+                                ipAddress = null;
 
-								ipAddress = null;
+                                foreach (var unicast in unicasts)
+                                {
+                                    if (unicast.Address.AddressFamily == AddressFamily.InterNetwork)
+                                    {
+                                        ipAddress = unicast.Address;
+                                    }
+                                }
 
-								foreach (UnicastIPAddressInformation unicast in unicasts)
-								{
-									if (unicast.Address.AddressFamily == AddressFamily.InterNetwork)
-									{
-										ipAddress = unicast.Address;
-									}
-								}
+                                if (ipAddress == null)
+                                {
+                                    this._messageTexts.AppendLine(
+                                        "No IP On Multicast Interface: " + networkInterface.Name + " - " + uE.InfoToText);
+                                }
+                                else
+                                {
+                                    // set the multicastinterface option
+                                    uE.Socket.SetSocketOption(
+                                        SocketOptionLevel.IP, 
+                                        SocketOptionName.MulticastInterface, 
+                                        ipAddress.GetAddressBytes());
 
-								if (ipAddress == null)
-								{
-									_messageTexts.AppendLine("No IP On Multicast Interface: " + networkInterface.Name + " - " + uE.InfoToText);
-								}
+                                    // set the multicasttimetolive option
+                                    uE.Socket.SetSocketOption(
+                                        SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, uE.Ttl);
 
-								else
-								{
-									// set the multicastinterface option
-									uE.Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastInterface, ipAddress.GetAddressBytes());
-									// set the multicasttimetolive option
-									uE.Socket.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, uE.Ttl);
+                                    // setup destipendpoint based on multicast universe ip rules
+                                    uE.DestIpEndPoint = multicastIpEndPoint;
 
-									// setup destipendpoint based on multicast universe ip rules
-									uE.DestIpEndPoint = multicastIPEndPoint;
+                                    // add this socket to the socket table for reuse
+                                    nicSockets.Add(uE.Multicast, uE.Socket);
+                                }
+                            }
+                        }
+                    }
 
-									// add this socket to the socket table for reuse
-									nicSockets.Add(uE.Multicast, uE.Socket);
-								}
-							}
-						}
-					}
+                    // if still active we need to create an empty packet
+                    if (uE.Active)
+                    {
+                        var zeroBfr = new byte[uE.Size];
+                        var e131Packet = new E131Packet(this._guid, string.Empty, 0, (ushort)uE.Universe, zeroBfr, 0, uE.Size);
+                        uE.PhyBuffer = e131Packet.PhyBuffer;
+                    }
+                }
+            }
 
-					// if still active we need to create an empty packet
-					if (uE.Active)
-					{
-						byte[]	zeroBfr = new byte[uE.Size];
-						E131Packet	e131Packet = new E131Packet(_guid, "", 0, (ushort) uE.Universe, zeroBfr, 0, uE.Size);
-						uE.PhyBuffer = e131Packet.PhyBuffer;
-					}
-				}
-			}
+            // any warnings/errors recorded?
+            if (this._messageTexts.Length > 0)
+            {
+                // should we display them
+                if (this._warningsOption)
+                {
+                    // show our warnings/errors
+                    J1MsgBox.ShowMsg(
+                        "The following warnings and errors were detected during startup:", 
+                        this._messageTexts.ToString(), 
+                        "Startup Warnings/Errors", 
+                        MessageBoxButtons.OK, 
+                        MessageBoxIcon.Exclamation);
 
-			// any warnings/errors recorded?
-			if (_messageTexts.Length > 0)
-				// should we display them
-				if (_warningsOption)
-				{
-					// show our warnings/errors
-					J1MsgBox.ShowMsg("The following warnings and errors were detected during startup:", _messageTexts.ToString(), "Startup Warnings/Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    // discard warning/errors after reporting them
+                    this._messageTexts = new StringBuilder();
+                }
+            }
 
-					// discard warning/errors after reporting them
-					_messageTexts = new StringBuilder();
-				}
-
-			//MessageBox.Show("Startup");
-
+            // MessageBox.Show("Startup");
 #if VIXEN21
 			return new List<Form> {};
 #endif
-		}        
-	}
+        }
+
+        private E131ModuleDataModel GetDataModel()
+        {
+            return (E131ModuleDataModel)this.ModuleData;
+        }
+
+        protected override void _SetOutputCount(int outputCount)
+        {
+        }
+
+        protected override void _UpdateState(Command[] outputStates)
+        {
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            var channelValues = outputStates.ToChannelValuesAsBytes();
+            this._eventCnt++;
+
+            foreach (var uE in this._universeTable)
+            {
+                if (uE.Active)
+                {
+                    if (this._eventRepeatCount > 0)
+                    {
+                        if (uE.EventRepeatCount-- > 0)
+                        {
+                            if (E131Packet.CompareSlots(uE.PhyBuffer, channelValues, uE.Start, uE.Size))
+                            {
+                                continue;
+                            }
+                        }
+                    }
+
+                    E131Packet.CopySeqNumSlots(uE.PhyBuffer, channelValues, uE.Start, uE.Size, this._seqNum++);
+                    uE.Socket.SendTo(uE.PhyBuffer, uE.DestIpEndPoint);
+                    uE.EventRepeatCount = this._eventRepeatCount;
+
+                    uE.PktCount++;
+                    uE.SlotCount += uE.Size;
+                }
+            }
+
+            stopWatch.Stop();
+
+            this._totalTicks += stopWatch.ElapsedTicks;
+        }
+
+        private void LoadSetupNodeInfo()
+        {
+            int rowNum = 1;
+
+            this._universeTable = new List<UniverseEntry>();
+
+            // init from/to to indicate not setup
+            this._pluginChannelsFrom = 0;
+            this._pluginChannelsTo = 0;
+            this._warningsOption = true;
+            this._statisticsOption = true;
+            this._eventRepeatCount = 0;
+
+            this._guid = Guid.Empty;
+
+            foreach (XmlNode child in _setupNode.ChildNodes)
+            {
+                XmlAttributeCollection attributes = child.Attributes;
+                XmlNode attribute;
+
+                if (child.Name == "Guid")
+                {
+                    if ((attribute = attributes.GetNamedItem("id")) != null)
+                    {
+                        try
+                        {
+                            this._guid = new Guid(attribute.Value);
+                        }
+                        catch
+                        {
+                            this._guid = Guid.Empty;
+                        }
+                    }
+                }
+
+                if (child.Name == "Options")
+                {
+                    this._warningsOption = false;
+                    if ((attribute = attributes.GetNamedItem("warnings")) != null)
+                    {
+                        if (attribute.Value == "True")
+                        {
+                            this._warningsOption = true;
+                        }
+                    }
+
+                    this._statisticsOption = false;
+                    if ((attribute = attributes.GetNamedItem("statistics")) != null)
+                    {
+                        if (attribute.Value == "True")
+                        {
+                            this._statisticsOption = true;
+                        }
+                    }
+
+                    this._eventRepeatCount = 0;
+                    if ((attribute = attributes.GetNamedItem("eventRepeatCount")) != null)
+                    {
+                        this._eventRepeatCount = attribute.Value.TryParseInt32(0);
+                    }
+                }
+
+                if (child.Name == "Universe")
+                {
+                    bool active = false;
+                    int universe = 1;
+                    int start = 1;
+                    int size = 1;
+                    string unicast = null;
+                    string multicast = null;
+                    int ttl = 1;
+
+                    if ((attribute = attributes.GetNamedItem("active")) != null)
+                    {
+                        if (attribute.Value == "True")
+                        {
+                            active = true;
+                        }
+                    }
+
+                    if ((attribute = attributes.GetNamedItem("number")) != null)
+                    {
+                        universe = attribute.Value.TryParseInt32(1);
+                    }
+
+                    if ((attribute = attributes.GetNamedItem("start")) != null)
+                    {
+                        start = attribute.Value.TryParseInt32(1);
+                    }
+
+                    if ((attribute = attributes.GetNamedItem("size")) != null)
+                    {
+                        size = attribute.Value.TryParseInt32(1);
+                    }
+
+                    if ((attribute = attributes.GetNamedItem("unicast")) != null)
+                    {
+                        unicast = attribute.Value;
+                    }
+
+                    if ((attribute = attributes.GetNamedItem("multicast")) != null)
+                    {
+                        multicast = attribute.Value;
+                    }
+
+                    if ((attribute = attributes.GetNamedItem("ttl")) != null)
+                    {
+                        ttl = attribute.Value.TryParseInt32(1);
+                    }
+
+                    this._universeTable.Add(
+                        new UniverseEntry(rowNum++, active, universe, start - 1, size, unicast, multicast, ttl));
+                }
+            }
+
+            if (this._guid == Guid.Empty)
+            {
+                this._guid = Guid.NewGuid();
+            }
+        }
+    }
 }

@@ -3,6 +3,8 @@ namespace VixenModules.Controller.E131
     using System;
     using System.Text;
 
+    using Vixen.Commands;
+
     public static class Extensions
     {
         public static int TryParseInt32(this string value, int defaultInt32)
@@ -14,6 +16,37 @@ namespace VixenModules.Controller.E131
             }
 
             return converted;
+        }
+
+        public static byte[] ToChannelValuesAsBytes(this Command[] outputStates)
+        {
+            if (outputStates == null)
+            {
+                return new byte[0];
+            }
+
+            var channelValues = new byte[outputStates.Length];
+            for (int index = 0; index < outputStates.Length; index++)
+            {
+                Command command = outputStates[index];
+                if (command == null)
+                {
+                    // State reset
+                    channelValues[index] = 0;
+                    continue;
+                }
+
+                // Casting is fasting than comparing strings.
+                var setLevelCommand = command as Lighting.Monochrome.SetLevel;
+                if (setLevelCommand != null)
+                {
+                    // Good command
+                    var level = (byte)(0xFF * setLevelCommand.Level / 100);
+                    channelValues[index] = level;
+                }
+            }
+
+            return channelValues;
         }
 
         internal static Guid BufferToGuid(byte[] bfr, int offset)
@@ -33,7 +66,7 @@ namespace VixenModules.Controller.E131
 
         internal static ushort BfrToUInt16Swapped(byte[] bfr, int offset)
         {
-            return (UInt16)((bfr[offset] << 8) | bfr[offset + 1]);
+            return (ushort)((bfr[offset] << 8) | bfr[offset + 1]);
         }
 
         internal static uint BfrToUInt32Swapped(byte[] bfr, int offset)
