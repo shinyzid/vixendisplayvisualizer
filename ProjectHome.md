@@ -1,0 +1,1 @@
+An output plugin for Vixen that allows a user to create and arrange a virtual lights display. It has support for RGB, RGB+W, and single color pixels.
